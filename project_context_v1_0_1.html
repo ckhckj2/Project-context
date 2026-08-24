@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PROJECT CONTEXT — v1.0.1</title>
+<style>
+:root{
+ --bg:#f3f4f1;--panel:#fff;--ink:#171717;--muted:#6e7378;--line:#e1e4df;
+ --blue:#245eea;--blue2:#eef4ff;--green:#1c7c4a;--green2:#edf8f2;
+ --orange:#a85d06;--orange2:#fff5e8;--red:#a23a3a;--red2:#fff1f1;--shadow:0 8px 30px rgba(28,35,42,.04)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{max-width:1380px;margin:auto;padding:24px 28px 60px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:18px}
+.brand{font-weight:900;font-size:21px;letter-spacing:-.6px}
+.brand small{font-weight:600;color:var(--muted);font-size:12px;margin-left:10px}
+.badges{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.badge{border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 10px;font-size:11px;font-weight:750;color:#5e6368}
+.badge.primary{background:var(--blue2);border-color:#cbd9ff;color:#1e4ebc}
+.badge.green{background:var(--green2);border-color:#cce9d9;color:var(--green)}
+.nav{display:flex;gap:8px;background:#e9ebe7;padding:6px;border-radius:14px;margin-bottom:20px;overflow:auto}
+.nav button{border:0;background:transparent;color:#666;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:800;white-space:nowrap}
+.nav button.active{background:#fff;color:#171717;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.panel{display:block;margin-bottom:20px}.js .panel{display:none}.js .panel.active{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:24px;box-shadow:var(--shadow)}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.hero-copy{padding:31px}
+.eyebrow{font-size:10.5px;font-weight:900;letter-spacing:.11em;color:var(--blue);margin-bottom:8px}
+h1{font-size:38px;line-height:1.17;letter-spacing:-1.8px;margin:0 0 12px}
+h2{font-size:22px;letter-spacing:-.5px;margin:0 0 8px}
+h3{font-size:14.5px;margin:0 0 10px}
+p{line-height:1.68}
+.muted{color:var(--muted);font-size:13.5px}
+.rule{margin-top:18px;padding:13px 14px;border-radius:11px;background:#f8f9f7;border:1px solid var(--line);font-size:12.5px;line-height:1.6;color:#555}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+label{display:block;font-weight:800;font-size:12.5px;margin:12px 0 6px}
+select,input,textarea{width:100%;border:1px solid #d8dcd7;border-radius:10px;background:#fff;padding:11px 12px;color:#222;outline:none}
+textarea{resize:vertical;min-height:94px;line-height:1.6}
+select:focus,input:focus,textarea:focus{border-color:#9db7ff;box-shadow:0 0 0 3px #edf3ff}
+.btn{border:0;border-radius:10px;padding:12px 15px;font-weight:850}
+.btn.dark{background:#171717;color:#fff}
+.btn.blue{background:var(--blue);color:#fff}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:#444}
+.wide{width:100%;margin-top:15px}
+.layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px}
+.result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px}
+.result-card{border:1px solid var(--line);border-radius:13px;padding:16px;background:#fff}
+.result-card p,.result-card li{font-size:13px;line-height:1.65;color:#4f5458}
+.result-card ul,.result-card ol{padding-left:18px;margin:7px 0 0}
+.kicker{font-size:10px;letter-spacing:.1em;font-weight:900;color:#7d8287;margin-bottom:7px}
+.timeline{margin:14px 0 0 8px;border-left:2px solid var(--line);padding-left:20px}
+.node{position:relative;font-size:13px;color:#85898d;padding:0 0 17px}
+.node:before{content:"";position:absolute;left:-26px;top:2px;width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid #c9cdca}
+.node.done{color:#4f5458}.node.done:before{background:#d9e5ff;border-color:#9eb5ee}
+.node.active{font-weight:900;color:#171717}.node.active:before{background:var(--blue);border-color:var(--blue);box-shadow:0 0 0 4px var(--blue2)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{font-size:11px;padding:6px 8px;border-radius:99px;border:1px solid var(--line);background:#f7f7f5;color:#575b60}
+.source-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.source-type{font-size:10.5px;font-weight:850;padding:5px 7px;border-radius:7px}
+.source-type.law{background:var(--blue2);color:#1f55c0}.source-type.local{background:var(--orange2);color:var(--orange)}.source-type.practice{background:#f1f2f0;color:#61666a}
+.alert{padding:13px 14px;border-radius:11px;background:var(--orange2);border:1px solid #efd4a5;font-size:12.5px;line-height:1.6;color:#69420d;margin-top:12px}
+.task-input{max-width:900px;margin:0 auto}
+.bigprompt{font-size:17px;padding:16px;min-height:120px}
+.quick{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.quick button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 10px;font-size:11.5px;color:#54595d}
+.task-result{display:none;margin-top:18px}
+.task-result.show{display:block}
+.answer-hero{background:linear-gradient(135deg,#fff 0%,#f7f9ff 100%);border:1px solid #d9e3ff}
+.answer-title{font-size:22px;font-weight:900;letter-spacing:-.6px;margin-bottom:8px}
+.answer-sub{color:#58606a;font-size:13.5px;line-height:1.7}
+.steps{display:grid;gap:9px;margin-top:10px}
+.step{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}
+.num{width:26px;height:26px;border-radius:8px;background:var(--blue2);color:#2352b6;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.step b{font-size:13px}.step div:last-child{font-size:12.6px;color:#5c6267;line-height:1.55}
+.route-answer{display:none;margin-top:14px;padding:18px;border-radius:13px;border:1px solid #dce5ff;background:#f8faff;white-space:pre-line;font-size:13px;line-height:1.7}
+.route-answer.show{display:block}
+.consult-dict{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+.consult{border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff}
+.consult b{display:block;font-size:12.5px;margin-bottom:4px}.consult span{font-size:11.5px;line-height:1.45;color:#6c7175}
+details{border-top:1px solid var(--line);margin-top:15px;padding-top:12px}
+summary{font-size:12px;color:#5f6468;font-weight:800;cursor:pointer}
+.qa-answer{display:none;margin-top:14px;border:1px solid var(--line);background:#fafafa;border-radius:12px;padding:16px;font-size:13px;line-height:1.7;white-space:pre-line}
+.qa-answer.show{display:block}
+.refs{display:grid;gap:7px;margin-top:10px}
+.ref{display:flex;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:9px;padding:10px 11px;align-items:start}
+.ref div{font-size:12px;line-height:1.45}.ref small{display:block;color:#818589;margin-top:3px}.ref a{text-decoration:none;color:#1f57c5;font-size:11px;white-space:nowrap}
+.footer-note{margin-top:18px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:13px 15px;color:#73777b;font-size:11px;line-height:1.6}
+.modebar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;padding:12px 14px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.modebar b{font-size:12px}.modebar span{font-size:11.5px;color:#777}
+@media(max-width:950px){.hero,.layout{grid-template-columns:1fr}.consult-dict{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.app{padding:16px}.formgrid,.result-grid{grid-template-columns:1fr}.consult-dict{grid-template-columns:1fr}h1{font-size:29px}.brand small{display:none}}
+</style>
+<script>document.documentElement.classList.add("js");</script>
+</head>
+<body>
+<noscript><div style="margin:16px;padding:14px;border:1px solid #d9a441;border-radius:10px;background:#fff5e8;font-family:sans-serif">이 미리보기에서는 JavaScript가 차단되어 있습니다. 파일을 다운로드한 뒤 Safari/Chrome/Edge에서 직접 열어주세요.</div></noscript>
+<div class="app">
+  <div class="top">
+    <div class="brand">PROJECT CONTEXT <small>Architecture Workflow Navigator</small></div>
+    <div class="badges"><span class="badge primary">v1.0.1</span><span class="badge green">OFFLINE · API 비용 0원</span><span class="badge">교육용 Prototype</span></div>
+  </div>
+
+  <div class="nav">
+    <button class="active" data-tab="map">프로젝트 맥락</button>
+    <button data-tab="today">오늘 받은 업무</button>
+    <button data-tab="router">누구에게 물어볼까</button>
+    <button data-tab="knowledge">지식 검색</button>
+  </div>
+
+  <div class="modebar">
+    <div><b>검증형 데모 모드</b> <span>외부 생성형 AI/API를 호출하지 않습니다. 구조화한 업무·법규 지식과 규칙으로 동작합니다.</span></div>
+    <span class="badge green">₩0 / query</span>
+  </div>
+
+  <section id="map" class="panel active">
+    <div class="hero">
+      <div class="card hero-copy">
+        <div class="eyebrow">PROJECT MAP</div>
+        <h1>지금 내가 하는 일이<br>프로젝트의 어디에 있지?</h1>
+        <p class="muted">시설 유형과 사업 방식, 현재 단계와 업무를 연결해 왜 이 일을 하는지, 어떤 법체계를 봐야 하는지, 다음에 무엇이 이어지는지 보여줍니다.</p>
+        <div class="rule"><b>판단 순서</b> · 시설 유형 → 사업 방식 → 적용 법체계 → 인허가 경로. 시설 이름만으로 허가·승인 절차를 단정하지 않습니다.</div>
+      </div>
+      <div class="card">
+        <div class="formgrid">
+          <div><label>프로젝트 유형</label><select id="facility"><option value="업무시설">업무시설</option><option value="상업시설">상업시설</option><option value="복합시설 / 리조트">복합시설 / 리조트</option><option value="지식산업센터">지식산업센터</option><option value="물류창고">물류창고</option><option value="공항시설 / 격납고">공항시설 / 격납고</option><option value="공동주택">공동주택</option><option value="주상복합">주상복합</option></select></div>
+          <div><label>사업 추진 방식</label><select id="business"><option value="잘 모르겠습니다">잘 모르겠습니다</option><option value="일반 건축사업">일반 건축사업</option><option value="주택사업">주택사업</option><option value="공항개발사업 관련">공항개발사업 관련</option><option value="물류터미널 관련">물류터미널 관련</option><option value="물류단지개발사업 관련">물류단지개발사업 관련</option><option value="기타 개발사업">기타 개발사업</option></select></div>
+          <div><label>현재 프로젝트 단계</label><select id="phase"><option value="잘 모르겠습니다">잘 모르겠습니다</option><option value="프로젝트 착수 / 사전조사">프로젝트 착수 / 사전조사</option><option value="기본계획">기본계획</option><option value="발주처 협의">발주처 협의</option><option value="심의·평가·협의 준비">심의·평가·협의 준비</option><option value="심의·협의 결과 반영">심의·협의 결과 반영</option><option value="허가·승인 준비">허가·승인 준비</option><option value="실시설계 / 착공 준비">실시설계 / 착공 준비</option></select></div>
+          <div><label>현재 업무</label><select id="task"><option value="보고서 작성">보고서 작성</option><option value="사례조사">사례조사</option><option value="디자인">디자인</option><option value="모델링">모델링</option><option value="CG 제작">CG 제작</option><option value="도면 작성">도면 작성</option><option value="법규 검토">법규 검토</option><option value="심의자료 작성">심의자료 작성</option><option value="심의 의견 반영">심의 의견 반영</option><option value="인허가 자료 작성">인허가 자료 작성</option><option value="협력업체 관리">협력업체 관리</option></select></div>
+          <div><label>위치 <span class="muted">(선택)</span></label><input id="location" placeholder="예: 서울시 강남구"></div>
+          <div><label>규모 <span class="muted">(선택)</span></label><input id="scale" placeholder="예: 800세대 / 연면적 30,000㎡"></div>
+        </div>
+        <button class="btn dark wide" onclick="analyzeProject()">프로젝트 맥락 분석하기 →</button>
+      </div>
+    </div>
+
+    <div id="mapResult" class="task-result">
+      <div id="projectAlert"></div>
+      <div class="layout" style="margin-top:14px">
+        <div class="card">
+          <div class="eyebrow">CURRENT POSITION</div><h2>프로젝트 로드맵</h2>
+          <div class="timeline" id="timeline"></div>
+        </div>
+        <div class="card">
+          <div class="eyebrow">PROJECT CONTEXT</div><h2 id="contextTitle"></h2>
+          <p id="contextText" class="muted"></p><div class="chips" id="contextChips"></div>
+          <div class="source-badges"><span class="source-type law">국가법령</span><span class="source-type local">지자체·기관 확인</span><span class="source-type practice">회사별 실무 확인</span></div>
+        </div>
+      </div>
+      <div class="result-grid">
+        <div class="result-card"><div class="kicker">WHY</div><h3>왜 이 업무를 하나요?</h3><p id="why"></p></div>
+        <div class="result-card"><div class="kicker">BEFORE / NEXT</div><h3>앞뒤 업무</h3><div class="steps" id="beforeNext"></div></div>
+        <div class="result-card"><div class="kicker">WHAT TO READ</div><h3>우선 확인 법령·기준</h3><ul id="laws"></ul><div class="refs" id="refs"></div></div>
+        <div class="result-card"><div class="kicker">STARTER CHECK</div><h3>처음 확인할 체크리스트</h3><div class="steps" id="starter"></div></div>
+        <div class="result-card"><div class="kicker">PROCEDURE</div><h3>대표 절차용어</h3><div id="terms"></div></div>
+        <div class="result-card"><div class="kicker">WATCH OUT</div><h3>신입이 자주 헷갈리는 포인트</h3><ul id="pitfalls"></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="today" class="panel">
+    <div class="card task-input">
+      <div class="eyebrow">TODAY'S TASK</div>
+      <h2>오늘 받은 지시를 그대로 적어보세요.</h2>
+      <p class="muted">“왜 하는지 모르겠는데 일단 시킨 업무”를 프로젝트 맥락으로 풀어줍니다.</p>
+      <textarea id="todayInput" class="bigprompt" placeholder="예: 책임님이 규모검토 전에 토지이용계획이랑 지구단위계획부터 찾아보래. 어디서 뭘 봐야 하는지 모르겠어."></textarea>
+      <div class="quick">
+        <button onclick="fillToday('책임님이 규모검토 전에 토지이용계획이랑 지구단위계획부터 찾아보래')">지구단위계획 조사</button>
+        <button onclick="fillToday('심의 보고서에 CG랑 다이어그램 넣으라고 했어. 이걸 왜 만드는 거야?')">심의 보고자료</button>
+        <button onclick="fillToday('캐드로 평면 수정하라는데 구조랑 설비랑 뭘 먼저 확인해야 하지?')">도면 수정</button>
+        <button onclick="fillToday('건축허가 자료 준비하래. 지금 프로젝트에서 이게 어떤 단계야?')">인허가 자료</button>
+      </div>
+      <button class="btn blue wide" onclick="analyzeToday()">업무 이해하기 →</button>
+    </div>
+    <div id="todayResult" class="task-result">
+      <div class="card answer-hero">
+        <div class="eyebrow">TASK INTERPRETATION</div>
+        <div class="answer-title" id="todayTitle"></div>
+        <div class="answer-sub" id="todaySummary"></div>
+      </div>
+      <div class="result-grid">
+        <div class="result-card"><div class="kicker">WHY</div><h3>왜 하는 일인가</h3><p id="todayWhy"></p></div>
+        <div class="result-card"><div class="kicker">WHERE</div><h3>어디서 찾나</h3><div class="steps" id="todayWhere"></div></div>
+        <div class="result-card"><div class="kicker">WHAT</div><h3>무엇을 확인하나</h3><ul id="todayWhat"></ul></div>
+        <div class="result-card"><div class="kicker">NEXT</div><h3>찾은 다음 무엇을 하나</h3><ol id="todayNext"></ol></div>
+        <div class="result-card"><div class="kicker">ASK</div><h3>누구에게 확인받나</h3><p id="todayAsk"></p></div>
+        <div class="result-card"><div class="kicker">SOURCE TYPE</div><h3>정보 신뢰도 구분</h3>
+          <p class="muted"><span class="source-type law">국가법령</span> 법률·시행령·시행규칙<br><br>
+          <span class="source-type local">지자체·기관</span> 결정도서·조례·심의기준·고시<br><br>
+          <span class="source-type practice">회사 실무</span> PM 지시·사내 기준·기존 프로젝트 사례</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="router" class="panel">
+    <div class="card task-input">
+      <div class="eyebrow">CONSULTANT ROUTER</div>
+      <h2>이거 누구한테 물어보면 돼?</h2>
+      <p class="muted">1순위 문의 분야뿐 아니라 같이 확인할 분야와 파생 업무까지 알려줍니다.</p>
+      <textarea id="consultQuestion" class="bigprompt" placeholder="예: PIT를 키우려는데 구조랑 설비 중 누구한테 먼저 물어봐?"></textarea>
+      <div class="quick">
+        <button onclick="fillConsult('천장고가 안 나오는데 덕트 때문인 것 같아. 누구한테 물어봐?')">천장고·덕트</button>
+        <button onclick="fillConsult('기둥 위치를 옮기고 싶은데 어디에 먼저 물어봐?')">기둥 이동</button>
+        <button onclick="fillConsult('차량 출입구 위치를 바꾸려는데 누구한테 확인해야 해?')">차량 출입구</button>
+        <button onclick="fillConsult('격납고 문 크기랑 구조가 엮이는데 누구한테 물어봐?')">격납고 대형문</button>
+      </div>
+      <button class="btn blue wide" onclick="routeConsultant()">문의 분야 찾기 →</button>
+      <div class="route-answer" id="consultAnswer"></div>
+      <details><summary>분야 사전 보기</summary><div class="consult-dict" id="consultDict"></div></details>
+    </div>
+  </section>
+
+  <section id="knowledge" class="panel">
+    <div class="card task-input">
+      <div class="eyebrow">KNOWLEDGE NAVIGATOR</div>
+      <h2>용어·법규·절차를 업무 맥락으로 찾아보세요.</h2>
+      <p class="muted">정의만 설명하지 않고 왜 확인하는지, 어디서 원문을 찾는지, 다음 업무가 무엇인지까지 연결합니다.</p>
+      <textarea id="question" class="bigprompt" placeholder="예: 사용승인과 사용검사는 뭐가 달라?"></textarea>
+      <div class="quick">
+        <button onclick="fillQ('지구단위계획은 어디서 찾아?')">지구단위계획</button>
+        <button onclick="fillQ('공동주택 사업계획승인이 뭐야?')">사업계획승인</button>
+        <button onclick="fillQ('물류창고는 왜 시행인가를 받기도 해?')">물류 시행인가</button>
+        <button onclick="fillQ('사용승인과 사용검사는 뭐가 달라?')">사용승인 vs 사용검사</button>
+      </div>
+      <button class="btn dark wide" onclick="askKnowledge()">검색하기 →</button>
+      <div class="qa-answer" id="answer"></div>
+    </div>
+  </section>
+
+  <div class="footer-note"><b>교육용 프로토타입</b> · 실제 허가·승인·심의 대상 여부는 대지, 규모, 세대수, 사업주체, 사업방식과 최신 법령·조례·고시에 따라 달라질 수 있습니다. 국가법령정보센터, 토지이음, 세움터, 지자체·관계기관의 최신 원문으로 최종 확인하세요. 회사 내부 도면·발주처 기밀·개인정보를 외부 AI에 그대로 입력하지 않는 것을 원칙으로 합니다.</div>
+</div>
+<script>
+const ROADMAP=[
+ "프로젝트 착수 · 사업조건 조사",
+ "대지·도시계획 · 규모·법규 검토",
+ "기본계획 · 발주처 협의",
+ "심의·평가·협의 경로 확인",
+ "심의·협의 및 결과 반영",
+ "허가·승인 · 실시설계/착공"
+];
+
+const taskData={
+ "보고서 작성":{idx:2,title:"현재: 계획·의사결정 내용을 정리하는 업무",desc:"보고서는 단계가 넓어 현재 업무만으로 프로젝트 위치를 확정하기 어렵습니다. 사용자가 입력한 프로젝트 단계를 우선 반영합니다.",why:"발주처와 팀이 프로젝트 조건, 설계 방향, 검토 결과를 공유하고 의사결정을 하기 위한 핵심 매체입니다.",before:["프로젝트 기본 조건 및 보고 목적 파악","발주처 요구사항 확인","보고에 필요한 도면·데이터 수집"],parallel:["기본계획 검토","대지·법규 조건 조사","필요 시 심의·인허가 검토"],next:["발주처 의견 수렴","계획안 수정","후속 보고 또는 심의·인허가 자료 작성"]},
+ "사례조사":{idx:0,title:"현재: 설계 방향을 설정하기 위한 조사 업무",desc:"초기 기획·기본계획에서 자주 등장하지만 프로젝트 중간에도 반복될 수 있습니다.",why:"유사 프로젝트의 공간·형태·운영 방식을 분석해 설계 의사결정의 근거를 만들기 위해서입니다.",before:["프로젝트 목적과 시설 특성 이해","발주처 요구사항 파악"],parallel:["대지·도시계획 조사","규모·법규 조건 확인"],next:["설계 방향 설정","디자인·보고자료 작성"]},
+ "디자인":{idx:2,title:"현재: 기본계획을 구체화하는 업무",desc:"사업 조건과 법적·기능적 조건을 실제 공간과 형태로 전환하는 단계입니다.",why:"사업 조건과 요구사항을 공간·형태·입면 등의 실제 설계안으로 전환하기 위해서입니다.",before:["대지·사업 조건 조사","기본 규모 검토","프로그램 및 사례조사"],parallel:["법규 검토","발주처 협의","심의·평가 경로 확인"],next:["모델링·도면 발전","CG·보고","계획안 검증"]},
+ "모델링":{idx:2,title:"현재: 설계안을 입체적으로 검증하는 업무",desc:"기본계획·발주처 협의·심의 준비 등 여러 단계에서 반복될 수 있습니다.",why:"평면과 입면의 계획을 입체적으로 확인하고 시각화·보고·심의 자료의 기반을 만들기 위해서입니다.",before:["기본 디자인 방향 설정","주요 평면·입면 계획"],parallel:["CG 준비","법규 검토","인허가 경로 확인"],next:["CG 제작","발주처 보고","계획안 수정"]},
+ "CG 제작":{idx:2,title:"현재: 설계안을 시각적으로 전달하는 업무",desc:"발주처 보고뿐 아니라 심의·협의 자료에도 활용될 수 있어, 사용 목적에 따라 위치가 달라집니다.",why:"설계안의 형태·공간·주변 환경과의 관계를 관계자에게 직관적으로 전달하고 계획안을 검토하기 위해서입니다.",before:["기본계획 수립","모델링","주요 디자인 결정"],parallel:["법규 검토","심의 대상·인허가 경로 확인"],next:["발주처 의견 반영","심의자료 작성","계획안 수정"]},
+ "도면 작성":{idx:2,title:"현재: 설계 의도를 정확한 정보로 변환하는 업무",desc:"기본계획·실시설계·심의·인허가 등 거의 모든 단계에서 반복되며, 단계에 따라 도면의 목적과 정밀도가 달라집니다.",why:"설계 의도와 검토 결과를 평면·입면·단면·상세 등 공통 언어로 정리해 발주처, 심의기관, 협력업체, 시공자와 정확히 공유하기 위해서입니다.",before:["현재 도면의 목적 확인: 보고 / 심의 / 인허가 / 실시설계","기준 도면·모델·최신 설계변경사항 확인","관련 법규·협력업체 조건 확인"],parallel:["법규 검토","구조·기계·전기·소방 등 협력업체 조정","면적·레벨·주요 치수 정합성 검토"],next:["도면 검토 및 수정","협력업체 도면과 간섭 조정","발주처 보고·심의·인허가 또는 실시설계 반영"]},
+ "법규 검토":{idx:1,title:"현재: 계획 가능 범위와 적용기준을 검증하는 업무",desc:"초기 1회성 업무가 아니라 기본계획부터 인허가까지 반복적으로 갱신해야 하는 업무입니다.",why:"대지·사업·건축물 조건에 적용되는 법령과 기준을 확인하여 계획 가능 범위와 수정 필요사항을 판단하기 위해서입니다.",before:["대지·도시계획 조건 조사","용도·규모·사업 방식 파악"],parallel:["기본계획 발전","인허가·심의 경로 확인"],next:["규모·계획안 수정","심의·협의 준비","인허가 자료 작성"]},
+ "심의자료 작성":{idx:3,title:"현재: 계획안을 심의·협의 가능한 형식으로 정리하는 업무",desc:"어떤 심의인지 먼저 확인해야 제출자료와 기준을 정확히 잡을 수 있습니다.",why:"설계안과 주요 계획 의도를 해당 심의·협의의 검토 기준과 제출요건에 맞게 설명하기 위해서입니다.",before:["기본계획 정리","심의 대상·근거·운영기준 확인","제출도서·일정 확인"],parallel:["법규 검토","교통·경관·환경 등 관계 검토","관계기관 협의"],next:["심의 진행","의견 수령","심의 의견 반영"]},
+ "심의 의견 반영":{idx:4,title:"현재: 외부 검토 결과를 설계안에 반영하는 업무",desc:"의견별 근거와 영향 범위를 나눠 설계·법규·사업 조건에 반영합니다.",why:"심의·협의 과정에서 제시된 의견이 설계와 인허가 조건에 미치는 영향을 검토하고 계획안에 반영하기 위해서입니다.",before:["심의·협의 결과 확인","의견별 담당 분야와 근거 분류"],parallel:["법규 재검토","도면·모델·보고서 수정"],next:["반영결과 정리","인허가 도서 정리","허가·승인 절차"]},
+ "인허가 자료 작성":{idx:5,title:"현재: 허가·승인 절차에 필요한 자료를 정리하는 업무",desc:"프로젝트의 법적 경로에 따라 '허가', '사업계획승인', '시행허가', '실시계획 승인' 등 용어와 제출체계가 달라질 수 있습니다.",why:"확정된 계획안과 관계 법령의 요구사항을 바탕으로 해당 행정절차에 필요한 설계도서와 서류를 준비하기 위해서입니다.",before:["적용 법체계·절차명 확정","심의·협의 결과 반영","관련 법규 검토"],parallel:["관계기관 협의","최종 설계도서 정리"],next:["허가·승인 신청","보완 대응","실시설계·착공 준비"]},
+ "협력업체 관리":{idx:2,title:"현재: 여러 전문분야의 조건을 하나의 설계안으로 조정하는 업무",desc:"기본계획부터 실시설계까지 계속 반복됩니다. 핵심은 모든 기술을 직접 아는 것이 아니라, 이슈를 올바른 전문분야에 연결하고 필요한 답변·도면·일정을 추적하는 것입니다.",why:"건축 설계는 구조·기계·전기·소방·토목·조경 등 여러 전문분야가 동시에 움직이므로, 각 분야의 조건과 변경사항을 건축도면에 반영하고 충돌을 줄이기 위해서입니다.",before:["프로젝트 협력업체 목록·업무범위 확인","현재 이슈를 분야별로 분류","질문 시 필요한 도면·치수·조건 정리"],parallel:["도면 작성 및 정합성 검토","회의·질의응답 기록","협력업체 제출 일정 관리"],next:["협력업체 답변·도면 수령","건축도면·모델에 반영","분야 간 충돌 재확인","미결사항 추적"]}
+};
+
+const facilityData={
+ "업무시설":{
+   context:"일반적으로 건축법상 건축허가·신고 체계를 기본으로 보되, 대지의 도시계획 조건과 규모·위치에 따른 심의·평가·협의 여부를 별도로 확인합니다.",
+   laws:["건축법·건축법 시행령·건축법 시행규칙 — 건축허가·신고, 피난·방화 등 건축 일반기준","국토의 계획 및 이용에 관한 법률 및 하위법령 — 용도지역·지구, 개발행위, 지구단위계획 등","해당 지자체 건축조례·주차장조례·심의기준·도시계획 고시 — 지역별 추가 기준"],
+   terms:[["건축허가/신고","건축법 제11조·제14조 체계. 규모와 행위에 따라 허가 또는 신고 여부를 판단합니다."],["사용승인","건축법 제22조에 따라 공사 완료 후 사용 전에 받는 절차입니다."]],
+   flow:["대지·도시계획","법규·규모 검토","심의·평가 대상 확인","건축허가/신고","착공","사용승인"],
+   checklist:[
+     ["법적 용도분류 확정","프로젝트 명칭이 아니라 건축법상 실제 용도분류가 적용기준의 출발점입니다.","건축법 시행령 별표 1"],
+     ["대지의 도시계획 조건","용도지역·지구·구역과 지구단위계획에 따라 규모와 용도가 달라질 수 있습니다.","토지이음 → 지자체 최신 결정도서"],
+     ["건폐율·용적률·높이·도로","초기 규모검토의 기본 골격을 정합니다.","국토계획법 + 건축법 + 지자체 조례"],
+     ["심의·평가 대상 여부","건축심의·교통·경관 등은 위치와 규모에 따라 병행될 수 있습니다.","지자체 심의기준·관련 개별법"],
+     ["허가권자와 제출도서","실제 허가 단계에서 필요한 민원명과 도서를 확인합니다.","세움터 + 관할 인허가권자"]
+   ],
+   pitfalls:["'업무시설'이라는 프로젝트 이름만 보고 법적 용도를 확정하지 않기","지구단위계획은 토지이음 표시만 보고 끝내지 말고 최신 결정·변경 고시와 결정도서 확인","법규검토를 초기 1회성 업무로 보지 말고 계획 변경 때마다 갱신"],
+   refs:[["건축법","제11조·제14조·제22조 등 건축허가·신고·사용승인","https://www.law.go.kr/법령/건축법"],["토지이음","토지이용계획·도시계획 열람","https://www.eum.go.kr/"],["세움터","건축행정 민원 체계","https://www.eais.go.kr/"]]
+ },
+ "상업시설":{
+   context:"상업시설은 법적 용도가 판매시설·근린생활시설 등으로 나뉠 수 있으므로 '상업시설'이라는 프로젝트 명칭보다 건축법상 실제 용도분류를 먼저 확인합니다.",
+   laws:["건축법 및 하위법령 — 실제 용도분류와 건축 일반기준","국토의 계획 및 이용에 관한 법률·지구단위계획·지자체 조례 — 입지와 용도 가능 여부","유통산업발전법 — 대규모점포 등에 해당하는 경우 별도 검토"],
+   terms:[["건축물 용도분류","프로젝트 명칭과 법적 용도는 다를 수 있으므로 건축법 시행령 별표 1의 용도분류를 먼저 확인합니다."],["대규모점포","해당하는 경우 유통산업발전법상 별도 절차가 연계될 수 있습니다."]],
+   flow:["법적 용도분류","입지·규모 검토","심의·평가 확인","건축허가/신고","착공","사용승인"],
+   checklist:[
+     ["건축법상 세부 용도","근린생활시설·판매시설 등 분류에 따라 기준이 달라집니다.","건축법 시행령 별표 1"],
+     ["입지상 용도 허용 여부","용도지역·지구단위계획에서 해당 용도가 가능한지 봅니다.","토지이음 + 지자체 결정도서"],
+     ["대규모점포 해당 여부","해당하면 유통산업발전법 등 별도 절차가 붙을 수 있습니다.","유통산업발전법"],
+     ["주차·교통·피난","다중이용 성격과 규모에 따라 핵심 검토가 됩니다.","주차장법·건축법·소방 관계법"],
+     ["심의·허가 경로","지자체 심의 대상과 허가 절차를 확인합니다.","지자체 심의기준 + 세움터"]
+   ],
+   pitfalls:["'상업시설'을 하나의 법적 용도로 생각하지 않기","대규모점포 여부와 건축허가 절차를 같은 절차로 혼동하지 않기","입점 업종 변경이 용도분류·주차·피난 기준에 영향을 줄 수 있음을 놓치지 않기"],
+   refs:[["건축법","용도분류·건축 일반기준","https://www.law.go.kr/법령/건축법"],["유통산업발전법","대규모점포 등 해당 시","https://www.law.go.kr/법령/유통산업발전법"],["토지이음","입지·도시계획 확인","https://www.eum.go.kr/"]]
+ },
+ "복합시설 / 리조트":{
+   context:"복합시설은 하나의 법만 보면 안 됩니다. 숙박·판매·문화·운동 등 구성 용도와 사업 방식에 따라 여러 개별법이 병렬 적용될 수 있습니다.",
+   laws:["건축법 및 하위법령 — 복합용도 건축물의 기본 건축기준","국토의 계획 및 이용에 관한 법률·지구단위계획 — 입지·개발 조건","관광진흥법 등 개별법 — 관광숙박업·관광사업에 해당하는 경우","사업 방식에 따른 개발사업 관련 법령·지자체 고시 — 별도 개발승인 등이 있는 경우"],
+   terms:[["복합용도","각 세부 용도의 법적 분류와 면적을 나눠 적용기준을 확인해야 합니다."],["관광사업","리조트라는 이름만으로 관광진흥법 적용을 단정하지 않고 실제 등록·사업 형태를 확인합니다."]],
+   flow:["구성 용도분해","사업 방식 확인","개별법 매핑","심의·평가·협의","허가/승인","사용승인 등"],
+   checklist:[
+     ["시설 구성표 작성","숙박·판매·문화·운동 등 각 기능을 법적 용도로 나눠야 합니다.","건축법 시행령 별표 1"],
+     ["사업 방식 확인","관광사업·개발사업 등 별도 법적 사업인지 확인합니다.","발주처 사업계획 + 개별법"],
+     ["대지·지구단위계획","복합개발은 지구단위계획·특별계획구역 조건의 영향이 큽니다.","토지이음 + 지자체 결정도서"],
+     ["용도별 개별 기준 매핑","숙박·판매 등 각 용도에 별도 기준이 붙을 수 있습니다.","건축법 + 관광진흥법 등"],
+     ["심의·평가 병렬표 작성","경관·교통·환경·재해 등 병행 업무를 한눈에 정리합니다.","관련 개별법 + 지자체 기준"]
+   ],
+   pitfalls:["'리조트'를 법적 용도로 그대로 사용하지 않기","모든 시설 기준을 하나의 대표 용도 기준으로만 검토하지 않기","발주처 개발사업 인허가와 개별 건축물의 건축 인허가를 구분"],
+   refs:[["건축법","복합용도 건축 일반기준","https://www.law.go.kr/법령/건축법"],["관광진흥법","관광사업 해당 시","https://www.law.go.kr/법령/관광진흥법"],["토지이음","도시계획·지구단위계획","https://www.eum.go.kr/"]]
+ },
+ "지식산업센터":{
+   context:"지식산업센터는 일반 업무시설과 달리 산업집적법상 지식산업센터 설립 절차를 함께 봐야 합니다. 건축법상 건축허가·사용승인과 산업집적법상 설립승인·설립완료신고가 연결됩니다.",
+   laws:["산업집적활성화 및 공장설립에 관한 법률 제28조의2 및 시행령 제36조 — 지식산업센터 설립승인·완료신고 등","건축법 및 하위법령 — 건축허가·사용승인 등 건축 절차","산업단지 관리기본계획·지구단위계획·지자체 기준 — 입지별 추가 조건","분양·임대 시 산업집적법 제28조의4 — 모집공고안 승인 등 확인"],
+   terms:[["설립승인","산업집적법상 지식산업센터 설립 절차의 핵심 용어입니다."],["사용승인","건축법상 사용승인을 받은 뒤 산업집적법상 설립완료신고가 이어집니다."],["설립완료신고","산업집적법 시행령 제36조에 따라 사용승인을 받은 날부터 2개월 이내에 진행합니다."],["모집공고안 승인","분양·임대하는 경우 산업집적법 제28조의4에 따른 절차 적용 여부를 확인합니다."]],
+   flow:["설립요건·입지 확인","지식산업센터 설립승인","건축허가 등 연계","공사·분양절차","건축법상 사용승인","2개월 내 설립완료신고"],
+   checklist:[
+     ["지식산업센터 입지·설립요건","일반 업무시설과 달리 산업집적법상 설립 가능 여부가 먼저입니다.","산업집적법 제28조의2"],
+     ["산업단지·관리기본계획","산업단지 안이라면 입주업종·지원시설 기준이 중요합니다.","산업단지 관리기본계획·관리기관 자료"],
+     ["설립승인과 건축허가 관계","산업집적법의 인허가 의제·준용 구조를 확인합니다.","산업집적법 제28조의2·관련 준용조항"],
+     ["분양·임대 계획","착공 후 모집공고안 승인 등 별도 사업절차가 있을 수 있습니다.","산업집적법 제28조의4"],
+     ["사용승인 후 완료신고","건축법상 사용승인으로 끝나지 않습니다.","산업집적법 시행령 제36조: 2개월"]
+   ],
+   pitfalls:["지식산업센터를 일반 오피스 건물로만 이해하지 않기","지원시설·입주업종 기준을 건축법만으로 판단하지 않기","건축법상 사용승인 이후 설립완료신고를 놓치지 않기"],
+   refs:[["산업집적법","제28조의2 지식산업센터 설립 등","https://www.law.go.kr/법령/산업집적활성화및공장설립에관한법률"],["산업집적법 시행령","제36조 설립승인·완료신고 기간","https://www.law.go.kr/법령/산업집적활성화및공장설립에관한법률시행령"],["건축법","건축허가·사용승인 연계","https://www.law.go.kr/법령/건축법"]]
+ },
+ "물류창고":{
+   context:"'물류창고'라는 시설명만으로 공사시행인가를 받는 것은 아닙니다. 단순 창고시설인지, 물류터미널사업인지, 물류단지개발사업인지부터 구분해야 합니다.",
+   laws:["건축법 및 하위법령 — 일반적인 창고시설 건축인 경우 기본 체계","물류시설의 개발 및 운영에 관한 법률 제9조 — 물류터미널 공사시행인가 해당 여부","같은 법 제28조 — 물류단지개발사업이면 물류단지개발실시계획 승인 체계","소방·교통·개발 관련 법령 및 지자체 기준 — 규모·입지·사업방식에 따라 병행 확인"],
+   terms:[["공사시행인가","물류시설법 제9조. 복합물류터미널사업자는 공사계획에 대해 인가를 받아야 하고, 일반물류터미널사업자는 필요한 경우 인가를 받을 수 있습니다."],["물류단지개발실시계획 승인","물류단지개발사업 시행자가 실시계획을 수립해 승인받는 절차입니다."],["건축허가","단순 창고시설 건축이라면 건축법상 허가·신고 체계가 중심이 될 수 있습니다."],["물류창고업 등록","운영 단계의 등록제도와 건설 단계 인허가 경로는 구분해서 봐야 합니다."]],
+   flow:["사업 정체성 확인","일반 창고 / 물류터미널 / 물류단지 분기","각 법체계 검토","관계 인허가·의제 확인","공사","준공·사용 절차"],
+   checklist:[
+     ["사업의 법적 정체성","단순 창고·물류터미널·물류단지 중 무엇인지가 인허가 경로를 가릅니다.","사업계획서 + 물류시설법"],
+     ["대지의 용도·개발조건","창고시설 허용 여부와 개발행위·지구단위계획 조건을 봅니다.","토지이음 + 지자체 자료"],
+     ["공사시행인가 해당 여부","모든 물류창고가 대상이 아닙니다.","물류시설법 제9조"],
+     ["물류단지개발사업 여부","해당하면 실시계획 승인 체계를 봅니다.","물류시설법 제28조"],
+     ["대형창고 특유의 안전·교통 검토","소방·교통·피난·차량동선이 핵심 이슈가 될 수 있습니다.","소방·교통 관계법 + 지자체 기준"]
+   ],
+   pitfalls:["'물류창고 = 시행인가'로 외우지 않기","복합물류터미널의 의무적 공사시행인가와 일반물류터미널의 선택적 인가 문구를 구분","물류창고업 등록과 건축 인허가를 같은 절차로 혼동하지 않기"],
+   refs:[["물류시설법","제9조 공사시행의 인가","https://www.law.go.kr/법령/물류시설의개발및운영에관한법률"],["물류시설법","제28조 물류단지개발실시계획 승인","https://www.law.go.kr/법령/물류시설의개발및운영에관한법률"],["건축법","단순 창고 건축 경로","https://www.law.go.kr/법령/건축법"]]
+ },
+ "공항시설 / 격납고":{
+   context:"격납고라고 해서 항상 공항시설법상 시행허가·실시계획 승인을 받는 것은 아닙니다. 먼저 해당 설치가 공항개발사업에 해당하는지, 누가 사업시행자인지와 사업 방식이 무엇인지 확인해야 합니다.",
+   laws:["공항시설법 제6조 및 시행규칙 제9조 — 국토교통부장관 외의 자가 공항개발사업을 시행하는 경우 시행허가 해당 여부","공항시설법 제7조 — 개발사업 실시계획 수립·승인 절차","건축법 및 관계 법령 — 건축 일반기준과 인허가 의제·연계 여부","해당 공항·지방항공청·관계기관의 고시·지침 — 사업별 세부조건 확인"],
+   terms:[["개발사업 시행허가","공항시설법 제6조에 따라 국토교통부장관 외의 자가 개발사업을 시행하려는 경우 허가 대상인지 검토합니다."],["실시계획 승인","공항시설법 제7조. 사업시행자는 개발사업 시작 전 실시계획을 수립하고, 국토교통부장관 외의 시행자가 수립한 경우 승인을 받아야 합니다."],["인허가 의제","특별법상 승인 과정에서 다른 법률의 인허가가 협의를 거쳐 함께 처리되는지 확인하는 개념입니다."]],
+   flow:["공항개발사업 해당 여부","사업시행자 확인·시행허가 검토","실시계획 수립·승인","관계기관 협의·의제 확인","공사","준공·후속 절차"],
+   checklist:[
+     ["격납고의 법적 사업 성격","공항 안에 있다는 이유만으로 공항개발사업이라고 단정하면 안 됩니다.","발주처 사업계획 + 공항시설법"],
+     ["사업시행자 확인","국토교통부장관 외 시행자인지 여부가 시행허가 구조와 연결됩니다.","공항시설법 제6조"],
+     ["시행허가 신청 요건","사업계획·시설배치 등 신청자료의 틀을 파악합니다.","공항시설법 시행규칙 제9조"],
+     ["실시계획 수립·승인","개발사업 착수 전 설계도서·자금·기간 등을 포함한 실시계획을 검토합니다.","공항시설법 제7조"],
+     ["건축법 등 의제·병행절차","특별법 승인과 일반 건축 인허가의 관계를 확인합니다.","공항시설법 의제조항 + 관계기관"]
+   ],
+   pitfalls:["'격납고 = 시행허가'로 자동 판단하지 않기","시행허가와 실시계획 승인을 같은 절차로 합쳐 부르지 않기","특별법 승인이 있더라도 건축·소방 등 관계기준 검토가 사라지는 것으로 오해하지 않기"],
+   refs:[["공항시설법","제6조 개발사업 시행자·허가, 제7조 실시계획","https://www.law.go.kr/법령/공항시설법"],["공항시설법 시행규칙","제9조 개발사업의 시행허가 신청","https://www.law.go.kr/법령/공항시설법시행규칙"],["세움터","건축 인허가 연계 확인","https://www.eais.go.kr/"]]
+ },
+ "공동주택":{
+   context:"공동주택은 먼저 주택법 제15조 및 시행령 제27조의 사업계획승인 대상인지 확인합니다. 현행 시행령은 공동주택 30세대를 기본 기준으로 두되 예외를 규정합니다. 사업계획승인 경로라면 건축허가보다 '사업계획승인', 준공 단계는 '사용검사'가 핵심 용어입니다.",
+   laws:["주택법 제15조·주택법 시행령 제27조 — 사업계획승인 대상 여부 및 예외","주택법 제18조 — 사업계획승인 과정에서 도시계획·건축·교통·경관·교육환경·소방 성능위주설계·재해영향평가 등의 통합심의 가능 범위","주택법 제49조 — 사업계획승인 사업의 사용검사","주택건설기준 등에 관한 규정·규칙 — 주택·부대시설·복리시설의 건설기준","건축법 및 하위법령 — 주택법과 연계되는 건축 일반기준","주택공급에 관한 규칙 — 분양·공급 단계가 관련되는 경우"],
+   terms:[["사업계획승인","주택법 시행령 제27조는 공동주택 30세대를 기본 기준으로 두고 일부 유형에 별도 기준·예외를 둡니다."],["통합심의","2026년 8월 4일 시행 주택법 제18조는 건축·도시계획·교통·경관뿐 아니라 교육환경, 성능위주설계 평가, 재해영향평가 등도 통합심의 대상에 포함할 수 있도록 확대됐습니다."],["사용검사","주택법 제15조에 따른 사업계획승인 사업을 완료한 뒤 주택법 제49조에 따라 받는 절차입니다."],["사용승인","모든 공동주택이 주택법 사업계획승인 대상인 것은 아니므로, 건축법 경로에서는 사용승인이라는 용어가 쓰일 수 있습니다."]],
+   flow:["사업계획승인 대상 판단","대지·주택건설기준 검토","통합심의/개별 심의·평가 검토","사업계획승인","착공신고","사용검사"],
+   checklist:[
+     ["세대수·주택유형 확인","사업계획승인 대상 판단의 첫 입력값입니다.","주택법 제15조 + 시행령 제27조"],
+     ["사업계획승인 예외 확인","세대수만 보고 결론내리면 안 됩니다.","주택법 시행령 제27조"],
+     ["주택건설기준 체크","부대·복리시설, 주차, 단지계획 등 주택 특유 기준을 봅니다.","주택건설기준 등에 관한 규정·규칙"],
+     ["통합심의 항목 매핑","건축·도시계획·교통·경관·교육환경·소방·재해 등 해당 항목을 정리합니다.","주택법 제18조 + 개별법"],
+     ["준공 용어 확인","사업계획승인 경로이면 '사용검사'가 핵심입니다.","주택법 제49조"]
+   ],
+   pitfalls:["'공동주택 = 무조건 건축허가' 또는 '무조건 사업계획승인'으로 단정하지 않기","건축심의가 사라지는 것이 아니라 사업계획승인 과정에서 통합심의될 수 있음을 구분","사용승인과 사용검사는 사업의 법적 경로에 따라 용어가 달라짐"],
+   refs:[["주택법","제15조 사업계획승인·제18조 통합심의·제49조 사용검사","https://www.law.go.kr/법령/주택법"],["주택법 시행령","제27조 사업계획승인 기준·예외","https://www.law.go.kr/법령/주택법시행령"],["주택건설기준 등에 관한 규정","공동주택 건설기준","https://www.law.go.kr/법령/주택건설기준등에관한규정"],["세움터","주택 인허가 민원 체계","https://www.eais.go.kr/"]]
+ },
+ "주상복합":{
+   context:"주상복합은 '공동주택이 포함된다'는 이유만으로 주택법 경로를 자동 적용하면 안 됩니다. 주택법 제15조와 시행령 제27조의 사업계획승인 대상·예외를 먼저 확인하고, 주거·비주거 용도를 나눠 검토합니다.",
+   laws:["주택법 제15조 및 시행령 제27조 — 주택부분의 사업계획승인 대상·예외 확인","주택법 시행령 제27조제4항 — 준주거·일부 상업지역의 300세대 미만 주택+비주거 동일건축물 등 예외 요건 확인","주택건설기준 등에 관한 규정·규칙 — 주택부분 건설기준","건축법 및 하위법령 — 비주거 부분과 건축 일반기준","주택법 제18조 — 사업계획승인 경로라면 통합심의 범위 확인","주택공급에 관한 규칙 — 공급 관련 업무가 있는 경우"],
+   terms:[["사업계획승인 예외","시행령 제27조제4항은 준주거지역 또는 일부 상업지역에서 300세대 미만이고 주택 연면적 비율이 90% 미만인 등 일정 요건을 모두 갖춘 주상복합에 예외를 둡니다."],["통합심의","사업계획승인 경로에서는 건축·도시계획·교통·경관 등 관련 심의를 묶어 진행할 수 있습니다."],["사용검사/사용승인","어떤 법적 경로로 사업이 진행되었는지에 따라 준공 단계 용어가 달라질 수 있습니다."]],
+   flow:["주택법 적용·예외 판단","주거/비주거 기준 분리 검토","심의·평가 경로 확인","사업계획승인 또는 건축허가 경로","착공","사용검사 또는 사용승인"],
+   checklist:[
+     ["세대수 확인","300세대 미만 여부는 대표 예외 검토의 한 조건입니다.","주택법 시행령 제27조제4항"],
+     ["용도지역 확인","준주거지역 또는 상업지역 중 법이 정한 범위인지 확인합니다.","토지이음 + 주택법 시행령 제27조"],
+     ["주택 연면적 비율 확인","대표 예외는 주택 연면적 비율 90% 미만 등 모든 요건 충족 여부를 함께 봅니다.","주택법 시행령 제27조제4항"],
+     ["주거·비주거 법규 분리","주택건설기준과 건축법·개별용도 기준을 함께 봅니다.","주택건설기준 + 건축법"],
+     ["최종 인허가 경로 결정","사업계획승인인지 건축허가인지 확정한 뒤 심의·준공 용어를 연결합니다.","주택법 + 세움터 + 인허가권자"]
+   ],
+   pitfalls:["300세대 미만이라는 이유 하나만으로 사업계획승인 예외라고 판단하지 않기","주상복합 전체에 주택 기준만 적용하지 않기","건축심의·통합심의·사업계획승인을 서로 같은 절차명으로 섞지 않기"],
+   refs:[["주택법","제15조 사업계획승인·제18조 통합심의","https://www.law.go.kr/법령/주택법"],["주택법 시행령","제27조제4항 주상복합 대표 예외","https://www.law.go.kr/법령/주택법시행령"],["건축법","비주거 부분·건축 일반기준","https://www.law.go.kr/법령/건축법"],["토지이음","용도지역·도시계획 확인","https://www.eum.go.kr/"]]
+ }
+};
+
+const commonSources={
+ law:[
+  ["국가법령정보센터","법률·시행령·시행규칙·행정규칙과 연계 법령을 확인합니다.","https://www.law.go.kr/"],
+  ["토지이음","토지이용계획과 도시계획을 열람하고 용도지역·지구·구역, 도시계획 정보를 확인합니다.","https://www.eum.go.kr/"],
+  ["건축행정시스템 세움터","건축허가·신고·착공신고·사용승인, 주택 인허가 등 건축행정 민원 체계를 확인합니다.","https://www.eais.go.kr/"],
+  ["해당 지자체 도시계획·고시/공고","지구단위계획 결정도서, 건축조례, 심의기준 등 지역별 최신 자료를 확인합니다.",null]
+ ],
+ design:[
+  ["토지이음","대지의 용도지역·지구·구역과 도시계획을 먼저 확인합니다.","https://www.eum.go.kr/"],
+  ["해당 지자체 도시계획 포털·고시/공고","지구단위계획 결정도서·특별계획구역·세부 지침을 확인합니다.",null],
+  ["국가법령정보센터","상위법과 시행령·시행규칙, 관련 법령을 확인합니다.","https://www.law.go.kr/"]
+ ],
+ permit:[
+  ["건축행정시스템 세움터","건축·주택 인허가 민원 종류와 제출 체계를 확인합니다.","https://www.eais.go.kr/"],
+  ["해당 인허가권자·관계기관","사업별 신청서류·보완기준·일정·운영지침을 최종 확인합니다.",null],
+  ["국가법령정보센터","해당 허가·승인의 법적 근거와 의제 조항을 확인합니다.","https://www.law.go.kr/"]
+ ]
+};
+
+const consultantData=[
+ ["구조","기둥·보·슬래브·벽체, 구조시스템, 하중, 내진, 구조 개구부·보강 등을 검토합니다.","기둥 위치/사이즈, 슬래브 두께, 큰 오픈·캔틸레버, 구조 가능 여부"],
+ ["기계설비","냉난방·공조, 급배수·위생, 환기, 기계실·샤프트·덕트/배관 공간 등을 검토합니다.","천장 속 덕트, 화장실 배관, 기계실 면적, 샤프트·장비 배치"],
+ ["전기","수변전·전력, 조명, 비상전원, 전기실·EPS, 주요 전기 간선 등을 검토합니다.","전기실/EPS, 콘센트·전원, 조명, 발전기·변압기 공간"],
+ ["정보통신","통신·LAN, 방송, CCTV, 출입통제, 통신실·TPS 등을 검토합니다.","통신실/TPS, CCTV, 출입통제, 통신 배선·장비"],
+ ["소방","소화·경보·제연 등 소방설비와 관련 기술기준·협의를 검토합니다.","스프링클러, 소화전, 제연, 소방펌프실, 방재실"],
+ ["토목","대지 레벨, 절·성토, 옹벽, 우·오수, 외부 배수, 진입도로·포장 등을 검토합니다.","대지 레벨, 외부 경사, 우수 처리, 옹벽, 차량 진입"],
+ ["조경","조경면적, 식재, 외부공간, 옥상·공개공지 등 조경계획을 검토합니다.","조경면적, 식재, 외부 휴게공간, 옥상조경"],
+ ["교통","교통영향평가, 차량 진출입, 주차 동선, 교차로·회차 등 교통계획을 검토합니다.","차량 출입구, 주차 진입, 대형차 회차, 교통영향평가"],
+ ["환경","환경영향평가·소규모환경영향평가 등 사업에 필요한 환경 검토를 수행합니다.","환경영향평가 대상 여부, 환경 관련 협의·저감대책"],
+ ["에너지·친환경","에너지절약계획, 녹색건축·제로에너지 등 인증·계획을 지원합니다.","에너지절약계획서, ZEB, 녹색건축 인증, 외피성능"],
+ ["승강기","엘리베이터·에스컬레이터의 대수, 용량, 속도, 샤프트·기계공간 등을 검토합니다.","승강기 대수/용량, 코어 치수, PIT·오버헤드"],
+ ["공항·항공 전문","공항개발사업·공항시설 기준, airside 운영조건 등 공항 특수조건을 협의합니다.","격납고 운영조건, 공항개발 인허가, 항공 관련 특수기준"]
+];
+
+const routingRules=[
+ {
+  keys:["기둥","보","슬래브","구조","내력벽","캔틸레버","트러스","대공간","대형문","격납고 문"],
+  primary:"구조",
+  secondary:["건축","기계설비"],
+  must:"기둥·보·슬래브의 위치나 크기를 바꾸는 건 다른 분야에 연쇄 영향을 주기 쉬우니 구조 가능 여부를 먼저 확인하는 게 중요합니다.",
+  derived:"구조 변경으로 천장고·샤프트·설비루트·입면·상세가 바뀔 수 있으니 건축도면과 설비 간섭도 다시 확인하세요."
+ },
+ {
+  keys:["덕트","공조","환기","냉난방","기계실","배관","급수","배수","위생","샤프트","천장고"],
+  primary:"기계설비",
+  secondary:["소방","전기","구조"],
+  must:"덕트·배관은 천장고와 샤프트 치수에 직접 영향을 주므로 필요한 단면 크기와 통과 루트를 먼저 확인하세요.",
+  derived:"설비 루트가 바뀌면 소방배관·전기 트레이·구조 개구부와 간섭이 생길 수 있으니 관련 분야를 같이 확인하는 게 좋습니다."
+ },
+ {
+  keys:["전기실","eps","변압기","발전기","전력","콘센트","조명","전기"],
+  primary:"전기",
+  secondary:["기계설비","소방","건축"],
+  must:"전기실·EPS·주요 장비는 면적과 반입동선, 환기·방재 조건에 영향을 주므로 초기에 필요한 공간을 확인하세요.",
+  derived:"전기실 변경은 기계 환기, 소방구획, 코어·피난동선에 영향을 줄 수 있습니다."
+ },
+ {
+  keys:["tps","통신실","cctv","출입통제","통신","방송"],
+  primary:"정보통신",
+  secondary:["전기","건축"],
+  must:"통신실·TPS와 장비 위치는 배선거리·샤프트·보안계획과 연결되므로 기준 위치와 필요한 면적을 먼저 확인하세요.",
+  derived:"출입통제·CCTV 계획은 문·게이트·전원·천장계획과 연계되므로 건축·전기와 함께 조정하는 게 좋습니다."
+ },
+ {
+  keys:["제연","스프링클러","소화전","방재실","소방","소방펌프","방화"],
+  primary:"소방",
+  secondary:["기계설비","전기","건축"],
+  must:"제연·소화설비·방재실은 법적 안전기준과 직결되므로 계획 변경 전에 소방 분야와 먼저 협의하세요.",
+  derived:"제연덕트·소방배관·방재실은 천장고, 샤프트, 전기·기계실, 피난계획을 함께 바꿀 수 있습니다."
+ },
+ {
+  keys:["대지 레벨","레벨","옹벽","우수","오수","외부 배수","절토","성토","진입도로","포장"],
+  primary:"토목",
+  secondary:["조경","건축","교통"],
+  must:"대지 레벨과 배수는 건물 출입 레벨·경사·옹벽·외부공간을 동시에 좌우하므로 토목 기준안을 먼저 확인하세요.",
+  derived:"레벨 변경은 조경, 무장애동선, 차량 진입, 건축 1층 레벨에 영향을 주므로 함께 검토해야 합니다."
+ },
+ {
+  keys:["차량 출입","차량출입","출입구","주차 동선","주차동선","회차","교통영향","대형차","램프"],
+  primary:"교통",
+  secondary:["토목","건축","조경"],
+  must:"차량 진출입과 회차는 교통영향평가·도로 조건과 연결될 수 있으니 위치를 바꾸기 전에 교통 분야 확인이 중요합니다.",
+  derived:"출입구 변경은 외부 레벨, 보행동선, 조경, 경비·출입통제까지 바뀔 수 있어 토목·건축과 같이 보세요."
+ },
+ {
+  keys:["조경","식재","공개공지","옥상조경","조경면적","휴게공간"],
+  primary:"조경",
+  secondary:["건축","토목"],
+  must:"법정 조경면적과 식재·외부공간은 대지계획과 연결되므로 계획 초기에 확보 가능 면적을 확인하세요.",
+  derived:"조경 변경은 보행동선·외부 레벨·우수계획·공개공지 계획에 영향을 줄 수 있습니다."
+ },
+ {
+  keys:["환경영향","환경","소규모환경","저감대책"],
+  primary:"환경",
+  secondary:["토목","조경","PM/인허가"],
+  must:"환경영향평가 여부는 사업의 위치·규모·유형에 따라 달라지므로 대상 여부부터 확인하세요.",
+  derived:"환경 협의 결과는 배치, 녹지, 토공, 공사계획 등에 조건으로 반영될 수 있어 PM과 설계팀 공유가 중요합니다."
+ },
+ {
+  keys:["에너지","zeb","제로에너지","녹색건축","에너지절약","외피성능","단열"],
+  primary:"에너지·친환경",
+  secondary:["기계설비","전기","건축"],
+  must:"외피성능·설비효율·에너지 계획은 서로 묶여 평가되므로 초기 설계 조건을 분야별로 동시에 맞추는 게 중요합니다.",
+  derived:"외피 변경은 창호·입면·기계용량·전기부하에 영향을 줄 수 있습니다."
+ },
+ {
+  keys:["엘리베이터","승강기","pit","피트","오버헤드","에스컬레이터"],
+  primary:"승강기",
+  secondary:["구조","전기","건축"],
+  must:"승강기 샤프트·PIT·오버헤드는 구조와 코어 치수에 직접 영향을 주므로 장비 사양을 먼저 확인하세요.",
+  derived:"승강기 변경은 구조 개구부, 전기용량, 피난·코어계획에 영향을 줄 수 있습니다."
+ },
+ {
+  keys:["격납고","airside","항공","공항","활주로","유도로","격납고 문"],
+  primary:"공항·항공 전문",
+  secondary:["구조","PM/인허가","소방"],
+  must:"공항 특수조건은 일반 건축 기준만으로 판단하기 어려우므로 발주처·항공 전문분야와 운영조건을 먼저 확인하세요.",
+  derived:"격납고의 대형문·대공간 구조·항공기 동선은 구조, 소방, 인허가에 동시에 영향을 줄 수 있습니다."
+ }
+];
+
+const BUSINESS=["잘 모르겠습니다","일반 건축사업","주택사업","공항개발사업 관련","물류터미널 관련","물류단지개발사업 관련","기타 개발사업"];
+const PHASE=["잘 모르겠습니다","프로젝트 착수 / 사전조사","기본계획","발주처 협의","심의·평가·협의 준비","심의·협의 결과 반영","허가·승인 준비","실시설계 / 착공 준비"];
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));}
+function list(id,arr,ordered=false){document.getElementById(id).innerHTML=(arr||[]).map(x=>`<li>${esc(x)}</li>`).join("");}
+function project(){return {
+ facility:document.getElementById("facility").value,
+ business:document.getElementById("business").value,
+ phase:document.getElementById("phase").value,
+ task:document.getElementById("task").value,
+ location:document.getElementById("location").value.trim(),
+ scale:document.getElementById("scale").value.trim()
+};}
+function phaseIdx(p,fallback){
+ const m={"프로젝트 착수 / 사전조사":0,"기본계획":2,"발주처 협의":2,"심의·평가·협의 준비":3,"심의·협의 결과 반영":4,"허가·승인 준비":5,"실시설계 / 착공 준비":5};
+ return p==="잘 모르겠습니다"?fallback:(m[p]??fallback);
+}
+function init(){
+ const f=document.getElementById("facility");
+ /* options are pre-rendered in HTML for local-file reliability */
+ document.getElementById("business").value="잘 모르겠습니다";
+ document.getElementById("phase").value="잘 모르겠습니다";
+ renderConsultDict();
+}
+function switchTab(id){
+ document.querySelectorAll(".panel").forEach(x=>x.classList.toggle("active",x.id===id));
+ document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.tab===id));
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>switchTab(b.dataset.tab)));
+
+function compatibility(f,b){
+ const notes=[];
+ if(f==="물류창고" && b==="잘 모르겠습니다") notes.push("물류창고는 먼저 단순 창고시설 / 물류터미널 / 물류단지개발사업 중 법적 사업 성격을 확인하세요.");
+ if(f==="공동주택" && b==="잘 모르겠습니다") notes.push("공동주택은 주택법상 사업계획승인 대상인지 먼저 확인해야 합니다.");
+ if(f==="주상복합" && b==="잘 모르겠습니다") notes.push("주상복합은 세대수 하나만으로 경로를 판단하지 말고 주택법상 예외 요건을 함께 확인하세요.");
+ if(f==="공항시설 / 격납고" && b==="잘 모르겠습니다") notes.push("격납고가 공항개발사업에 해당하는지와 사업시행자·사업방식을 먼저 확인하세요.");
+ if(f==="지식산업센터" && b==="일반 건축사업") notes.push("지식산업센터는 건축법뿐 아니라 산업집적법상 설립승인·설립완료신고 체계를 함께 봐야 합니다.");
+ return notes;
+}
+function renderTimeline(idx){
+ document.getElementById("timeline").innerHTML=ROADMAP.map((x,i)=>`<div class="node ${i<idx?"done":i===idx?"active":""}">${esc(x)}</div>`).join("");
+}
+function analyzeProject(){
+ const p=project(), d=taskData[p.task], fd=facilityData[p.facility];
+ renderTimeline(phaseIdx(p.phase,d.idx));
+ document.getElementById("contextTitle").textContent=`${p.facility} · ${p.business}`;
+ document.getElementById("contextText").textContent=fd.context;
+ document.getElementById("contextChips").innerHTML=[p.task,p.phase==="잘 모르겠습니다"?"단계 추정":p.phase,p.location&&`위치: ${p.location}`,p.scale&&`규모: ${p.scale}`].filter(Boolean).map(x=>`<span class="chip">${esc(x)}</span>`).join("");
+ document.getElementById("why").textContent=d.why;
+ document.getElementById("beforeNext").innerHTML=[
+   ["선행",d.before.join(" · ")],["병행",d.parallel.join(" · ")],["후속",d.next.join(" · ")]
+ ].map((x,i)=>`<div class="step"><span class="num">${i+1}</span><div><b>${x[0]}</b><br>${esc(x[1])}</div></div>`).join("");
+ list("laws",fd.laws);
+ document.getElementById("refs").innerHTML=(fd.refs||[]).map(x=>`<div class="ref"><div><b>${esc(x[0])}</b><small>${esc(x[1])}</small></div><a href="${x[2]}" target="_blank" rel="noopener">원문 ↗</a></div>`).join("");
+ document.getElementById("starter").innerHTML=(fd.checklist||[]).map((x,i)=>`<div class="step"><span class="num">${i+1}</span><div><b>${esc(x[0])}</b><br>${esc(x[1])}<br><span style="color:#245eea">확인처 · ${esc(x[2])}</span></div></div>`).join("");
+ document.getElementById("terms").innerHTML=(fd.terms||[]).map(x=>`<p><b>${esc(x[0])}</b><br><span class="muted">${esc(x[1])}</span></p>`).join("");
+ list("pitfalls",fd.pitfalls||[]);
+ const notes=compatibility(p.facility,p.business);
+ document.getElementById("projectAlert").innerHTML=notes.length?`<div class="alert"><b>경로 확인 필요</b><br>${notes.map(x=>"• "+esc(x)).join("<br>")}</div>`:"";
+ document.getElementById("mapResult").classList.add("show");
+ document.getElementById("mapResult").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+const todayRules=[
+ {
+  keys:["지구단위","토지이용","용도지역","용도지구","특별계획구역","규모검토"],
+  title:"대지·도시계획 조건을 먼저 조사하는 업무",
+  summary:"규모나 디자인을 확정하기 전에 ‘이 땅에 무엇을 어느 정도까지 지을 수 있는지’를 결정하는 조건을 찾는 단계입니다.",
+  why:"용도지역·지구·구역과 지구단위계획은 건축 가능한 용도, 건폐율·용적률·높이·배치 등에 직접 영향을 줄 수 있기 때문입니다.",
+  where:[["토지이음","대상 필지의 토지이용계획·용도지역·지구·구역·도시계획을 1차 확인"],["해당 지자체 도시계획 포털·고시/공고","지구단위계획 최신 결정·변경 고시와 결정도서 확인"],["국가법령정보센터","국토계획법·건축법·관련 시행령·시행규칙과 지자체 조례 확인"]],
+  what:["용도지역·용도지구·용도구역","지구단위계획 적용 여부와 결정도서","특별계획구역 등 별도 계획조건","건폐율·용적률·높이·용도 제한의 근거","최신 변경고시 여부"],
+  next:["조사 내용을 대지·법규 조건표에 정리","규모검토에 적용할 수치와 조건의 근거 표시","기본계획·배치·매스 검토에 반영","PM/책임자에게 최신 결정도서와 적용 해석이 맞는지 확인"],
+  ask:"PM/책임자에게 ‘이 대지에 적용할 최신 지구단위계획 결정도서가 이 자료가 맞는지’와 ‘규모검토에 어떤 조건을 우선 적용하는지’를 확인하세요."
+ },
+ {
+  keys:["심의","보고서","보고자료","다이어그램","cg","CG"],
+  title:"설계안을 검토받을 수 있는 자료로 만드는 업무",
+  summary:"그림을 예쁘게 만드는 일이 아니라, 발주처나 심의기관이 계획 의도와 판단 근거를 이해하도록 정보를 구조화하는 단계입니다.",
+  why:"설계안의 배치·형태·동선·입면·도시맥락 등을 짧은 시간 안에 이해시키고 의사결정이나 심의를 받기 위해서입니다.",
+  where:[["PM/책임자","이번 보고·심의의 핵심 메시지와 요구도서 확인"],["해당 심의기관·지자체","심의기준·제출도서·양식·일정 확인"],["기존 프로젝트 아카이브","회사 내 표현 방식과 선행 사례 참고"]],
+  what:["이번 보고의 의사결정 항목","심의기관이 보는 핵심 기준","최신 평면·입면·모델과 CG 정합성","법규·교통·경관 등 병행 검토 결과","수정 전후 비교가 필요한 항목"],
+  next:["책임자 검토","발주처 또는 심의기관 제출","의견 수령","도면·모델·CG·법규 검토에 의견 반영"],
+  ask:"먼저 책임자에게 ‘이번 자료에서 무엇을 결정받아야 하는지’를 물어보세요. 교통·경관·환경 등 전문 검토 내용을 넣는다면 해당 협력업체에도 최신 내용인지 확인받는 게 좋습니다."
+ },
+ {
+  keys:["캐드","도면","평면","입면","단면","실시설계"],
+  title:"설계 정보를 도면으로 정합성 있게 만드는 업무",
+  summary:"도면은 설계 의도를 발주처·심의기관·협력업체·시공자가 공유하는 공통 언어입니다. 먼저 이 도면의 목적부터 확인해야 합니다.",
+  why:"보고도면, 심의도면, 인허가도면, 실시설계도면은 요구 정보와 정밀도가 다르고, 한 분야 변경이 다른 도면과 협력업체 조건에 연쇄 영향을 주기 때문입니다.",
+  where:[["최신 기준도면·모델","현재 설계의 기준 버전 확인"],["협력업체 최신 도면·회의록","구조·기계·전기·소방 조건 확인"],["법규검토표·심의의견서","도면에 반영해야 하는 제약조건 확인"]],
+  what:["도면의 목적과 제출 단계","평면·입면·단면 간 정합성","면적·레벨·주요 치수","구조·설비·소방과의 간섭","최신 변경사항 반영 여부"],
+  next:["자체 정합성 검토","협력업체와 간섭 조정","책임자 검토","보고·심의·인허가·실시설계 도서에 반영"],
+  ask:"구조체 변경은 구조, 덕트·배관은 기계설비, 전기실·EPS는 전기, 제연·스프링클러는 소방에 먼저 확인하세요. 여러 분야가 겹치면 PM/책임자에게 주관 분야를 먼저 정해달라고 하는 게 좋습니다."
+ },
+ {
+  keys:["건축허가","인허가","사업계획승인","시행허가","실시계획","사용승인","사용검사"],
+  title:"프로젝트의 법적 행정경로를 확인하고 제출도서를 준비하는 업무",
+  summary:"‘허가자료’라는 말만으로는 부족합니다. 먼저 이 프로젝트가 건축허가, 사업계획승인, 시행허가·실시계획 승인 중 어떤 법적 경로인지 확정해야 합니다.",
+  why:"프로젝트 유형과 사업방식에 따라 절차명, 승인권자, 심의·평가, 제출도서와 준공 단계 용어가 달라지기 때문입니다.",
+  where:[["국가법령정보센터","사업의 근거 법률과 시행령·시행규칙 확인"],["세움터","건축·주택 인허가 민원명과 제출 체계 확인"],["해당 인허가권자·관계기관","실제 제출도서·보완기준·일정·최신 운영기준 확인"]],
+  what:["사업의 근거 법체계","정확한 행정절차명과 승인권자","선행 심의·평가·협의","인허가 의제 여부","제출도서와 서식"],
+  next:["인허가 경로표 정리","선행 심의·협의 결과 반영","제출도서 작성·취합","보완 대응","실시설계·착공 준비"],
+  ask:"PM/책임자에게 먼저 ‘우리 프로젝트의 법적 메인 인허가가 정확히 무엇인지’를 확인하세요. 특별법 사업이라면 해당 분야 인허가 전문가나 발주처 담당자에게도 승인권자·의제범위를 같이 확인하는 게 좋습니다."
+ },
+ {
+  keys:["법규","건폐율","용적률","주차","피난","방화","장애인","에너지"],
+  title:"설계안에 적용될 기준과 제한조건을 검증하는 업무",
+  summary:"법규검토는 법 하나를 찾는 일이 아니라 대지·용도·규모·사업방식에 맞는 ‘적용 법체계’를 만드는 일입니다.",
+  why:"같은 건축물도 위치·용도·규모·사업방식에 따라 적용 기준과 심의·평가 경로가 달라질 수 있기 때문입니다.",
+  where:[["국가법령정보센터","법률 → 시행령 → 시행규칙 → 행정규칙"],["토지이음","대지의 도시계획 조건"],["지자체","건축조례·주차장조례·지구단위계획·심의기준·고시"],["세움터·인허가권자","실제 민원명·제출도서·운영기준"]],
+  what:["법적 용도분류","대지·도시계획 조건","규모 관련 기준","용도 특유 기준","심의·평가·협의 대상 여부"],
+  next:["법규검토표에 근거와 수치 정리","설계안과 충돌 여부 확인","계획안 수정","심의·인허가 도서에 반영"],
+  ask:"해석이 애매한 조항은 혼자 결론내지 말고 책임자와 먼저 검토하세요. 프로젝트 경로 자체가 애매하면 인허가 담당자·관계기관 확인까지 연결하는 게 좋습니다."
+ }
+];
+
+function analyzeToday(){
+ const q=document.getElementById("todayInput").value.trim();
+ if(!q)return;
+ const lower=q.toLowerCase();
+ let best=null,score=-1;
+ todayRules.forEach(r=>{
+   let s=0;r.keys.forEach(k=>{if(lower.includes(k.toLowerCase()))s+=k.length>=4?3:2});
+   if(s>score){score=s;best=r}
+ });
+ if(!best || score<=0){
+   const p=project(), d=taskData[p.task];
+   best={title:`${p.task}의 목적과 앞뒤 맥락부터 확인하세요`,summary:d.desc,why:d.why,
+    where:[["PM/책임자","업무의 목적·제출처·마감·기준 버전 확인"],["프로젝트 최신 자료","최신 도면·모델·회의록·업무분장표 확인"]],
+    what:["이 업무를 누가/어디에 제출하는지","최신 기준자료가 무엇인지","선행 결정사항과 미결사항","완료 기준과 마감"],
+    next:d.next,ask:"먼저 책임자에게 ‘이 업무의 목적, 완료 기준, 최신 기준자료’를 확인하세요. 기술 질문은 해당 전문분야로 연결하세요."};
+ }
+ document.getElementById("todayTitle").textContent=best.title;
+ document.getElementById("todaySummary").textContent=best.summary;
+ document.getElementById("todayWhy").textContent=best.why;
+ document.getElementById("todayWhere").innerHTML=best.where.map((x,i)=>`<div class="step"><span class="num">${i+1}</span><div><b>${esc(x[0])}</b><br>${esc(x[1])}</div></div>`).join("");
+ list("todayWhat",best.what);list("todayNext",best.next);
+ document.getElementById("todayAsk").textContent=best.ask;
+ document.getElementById("todayResult").classList.add("show");
+ document.getElementById("todayResult").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function fillToday(q){document.getElementById("todayInput").value=q;analyzeToday();}
+
+function detectRoutes(q){
+ const text=q.toLowerCase(),hits=[];
+ routingRules.forEach(rule=>{let score=0;rule.keys.forEach(k=>{const key=k.toLowerCase();if(text.includes(key))score+=key.length>=4?3:2});if(score>0)hits.push({rule,score})});
+ return hits.sort((a,b)=>b.score-a.score).slice(0,3);
+}
+function routeConsultant(){
+ const q=document.getElementById("consultQuestion").value.trim(),box=document.getElementById("consultAnswer");
+ if(!q)return;
+ const hits=detectRoutes(q),p=project();
+ if(!hits.length){box.textContent="질문을 조금 더 구체적으로 적어주세요. 무엇을 바꾸려는지, 어느 공간인지, 어떤 문제가 생겼는지 넣으면 담당 분야를 더 정확히 찾을 수 있습니다.";box.classList.add("show");return;}
+ const top=hits[0].rule;
+ const second=[...top.secondary];hits.slice(1).forEach(h=>{if(!second.includes(h.rule.primary)&&h.rule.primary!==top.primary)second.push(h.rule.primary)});
+ let context="";
+ if(p.facility==="공항시설 / 격납고")context="\n\n[현재 프로젝트 맥락]\n공항시설/격납고라면 일반 전문업체 답변만으로 끝내지 말고 공항 운영조건·특수 인허가와 충돌하지 않는지도 PM/항공 전문분야에 같이 확인하세요.";
+ if(p.facility==="물류창고")context="\n\n[현재 프로젝트 맥락]\n물류창고는 대형차 동선·소방·대공간 구조가 강하게 연결될 수 있어 관련 이슈라면 교통·소방·구조를 함께 보는 게 좋습니다.";
+ box.textContent=`[1순위 문의]\n${top.primary}에 먼저 물어보는 게 좋습니다.\n\n[왜 먼저?]\n${top.must}\n\n[같이 확인]\n${[...new Set(second)].slice(0,4).join(" · ")}\n\n[파생 업무]\n${top.derived}${context}\n\n[질문할 때 같이 보내면 좋은 것]\n현재 도면 캡처 + 변경 전/후 치수 + 원하는 의도 + 답변이 필요한 시점. 여러 분야가 걸치면 PM/책임자에게 주관 분야도 같이 확인하세요.`;
+ box.classList.add("show");
+}
+function fillConsult(q){document.getElementById("consultQuestion").value=q;routeConsultant();}
+function renderConsultDict(){document.getElementById("consultDict").innerHTML=consultantData.map(x=>`<div class="consult"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></div>`).join("");}
+
+function askKnowledge(){
+ const q=document.getElementById("question").value.trim(),box=document.getElementById("answer");if(!q)return;
+ let a="";
+ if(q.includes("지구단위"))a="지구단위계획은 특정 지역의 토지이용과 건축물의 용도·규모·형태 등을 구체화하는 도시관리계획입니다.\n\n왜 보나?\n일반적인 용도지역 기준 외에 해당 대지에 추가 조건이 적용될 수 있기 때문입니다.\n\n어디서?\n① 토지이음에서 적용 여부·도시계획을 1차 확인\n② 해당 지자체의 최신 결정·변경 고시와 결정도서 확인\n③ 중요 해석은 담당 부서·인허가권자 확인\n\n다음 업무\n결정도서 조건을 규모검토표에 정리 → 건폐율·용적률·높이·용도·배치 검토 → 기본계획에 반영";
+ else if(q.includes("사용승인")&&q.includes("사용검사"))a="둘 다 준공 후 사용 단계와 관련되지만 법적 경로가 다릅니다.\n\n• 사용승인: 건축법 체계의 용어\n• 사용검사: 주택법상 사업계획승인 사업을 완료한 뒤 받는 절차\n\n따라서 ‘공동주택이면 무조건 사용검사’가 아니라 그 프로젝트가 주택법상 사업계획승인 경로인지 먼저 확인해야 합니다.";
+ else if(q.includes("공동주택")||q.includes("사업계획승인"))a="공동주택은 먼저 주택법과 시행령에서 사업계획승인 대상인지 판단합니다. 대상이면 건축허가보다 사업계획승인이 중심 행정절차가 되고, 준공 단계에서는 사용검사가 핵심 용어가 됩니다. 건축·도시계획·교통·경관 등은 사업계획승인 과정에서 통합심의 또는 개별 절차로 연결될 수 있습니다. 프로젝트별 대상 여부는 최신 법령과 지자체·승인권자 확인이 필요합니다.";
+ else if(q.includes("물류")||q.includes("시행인가"))a="물류창고라는 이유만으로 공사시행인가를 받는 것은 아닙니다.\n\n① 단순 창고시설 → 건축법상 건축허가/신고 경로 검토\n② 물류터미널사업 → 물류시설법상 공사시행인가 해당 여부 검토\n③ 물류단지개발사업 → 물류단지개발실시계획 승인 체계 검토\n\n핵심은 시설 이름보다 사업의 법적 정체성을 먼저 확인하는 것입니다.";
+ else if(q.includes("지식산업")||q.includes("지산"))a="지식산업센터는 건축법만 보는 일반 업무시설이 아닙니다. 산업집적법상 설립승인·입주/지원시설 기준·설립완료신고 등의 체계를 함께 보고, 건축법상 건축허가·사용승인과 연결해야 합니다.";
+ else if(q.includes("공항")||q.includes("격납고")||q.includes("실시계획"))a="격납고라고 자동으로 공항시설법상 시행허가·실시계획 승인이 적용되는 것은 아닙니다. 해당 설치가 공항개발사업인지, 사업시행자가 누구인지부터 확인한 뒤 시행허가·실시계획 승인과 다른 인허가 의제·병행 여부를 검토합니다.";
+ else if(q.includes("법규")||q.includes("법령"))a="법규검토는 ‘국가법 + 지역기준 + 사업별 개별법’을 연결해서 봅니다.\n\n1) 국가법령정보센터: 법률 → 시행령 → 시행규칙 → 행정규칙\n2) 토지이음: 용도지역·지구·구역·도시계획\n3) 지자체: 건축·주차장 조례, 지구단위계획 결정도서, 심의기준·고시\n4) 세움터/인허가권자: 실제 민원명·제출도서·운영절차\n\n특별법 사업이면 주택법·공항시설법·물류시설법·산업집적법 같은 개별법을 먼저 매핑합니다.";
+ else a="현재 v1.0은 외부 AI를 호출하지 않는 검증형 데모입니다. 질문을 ‘지구단위계획 / 공동주택 사업계획승인 / 물류 시행인가 / 사용승인·사용검사 / 공항 실시계획 / 법규검토’처럼 조금 더 구체적으로 적어주세요. 자유질문을 실제 생성형 AI로 처리하는 것은 선택적 확장 기능으로 남겨두었습니다.";
+ box.textContent=a;box.classList.add("show");
+}
+function fillQ(q){document.getElementById("question").value=q;askKnowledge();}
+
+document.addEventListener("DOMContentLoaded",()=>{
+ init();
+ document.getElementById("consultQuestion").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();routeConsultant()}});
+ document.getElementById("question").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();askKnowledge()}});
+});
+</script>
+</body>
+</html>
