@@ -2,11 +2,11 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PROJECT CONTEXT v1.1.5</title>
+<title>PROJECT CONTEXT v1.1.6</title>
 <style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#F6F7FB}iframe{display:block;width:100%;height:100dvh;border:0;background:#F6F7FB}</style>
 </head>
 <body>
-<iframe id="app" src="./project_context_v1_1_4_interactive.html" title="PROJECT CONTEXT"></iframe>
+<iframe id="app" src="./project_context_v1_1_4_interactive.html?v=116" title="PROJECT CONTEXT"></iframe>
 <script>
 const ROUTES={
  '공동주택':{key:'사업계획승인 · 건축허가 · 사용검사/사용승인',routes:'주택법 사업계획승인 / 건축법상 건축허가 / 재개발·재건축 등 정비사업',remember:'신입 단계에서는 무슨 허가인지 맞힐 필요 없습니다. 공동주택도 사업방식에 따라 경로가 달라질 수 있다는 것만 기억하세요.',flow:['사업조건','규모·법규','계획설계','심의','승인/허가','설계','준공']},
@@ -19,15 +19,15 @@ function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&l
 function patch(){
  const f=document.getElementById('app');
  const d=f.contentDocument,w=f.contentWindow;if(!d||!w)return;
- const version=[...d.querySelectorAll('.topchip')].find(x=>x.textContent.includes('v1.1.4'));if(version)version.textContent='v1.1.5';
+ const version=[...d.querySelectorAll('.topchip')].find(x=>x.textContent.includes('v1.1.4'));if(version)version.textContent='v1.1.6';
+ [...d.querySelectorAll('#project .soft-note')].forEach(x=>{if(x.textContent.includes('디자인 방향'))x.remove()});
  const hero=d.querySelector('#project .hero .card .muted');if(hero)hero.textContent='현재 레벨에 맞는 정보만 보여줍니다. 신입사원은 무슨 허가인지 맞히는 대신, 자신이 아는 설계 단계와 업무를 입력해 프로젝트 흐름부터 익힙니다.';
  const business=d.getElementById('business');
  if(business){const box=business.parentElement;box.innerHTML='<label>규모·메모 <span style="font-weight:700;color:#9AA2B2">(선택)</span></label><input id="projectMeta" placeholder="예: 800세대 / 연면적 3만㎡">';}
  const phase=d.getElementById('phase');if(phase)phase.innerHTML='<option>잘 모르겠습니다</option><option>사전기획 / 사업검토</option><option>기본계획</option><option>계획설계</option><option>중간설계</option><option>실시설계</option><option>시공·현장 대응</option>';
  const task=d.getElementById('task');if(task)task.innerHTML='<option>법규·규모 검토</option><option>디자인</option><option>모델링·CG</option><option>도면 작성</option><option>심의자료 작성</option><option>인허가 자료 작성</option><option>변경 업무</option><option>협력업체 조정</option>';
  const old=d.getElementById('analyzeProjectBtn');if(!old)return;
- const note=d.createElement('div');note.className='soft-note';note.style.marginTop='12px';note.innerHTML='<b>신입사원은 ‘건축허가인지 정비사업인지’를 몰라도 됩니다.</b> 지금 아는 설계 단계와 맡은 업무만 입력하세요. 사업의 법적 경로는 프로젝트 유형에 맞는 후보만 보여주고, 선임 단계부터 구분 방법을 알려줍니다.';
- if(!old.previousElementSibling?.classList?.contains('lv1-route-note')){note.classList.add('lv1-route-note');old.parentNode.insertBefore(note,old)}
+ if(!d.querySelector('.lv1-route-note')){const note=d.createElement('div');note.className='soft-note lv1-route-note';note.style.marginTop='12px';note.innerHTML='<b>신입사원은 ‘건축허가인지 정비사업인지’를 몰라도 됩니다.</b> 지금 아는 설계 단계와 맡은 업무만 입력하세요. 사업의 법적 경로는 프로젝트 유형에 맞는 후보만 보여주고, 선임 단계부터 구분 방법을 알려줍니다.';old.parentNode.insertBefore(note,old)}
  const btn=old.cloneNode(true);old.replaceWith(btn);
  btn.addEventListener('click',()=>{
    const facility=d.getElementById('facility').value,phaseVal=d.getElementById('phase').value,taskVal=d.getElementById('task').value,meta=d.getElementById('projectMeta')?.value.trim()||'',x=ROUTES[facility]||ROUTES['업무시설'];
