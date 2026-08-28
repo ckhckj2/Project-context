@@ -4,12 +4,80 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#F6F7FB">
-<title>PROJECT CONTEXT v1.3.5</title>
-<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#F6F7FB}iframe{display:block;width:100%;height:100dvh;border:0;background:#F6F7FB}</style>
+<title>PROJECT CONTEXT v1.3.6</title>
+<style>
+html,body{margin:0;width:100%;height:100%;background:#F6F7FB;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+body{display:flex;flex-direction:column;overflow:hidden}
+#masterSwitch{display:none;flex:0 0 auto;margin:8px 10px 0;padding:10px 12px;border:1px solid #E5D69F;border-radius:16px;background:linear-gradient(90deg,#FFFBEB,#F7F2FF);box-shadow:0 8px 24px rgba(119,92,24,.06);align-items:center;gap:10px;flex-wrap:wrap;position:relative;z-index:9999}
+#masterSwitch.show{display:flex}
+.master-copy{min-width:150px;margin-right:auto}.master-copy small{display:block;font-size:8.5px;letter-spacing:.11em;font-weight:950;color:#9B8140;margin-bottom:3px}.master-copy b{font-size:11.5px;color:#725C25}
+.master-levels{display:flex;gap:6px;flex-wrap:wrap}.master-btn{appearance:none;-webkit-appearance:none;border:1px solid #E6E1D3;background:#fff;color:#766F62;border-radius:999px;padding:8px 11px;font-size:10.5px;font-weight:900;cursor:pointer;touch-action:manipulation;position:relative;z-index:10000}
+.master-btn.active{background:#5A62D7;color:#fff;border-color:#5A62D7;box-shadow:0 6px 15px rgba(90,98,215,.18)}.master-btn.master.active{background:linear-gradient(135deg,#705BD2,#B58A2D);border-color:transparent}
+.master-note{width:100%;font-size:9.5px;color:#9A8E72;line-height:1.45}
+iframe{display:block;width:100%;flex:1 1 auto;min-height:0;border:0;background:#F6F7FB}
+@media(max-width:700px){#masterSwitch{margin:6px 6px 0}.master-copy{width:100%}.master-levels{width:100%}.master-btn{flex:1;text-align:center;min-width:84px}}
+</style>
 </head>
 <body>
-<iframe id="app" src="./project_context_v1_3_1_interactive.html?v=135" title="PROJECT CONTEXT"></iframe>
-<script src="./pc134_patch.js?v=135"></script>
-<script src="./pc135_master_preview.js?v=135"></script>
+<div id="masterSwitch" aria-label="건축 마스터 레벨 테스트 전환">
+  <div class="master-copy"><small>MASTER TEST MODE</small><b>레벨별 화면 미리보기</b></div>
+  <div class="master-levels">
+    <button type="button" class="master-btn" data-level="1">LV.1 · 신입사원</button>
+    <button type="button" class="master-btn" data-level="2">LV.2 · 선임</button>
+    <button type="button" class="master-btn" data-level="3">LV.3 · 책임</button>
+    <button type="button" class="master-btn" data-level="4">LV.4 · 수석</button>
+    <button type="button" class="master-btn master" data-level="5">LV.MAX · 건축 마스터</button>
+  </div>
+  <div class="master-note">마스터 자격은 유지됩니다. 아래 버튼은 테스트용 ‘보기 레벨’만 바꿉니다.</div>
+</div>
+<iframe id="app" src="./project_context_v1_3_1_interactive.html?v=136" title="PROJECT CONTEXT"></iframe>
+<script src="./pc134_patch.js?v=136"></script>
+<script>
+(()=>{
+  const bar=document.getElementById('masterSwitch');
+  const frame=document.getElementById('app');
+  const buttons=[...document.querySelectorAll('.master-btn')];
+
+  function isCertified(){
+    const lv=Number(localStorage.getItem('pc_level')||1);
+    const unlocked=localStorage.getItem('pc_master_unlocked')==='1';
+    const certified=localStorage.getItem('pc_master_certified')==='1';
+    if(lv===5||unlocked){localStorage.setItem('pc_master_certified','1');return true;}
+    return certified;
+  }
+
+  function render(){
+    if(!isCertified()){bar.classList.remove('show');return;}
+    bar.classList.add('show');
+    const lv=Number(localStorage.getItem('pc_level')||5);
+    buttons.forEach(b=>b.classList.toggle('active',Number(b.dataset.level)===lv));
+  }
+
+  function setPreviewLevel(lv){
+    localStorage.setItem('pc_master_certified','1');
+    localStorage.setItem('pc_master_preview_level',String(lv));
+    localStorage.setItem('pc_level',String(lv));
+    localStorage.setItem('pc_master_unlocked',lv===5?'1':'0');
+    buttons.forEach(b=>b.classList.toggle('active',Number(b.dataset.level)===lv));
+    frame.src='./project_context_v1_3_1_interactive.html?v=136&preview='+lv+'&t='+Date.now();
+  }
+
+  buttons.forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      setPreviewLevel(Number(btn.dataset.level));
+    });
+    btn.addEventListener('touchend',e=>{
+      e.preventDefault();
+      setPreviewLevel(Number(btn.dataset.level));
+    },{passive:false});
+  });
+
+  frame.addEventListener('load',()=>setTimeout(render,60));
+  window.addEventListener('pageshow',render);
+  render();
+})();
+</script>
 </body>
 </html>
