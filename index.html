@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#F6F7FB">
-<title>PROJECT CONTEXT v1.4.1</title>
+<title>PROJECT CONTEXT v1.4.2</title>
 <style>
 html,body{margin:0;width:100%;height:100%;background:#F6F7FB;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
 body{display:flex;flex-direction:column;overflow:hidden}
@@ -30,62 +30,10 @@ iframe{display:block;width:100%;flex:1 1 auto;min-height:0;border:0;background:#
   </div>
   <div class="master-note">마스터 자격은 유지됩니다. 아래 버튼은 테스트용 ‘보기 레벨’만 바꾸며 실제 승급 기록과 분리됩니다.</div>
 </div>
-<iframe id="app" src="./project_context_v1_3_1_interactive.html?v=141" title="PROJECT CONTEXT"></iframe>
-<script src="./pc134_patch.js?v=141"></script>
-<script src="./pc141_quiz_engine.js?v=141"></script>
-<script>
-(()=>{
-  const bar=document.getElementById('masterSwitch');
-  const frame=document.getElementById('app');
-  const buttons=[...document.querySelectorAll('.master-btn')];
-
-  function isCertified(){
-    const lv=Number(localStorage.getItem('pc_level')||1);
-    const unlocked=localStorage.getItem('pc_master_unlocked')==='1';
-    const certified=localStorage.getItem('pc_master_certified')==='1';
-    if(lv===5||unlocked){localStorage.setItem('pc_master_certified','1');return true;}
-    return certified;
-  }
-
-  function ensureProgress(){
-    if(localStorage.getItem('pc_progress_level'))return;
-    const current=Number(localStorage.getItem('pc_level')||1);
-    localStorage.setItem('pc_progress_level',String(isCertified()?1:current));
-  }
-
-  function render(){
-    ensureProgress();
-    if(!isCertified()){bar.classList.remove('show');return;}
-    bar.classList.add('show');
-    const lv=Number(localStorage.getItem('pc_level')||5);
-    buttons.forEach(b=>b.classList.toggle('active',Number(b.dataset.level)===lv));
-  }
-
-  function setPreviewLevel(lv){
-    localStorage.setItem('pc_master_certified','1');
-    localStorage.setItem('pc_master_preview_level',String(lv));
-    localStorage.setItem('pc_level',String(lv));
-    localStorage.setItem('pc_master_unlocked',lv===5?'1':'0');
-    buttons.forEach(b=>b.classList.toggle('active',Number(b.dataset.level)===lv));
-    frame.src='./project_context_v1_3_1_interactive.html?v=141&preview='+lv+'&t='+Date.now();
-  }
-
-  buttons.forEach(btn=>{
-    btn.addEventListener('click',e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      setPreviewLevel(Number(btn.dataset.level));
-    });
-    btn.addEventListener('touchend',e=>{
-      e.preventDefault();
-      setPreviewLevel(Number(btn.dataset.level));
-    },{passive:false});
-  });
-
-  frame.addEventListener('load',()=>setTimeout(render,60));
-  window.addEventListener('pageshow',render);
-  render();
-})();
-</script>
+<iframe id="app" src="./project_context_v1_3_1_interactive.html?v=142" title="PROJECT CONTEXT"></iframe>
+<script src="./pc134_patch.js?v=142"></script>
+<script src="./pc141_quiz_engine.js?v=142"></script>
+<script src="./pc142_quiz_ux.js?v=142"></script>
+<script src="./pc142_master_switch.js?v=142"></script>
 </body>
 </html>
