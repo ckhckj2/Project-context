@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#F6F7FB">
-<title>PROJECT CONTEXT v1.3.6</title>
+<title>PROJECT CONTEXT v1.4.0</title>
 <style>
 html,body{margin:0;width:100%;height:100%;background:#F6F7FB;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
 body{display:flex;flex-direction:column;overflow:hidden}
@@ -28,10 +28,11 @@ iframe{display:block;width:100%;flex:1 1 auto;min-height:0;border:0;background:#
     <button type="button" class="master-btn" data-level="4">LV.4 · 수석</button>
     <button type="button" class="master-btn master" data-level="5">LV.MAX · 건축 마스터</button>
   </div>
-  <div class="master-note">마스터 자격은 유지됩니다. 아래 버튼은 테스트용 ‘보기 레벨’만 바꿉니다.</div>
+  <div class="master-note">마스터 자격은 유지됩니다. 아래 버튼은 테스트용 ‘보기 레벨’만 바꾸며 실제 승급 기록과 분리됩니다.</div>
 </div>
-<iframe id="app" src="./project_context_v1_3_1_interactive.html?v=136" title="PROJECT CONTEXT"></iframe>
-<script src="./pc134_patch.js?v=136"></script>
+<iframe id="app" src="./project_context_v1_3_1_interactive.html?v=140" title="PROJECT CONTEXT"></iframe>
+<script src="./pc134_patch.js?v=140"></script>
+<script src="./pc140_quiz_engine.js?v=140"></script>
 <script>
 (()=>{
   const bar=document.getElementById('masterSwitch');
@@ -46,7 +47,14 @@ iframe{display:block;width:100%;flex:1 1 auto;min-height:0;border:0;background:#
     return certified;
   }
 
+  function ensureProgress(){
+    if(localStorage.getItem('pc_progress_level'))return;
+    const current=Number(localStorage.getItem('pc_level')||1);
+    localStorage.setItem('pc_progress_level',String(isCertified()?1:current));
+  }
+
   function render(){
+    ensureProgress();
     if(!isCertified()){bar.classList.remove('show');return;}
     bar.classList.add('show');
     const lv=Number(localStorage.getItem('pc_level')||5);
@@ -59,7 +67,7 @@ iframe{display:block;width:100%;flex:1 1 auto;min-height:0;border:0;background:#
     localStorage.setItem('pc_level',String(lv));
     localStorage.setItem('pc_master_unlocked',lv===5?'1':'0');
     buttons.forEach(b=>b.classList.toggle('active',Number(b.dataset.level)===lv));
-    frame.src='./project_context_v1_3_1_interactive.html?v=136&preview='+lv+'&t='+Date.now();
+    frame.src='./project_context_v1_3_1_interactive.html?v=140&preview='+lv+'&t='+Date.now();
   }
 
   buttons.forEach(btn=>{
