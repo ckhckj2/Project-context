@@ -1,1 +1,36 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PROJECT CONTEXT v1.3.1</title><meta http-equiv="refresh" content="0; url=./project_context_v1_3_1_interactive.html?v=131"></head><body><p>PROJECT CONTEXT v1.3.1을 여는 중입니다…</p></body></html>
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PROJECT CONTEXT v1.3.2</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#F6F7FB}iframe{display:block;width:100%;height:100dvh;border:0}</style></head>
+<body><iframe id="app" src="./project_context_v1_3_1_interactive.html?v=132" title="PROJECT CONTEXT"></iframe>
+<script>
+const EASY=[
+ '현재 첫 레벨의 이름은?',
+ '건축허가를 받아 공사를 끝낸 뒤 건축물을 사용하기 전에 받는 대표 절차는?',
+ '주택법상 사업계획승인을 받아 진행한 주택사업이 끝난 뒤 받는 대표 절차는?',
+ '주택법에서 주택건설사업의 계획을 승인받는 절차는?',
+ '대지의 용도지역·지구·구역 정보를 확인할 때 쓰는 대표 서비스는?'
+];
+const CANON=['신입사원','사용승인','사용검사','사업계획승인','토지이음'];
+const ALIASES=[
+ ['신입사원','신입','신입 사원','lv1','lv.1','1레벨','레벨1'],
+ ['사용승인','사용 승인','건축물사용승인','건축물 사용승인'],
+ ['사용검사','사용 검사','주택사용검사','주택 사용검사'],
+ ['사업계획승인','사업계획 승인','사업승인','사업 승인','주택사업계획승인','주택 사업계획 승인','주택사업승인','주택 사업 승인'],
+ ['토지이음','토지 이음']
+];
+function norm(s){return String(s||'').trim().toLowerCase().replace(/[·ㆍ,./()[\]{}"'`~!@#$%^&*_=+?:;-]/g,'').replace(/\s+/g,'').replace(/(입니다|이에요|예요|이요|요)$/,'')}
+function qIndex(d){const t=d.getElementById('qCount')?.textContent||'';const m=t.match(/(\d+)\s*\/\s*5/);return m?Math.max(0,Math.min(4,Number(m[1])-1)):0}
+function aliasToCanonical(raw,i){const n=norm(raw);for(const a of ALIASES[i]){const an=norm(a);if(n===an||(an.length>=3&&n.includes(an)))return CANON[i]}return raw}
+function apply(d){
+ const chip=[...d.querySelectorAll('.topchip')].find(x=>x.textContent.includes('v1.3.1'));if(chip)chip.textContent='v1.3.2';
+ const rank=d.getElementById('rankChip')?.textContent||'';const lv=rank.includes('LV.1')?1:rank.includes('LV.2')?2:rank.includes('LV.3')?3:rank.includes('LV.4')?4:5;
+ const desc=d.getElementById('quizDesc');if(desc&&lv===1)desc.textContent='신입은 무지막지하게 쉽게 갑니다. 방금 화면에서 본 핵심 단어를 그대로 떠올리는 5문제 복습용입니다.';
+ const q=d.getElementById('qText');if(q&&lv===1)q.textContent=EASY[qIndex(d)];
+ const meta=[...d.querySelectorAll('.qmeta span')].find(x=>x.textContent.includes('난이도'));if(meta)meta.textContent='난이도 · '+(lv===1?'VERY EASY':lv===2?'EASY':lv===3?'MEDIUM':lv===4?'HARD':'MASTER');
+}
+function patch(){const f=document.getElementById('app'),d=f.contentDocument;if(!d)return;apply(d);
+ const obs=new MutationObserver(()=>apply(d));const area=d.getElementById('quizArea')||d.body;obs.observe(area,{childList:true,subtree:true,characterData:true});
+ const submit=d.getElementById('qSubmit');if(submit&&!submit.dataset.flexPatched){submit.dataset.flexPatched='1';submit.addEventListener('click',()=>{const i=qIndex(d),inp=d.getElementById('qInput');if(inp)inp.value=aliasToCanonical(inp.value,i)},true)}
+ const inp=d.getElementById('qInput');if(inp&&!inp.dataset.flexPatched){inp.dataset.flexPatched='1';inp.addEventListener('keydown',e=>{if(e.key==='Enter')inp.value=aliasToCanonical(inp.value,qIndex(d))},true)}
+}
+document.getElementById('app').addEventListener('load',patch);
+</script></body></html>
