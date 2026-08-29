@@ -28,7 +28,7 @@ function setPreviewLevel(lv){
   localStorage.setItem("pc_level",String(lv));
   localStorage.setItem("pc_master_unlocked",lv===5?"1":"0");
   buttons.forEach(b=>b.classList.toggle("active",Number(b.dataset.level)===lv));
-  frame.src="./project_context_v1_3_1_interactive.html?v=151&preview="+lv+"&t="+Date.now();
+  frame.src="./project_context_v1_3_1_interactive.html?v=152&preview="+lv+"&t="+Date.now();
 }
 buttons.forEach(btn=>{
   btn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();setPreviewLevel(Number(btn.dataset.level));});
