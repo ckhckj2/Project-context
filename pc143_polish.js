@@ -16,6 +16,7 @@ const REPHRASE=new Map([
  ['복합시설에서 가장 먼저 따로 나눠서 봐야 하는 것은 각각의 무엇인가요?','복합시설은 여러 기능이 섞여 있습니다. 검토를 시작할 때 각 공간의 무엇을 먼저 나눠서 봐야 하나요?'],
  ['FAB나 데이터센터처럼 프로젝트 명칭과 법적 용도가 다를 수 있을 때 확인해야 하는 것은?','FAB나 데이터센터라는 프로젝트 이름만으로 건축법상 분류가 정해지는 것은 아닙니다. 실제로 확인해야 하는 것은 건축법상 무엇인가요?']
 ]);
+let installedDoc=null;
 
 function addTaskOptions(d){
   const select=d.getElementById('task');
@@ -34,12 +35,14 @@ function clarifyQuestion(d){
 }
 function markVersion(d){
   const chip=[...d.querySelectorAll('.topchip')].find(x=>/^v1\./.test(x.textContent.trim()));
-  if(chip)chip.textContent='v1.4.3 · 4B POLISH';
+  if(chip)chip.textContent='v1.5.1 · 5A FIX';
 }
 function sync(d){addTaskOptions(d);clarifyQuestion(d);markVersion(d);}
 function install(){
   const f=document.getElementById('app'),d=f?.contentDocument;if(!d)return;
   sync(d);
+  if(installedDoc===d)return;
+  installedDoc=d;
   let last='';
   setInterval(()=>{
     if(!d.body)return;
@@ -50,5 +53,5 @@ function install(){
   },450);
 }
 const f=document.getElementById('app');
-if(f){f.addEventListener('load',()=>setTimeout(install,500));if(f.contentDocument?.readyState==='complete')setTimeout(install,500);}
+if(f){f.addEventListener('load',install);if(f.contentDocument?.readyState==='complete')install();}
 })();
