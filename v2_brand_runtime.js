@@ -1,0 +1,1 @@
+(()=>{document.title='척척 — 건축 실무, 물으면 척척';try{if(typeof Q!=='undefined'){Object.values(Q).forEach(bank=>bank.forEach(item=>{if(typeof item[0]==='string')item[0]=item[0].replaceAll('PROJECT CONTEXT','척척');}));}}catch(_){}})();
