@@ -40,7 +40,7 @@ function setPreviewLevel(lv){
   if(lv===5)localStorage.setItem("pc_master_show_bling","1");
   else localStorage.removeItem("pc_master_show_bling");
   buttons.forEach(b=>b.classList.toggle("active",Number(b.dataset.level)===lv));
-  frame.src="./project_context_v1_3_1_interactive.html?v=159&preview="+lv+"&t="+Date.now();
+  frame.src="./project_context_v1_3_1_interactive.html?v=160&preview="+lv+"&t="+Date.now();
 }
 buttons.forEach(btn=>{
   btn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();setPreviewLevel(Number(btn.dataset.level));});
