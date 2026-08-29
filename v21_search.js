@@ -15,21 +15,11 @@ const INTENTS=[
  {id:'parcel',re:/지번|필지\s*(?:번호|확인)|번지|토지\s*소재지/i,title:'대상 필지를 정확히 특정하는 업무예요',meaning:'설계·법규·인허가 자료가 모두 같은 대지를 기준으로 움직이도록 지번과 필지 구성을 확인하는 일입니다.',first:'도로명주소만 보지 말고 대상 대지의 지번, 여러 필지 여부, 합필·분필 여부를 먼저 확인하세요.',where:'토지이음 · 지적도/임야도 · 토지대장 등 공적 자료 · 발주처 제공 대지자료',who:'프로젝트 기준 지번이 여러 개거나 경계가 애매하면 선임/PM에게 기준 필지를 확인하고, 필요하면 측량자료와 대조하세요.',note:'지도 화면의 선만으로 경계를 확정하지 말고 실제 업무 기준은 공적 자료와 측량성과를 함께 확인합니다.'},
  {id:'building-ledger',re:/건축물\s*대장|건물\s*대장/i,title:'기존 건축물의 공적 현황을 확인하는 업무예요',meaning:'기존 건물의 용도·면적·층수 등 공적 정보를 확인해 현황도면이나 계획의 전제조건과 맞는지 보는 일입니다.',first:'무엇을 확인하라는 지시인지 먼저 정하세요: 용도 / 연면적·층별면적 / 층수 / 주구조 / 사용승인 정보 등.',where:'정부·지자체의 건축물대장 발급/열람 서비스 · 기존 허가도서 · 현황도면',who:'대장과 현황이 다르면 임의로 어느 쪽이 맞다고 정하지 말고 선임/PM에게 차이와 영향부터 공유하세요.',note:'대장 정보와 실제 현장 상태가 항상 같다고 가정하지 않습니다.'},
  {id:'cadastre',re:/지적도|임야도|토지대장|경계\s*확인|필지\s*경계/i,title:'대지 경계와 필지 정보를 확인하는 업무예요',meaning:'배치·접도·면적 검토의 기준이 되는 토지 경계와 필지 정보를 확인하는 일입니다.',first:'대상 지번을 확정한 뒤 지적 경계, 도로와의 관계, 인접 필지를 확인하세요.',where:'지적도/임야도 · 토지대장 · 측량성과 · 발주처 대지자료',who:'도면 경계와 공적 경계가 다르거나 실제 경계 확정이 필요하면 측량자료를 기준으로 선임/PM과 확인하세요.',note:'온라인 지도의 시각적 경계는 설계용 확정 경계와 다를 수 있습니다.'},
- {id:'qgis',re:/qgis|큐지아이에스|큐지아이/i,ambiguous:true,title:'QGIS에서 무엇을 확인하라는지 목적부터 좁혀야 해요',meaning:'QGIS는 하나의 “정답 자료”가 아니라 여러 공간데이터를 겹쳐 보는 도구라서, 상사가 어떤 레이어나 관계를 보라고 한 것인지 먼저 정해야 합니다.',choices:[
-   ['지적·필지 경계를 보라는 것 같아','QGIS에서 지적·필지 경계 확인해달래'],
-   ['용도지역·도시계획을 보라는 것 같아','QGIS에서 용도지역 도시계획 확인해달래'],
-   ['주변 현황·시설을 보라는 것 같아','QGIS로 주변 현황 시설 조사해달래'],
-   ['어떤 공간데이터인지 모르겠어','QGIS에서 뭘 확인하라는 건지 모르겠어']
- ]},
+ {id:'qgis',re:/qgis|큐지아이에스|큐지아이/i,ambiguous:true,title:'QGIS에서 무엇을 확인하라는지 목적부터 좁혀야 해요',meaning:'QGIS는 하나의 “정답 자료”가 아니라 여러 공간데이터를 겹쳐 보는 도구라서, 상사가 어떤 레이어나 관계를 보라고 한 것인지 먼저 정해야 합니다.',choices:[['지적·필지 경계를 보라는 것 같아','QGIS에서 지적·필지 경계 확인해달래'],['용도지역·도시계획을 보라는 것 같아','QGIS에서 용도지역 도시계획 확인해달래'],['주변 현황·시설을 보라는 것 같아','QGIS로 주변 현황 시설 조사해달래'],['어떤 공간데이터인지 모르겠어','QGIS에서 뭘 확인하라는 건지 모르겠어']]},
  {id:'qgis-parcel',re:/qgis.*(?:지적|필지|경계)|(?:지적|필지|경계).*qgis/i,title:'QGIS로 대상 대지와 주변 필지 관계를 보는 업무예요',meaning:'필지 경계와 주변 공간정보를 겹쳐서 대지의 위치·형상·인접 조건을 빠르게 파악하는 데 씁니다.',first:'프로젝트 기준 지번과 좌표계를 확인한 뒤 지적 관련 레이어를 불러오고 대상 필지를 다른 자료와 겹쳐 보세요.',where:'회사/공공 공간데이터 · 지적 관련 레이어 · 공적 지적자료 · 측량자료',who:'QGIS 화면과 설계도면의 경계가 다르면 화면상 위치를 임의로 맞추지 말고 기준 좌표/측량자료를 선임과 확인하세요.',note:'QGIS는 검토·분석 도구입니다. 법적 경계 확정 자체를 QGIS 화면만으로 하지 않습니다.'},
  {id:'qgis-plan',re:/qgis.*(?:용도지역|도시계획|지구단위)|(?:용도지역|도시계획|지구단위).*qgis/i,title:'QGIS로 도시계획 공간정보를 겹쳐 보는 업무예요',meaning:'대지와 용도지역·도시계획 관련 공간 레이어의 관계를 빠르게 파악하는 용도입니다.',first:'대상 필지를 먼저 고정하고 필요한 도시계획 레이어의 출처·기준일을 확인한 뒤 겹쳐 보세요.',where:'공공 공간데이터/지자체 GIS 레이어 → 토지이음·최신 고시/결정도서로 재확인',who:'경계나 적용 여부가 애매하면 QGIS 화면만으로 결론내리지 말고 최신 공식 도서와 선임 검토를 거치세요.',note:'공간데이터는 갱신 시점이 다를 수 있으므로 최종 판단은 최신 공식 자료와 대조합니다.'},
  {id:'qgis-context',re:/qgis.*(?:주변|현황|시설|반경)|(?:주변|현황|시설|반경).*qgis/i,title:'QGIS로 주변 현황을 구조적으로 조사하는 업무예요',meaning:'학교·공원·교통·건물·지형 등 프로젝트와 관련 있는 주변 요소를 거리·범위와 함께 파악하는 일입니다.',first:'무엇을 왜 찾는지부터 정한 뒤 조사 반경과 필요한 레이어를 정하세요.',where:'공공 공간데이터 · 회사 보유 GIS · 항공사진/지도 · 현장조사 자료',who:'보고자료용이면 선임에게 조사 범위와 표현 기준을 먼저 확인하면 불필요한 레이어 작업을 줄일 수 있습니다.',note:'레이어를 많이 올리는 것보다 의사결정에 필요한 정보만 선별하는 게 중요합니다.'},
- {id:'road',re:/도로\s*(?:확인|검토|조사|봐|보래|체크)|접도|도로폭|현황도로|건축법상\s*도로/i,ambiguous:true,title:'“도로 확인”은 무엇을 보라는지 갈릴 수 있어요',meaning:'건축 실무에서 도로는 접도, 실제 폭, 도시계획, 출입 동선 등 서로 다른 검토를 뜻할 수 있습니다.',choices:[
-   ['건축 가능 여부·접도를 보려는 것 같아','건축법상 도로 접도 조건 확인해달래'],
-   ['현황 도로폭을 보려는 것 같아','대지 앞 현황 도로폭 확인해달래'],
-   ['도시계획도로 여부를 보려는 것 같아','도시계획도로 여부 확인해달래'],
-   ['차량 출입·동선을 보려는 것 같아','차량 진출입 도로 조건 검토해달래']
- ]},
+ {id:'road',re:/도로\s*(?:확인|검토|조사|봐|보래|체크)|접도|도로폭|현황도로|건축법상\s*도로/i,ambiguous:true,title:'“도로 확인”은 무엇을 보라는지 갈릴 수 있어요',meaning:'건축 실무에서 도로는 접도, 실제 폭, 도시계획, 출입 동선 등 서로 다른 검토를 뜻할 수 있습니다.',choices:[['건축 가능 여부·접도를 보려는 것 같아','건축법상 도로 접도 조건 확인해달래'],['현황 도로폭을 보려는 것 같아','대지 앞 현황 도로폭 확인해달래'],['도시계획도로 여부를 보려는 것 같아','도시계획도로 여부 확인해달래'],['차량 출입·동선을 보려는 것 같아','차량 진출입 도로 조건 검토해달래']]},
  {id:'road-access',re:/접도|건축법상\s*도로/i,title:'대지가 건축 관련 도로 조건을 어떻게 충족하는지 확인하는 업무예요',meaning:'대지와 도로의 관계가 건축 가능성·배치·출입 계획에 영향을 주므로 법적 도로 해당 여부와 접한 상태를 검토합니다.',first:'대상 대지 경계와 접한 도로를 특정하고, 도로의 법적 성격과 접한 길이·현황을 구분해 확인하세요.',where:'지적자료 · 토지이음/도시계획자료 · 기존 허가도서 · 현황/측량자료 · 관련 법령/조례',who:'도로의 법적 성격이나 인정 여부가 애매하면 사내 인허가 담당 검토 후 관할기관 확인이 필요할 수 있습니다.',note:'현장에서 길처럼 보이는 것과 법적 검토상 도로인 것은 같은 문제가 아닙니다.'},
  {id:'road-width',re:/현황\s*도로폭|도로\s*폭/i,title:'대지 전면 도로의 실제 조건을 확인하는 업무예요',meaning:'배치·차량동선·법규검토 등에 필요한 도로 폭과 경계 상태를 확인하는 일입니다.',first:'어디부터 어디까지를 도로폭으로 볼지 기준을 정하고 현황자료·측량자료와 대조하세요.',where:'현황측량 · 지적자료 · 기존 배치도 · 현장사진',who:'자료마다 폭이 다르면 어느 수치를 설계 기준으로 쓸지 선임/PM과 먼저 정하세요.',note:'지도에서 재는 값은 개략 검토용으로 보고 확정 수치는 신뢰 가능한 기준자료를 사용합니다.'},
  {id:'road-plan',re:/도시계획도로/i,title:'도시계획상 도로 계획이 대지에 미치는 영향을 확인하는 업무예요',meaning:'계획도로의 위치·폭·결정 상태가 대지 사용과 배치에 영향을 주는지 보는 일입니다.',first:'대상 필지와 도시계획시설 도로의 경계를 겹쳐 보고 최신 결정 상태를 확인하세요.',where:'토지이음 · 지자체 도시계획 자료 · 최신 고시/결정도서',who:'경계 해석이나 사업 반영 범위가 애매하면 선임 검토 후 관할 도시계획 부서에 확인하세요.',note:'과거 도면보다 최신 결정·변경 자료를 기준으로 확인합니다.'},
@@ -53,83 +43,18 @@ function specificQgisFallback(){return {title:'QGIS에서 확인 목적부터 �
 function resolveIntent(q){
  const text=clean(q);
  if(/qgis|큐지아이/.test(text)&&!/(지적|필지|경계|용도지역|도시계획|지구단위|주변|현황|시설|반경)/.test(text))return specificQgisFallback();
- const hit=INTENTS.find(x=>x.re.test(text));
- return hit||null;
+ const hits=INTENTS.filter(x=>x.re.test(text));
+ const specific=hits.find(x=>!x.ambiguous);
+ return specific||hits[0]||null;
 }
-function genericChoices(q){
- const text=clean(q);
- const verb=ACTION.test(text)?'지시 내용을':'업무를';
- return {title:`아직 ${verb} 한 가지로 좁히기 어려워요`,meaning:'척척이 아무 답이나 단정하기보다, 먼저 어떤 종류의 실무인지 좁혀서 안내할게요.',choices:[
-   ['대지·도시계획 확인','대지 지번 용도지역 지구단위 법규 검토하래'],
-   ['도면·면적 검토','도면 면적표 검토하래'],
-   ['인허가·법규 검토','법규검토하고 인허가 영향 확인하래'],
-   ['협력업체·기술 검토','구조 기계 전기 소방 협력업체 검토하래']
- ]};
-}
-function renderTaskCard(data){
- return `<div class="result-card cc21-result"><div class="label">WORK GUIDE · 척척</div><h3>${esc(data.title)}</h3><p>${esc(data.meaning)}</p><div class="result-grid"><div class="result-cell"><small>01 · 먼저</small><p>${esc(data.first)}</p></div><div class="result-cell"><small>02 · 어디서</small><p>${esc(data.where)}</p></div><div class="result-cell"><small>03 · 누구와</small><p>${esc(data.who)}</p></div></div>${data.note?`<div class="cc21-note"><b>척척 포인트</b><span>${esc(data.note)}</span></div>`:''}</div>`;
-}
-function renderChoices(data){
- return `<div class="result-card cc21-result"><div class="label">ONE MORE STEP · 척척</div><h3>${esc(data.title)}</h3><p>${esc(data.meaning)}</p><div class="cc21-choices">${data.choices.map(([label,query])=>`<button type="button" data-cc21-query="${esc(query)}">${esc(label)} <span>→</span></button>`).join('')}</div><div class="cc21-note"><b>왜 다시 물어보나요?</b><span>같은 지시어도 프로젝트 상황에 따라 확인 자료와 담당자가 달라질 수 있어서예요.</span></div></div>`;
-}
-function askAnswer(q){
- const data=resolveIntent(q);
- if(data&&!data.choices){return `<div class="result-card cc21-result"><div class="label">WHO / HOW · 척척</div><h3>${esc(data.who.split('하세요.')[0]||'먼저 확인할 사람을 정리했어요')}</h3><p>${esc(data.meaning)}</p><div class="script-box"><small>이렇게 물어보세요</small><p>“지금 ${esc(data.title.replace(/예요$|업무예요$/,''))} 관련해서 확인 중입니다. 제가 먼저 볼 기준자료가 ${esc(data.where)} 쪽이 맞는지, 그리고 판단이 필요한 부분을 어디까지 정리해서 가져가면 될까요?”</p></div></div>`;}
- return `<div class="result-card cc21-result"><div class="label">WHO / HOW · 척척</div><h3>업무 맥락을 아는 선임 / 책임에게 먼저</h3><p>질문 범위가 아직 넓으면 바로 외부에 묻기보다, 내가 모르는 지점과 먼저 본 자료를 짧게 정리해 사내에서 방향을 잡는 게 효율적입니다.</p><div class="script-box"><small>이렇게 물어보세요</small><p>“제가 지금 확인해야 하는 게 정확히 어느 범위인지 헷갈립니다. 현재까지 본 자료는 ○○이고, 제가 먼저 확인할 기준과 다음에 협의할 대상을 알려주실 수 있을까요?”</p></div></div>`;
-}
-function knownTerm(q){
- const t=clean(q);
- const terms={
-  'qgis':['QGIS는 지적·도시계획·주변현황 등 여러 공간데이터를 겹쳐 보고 분석하는 GIS 프로그램입니다.','어떤 레이어를 왜 확인하는지가 핵심이고, 최종 법적 판단은 최신 공식 자료와 대조합니다.'],
-  '지번':['토지를 구분하기 위해 붙인 필지 단위의 번호입니다.','설계·법규검토 전에 프로젝트의 기준 지번과 여러 필지 여부를 확인합니다.'],
-  '건축물대장':['건축물의 공적 현황 정보를 기록한 행정 자료입니다.','현장 상태나 최신 설계와 다를 수 있으므로 목적에 맞게 다른 자료와 대조합니다.'],
-  '건폐율':['대지면적에 대한 건축면적의 비율을 나타내는 지표입니다.','세부 산정과 허용 범위는 프로젝트의 지역·계획조건과 최신 기준을 확인합니다.'],
-  '용적률':['대지면적에 대한 용적률 산정 연면적의 비율을 나타내는 지표입니다.','어떤 면적이 산입·제외되는지와 허용 범위를 프로젝트 조건에 맞게 확인합니다.']
- };
- const key=Object.keys(terms).find(k=>t.includes(k));
- if(!key)return null;
- return {key,desc:terms[key][0],next:terms[key][1]};
-}
+function genericChoices(q){const text=clean(q);const verb=ACTION.test(text)?'지시 내용을':'업무를';return {title:`아직 ${verb} 한 가지로 좁히기 어려워요`,meaning:'척척이 아무 답이나 단정하기보다, 먼저 어떤 종류의 실무인지 좁혀서 안내할게요.',choices:[['대지·도시계획 확인','대지 지번 용도지역 지구단위 법규 검토하래'],['도면·면적 검토','도면 면적표 검토하래'],['인허가·법규 검토','법규검토하고 인허가 영향 확인하래'],['협력업체·기술 검토','구조 기계 전기 소방 협력업체 검토하래']]};}
+function renderTaskCard(data){return `<div class="result-card cc21-result"><div class="label">WORK GUIDE · 척척</div><h3>${esc(data.title)}</h3><p>${esc(data.meaning)}</p><div class="result-grid"><div class="result-cell"><small>01 · 먼저</small><p>${esc(data.first)}</p></div><div class="result-cell"><small>02 · 어디서</small><p>${esc(data.where)}</p></div><div class="result-cell"><small>03 · 누구와</small><p>${esc(data.who)}</p></div></div>${data.note?`<div class="cc21-note"><b>척척 포인트</b><span>${esc(data.note)}</span></div>`:''}</div>`;}
+function renderChoices(data){return `<div class="result-card cc21-result"><div class="label">ONE MORE STEP · 척척</div><h3>${esc(data.title)}</h3><p>${esc(data.meaning)}</p><div class="cc21-choices">${data.choices.map(([label,query])=>`<button type="button" data-cc21-query="${esc(query)}">${esc(label)} <span>→</span></button>`).join('')}</div><div class="cc21-note"><b>왜 다시 물어보나요?</b><span>같은 지시어도 프로젝트 상황에 따라 확인 자료와 담당자가 달라질 수 있어서예요.</span></div></div>`;}
+function askAnswer(q){const data=resolveIntent(q);if(data&&!data.choices){return `<div class="result-card cc21-result"><div class="label">WHO / HOW · 척척</div><h3>${esc(data.who.split('하세요.')[0]||'먼저 확인할 사람을 정리했어요')}</h3><p>${esc(data.meaning)}</p><div class="script-box"><small>이렇게 물어보세요</small><p>“지금 ${esc(data.title.replace(/예요$|업무예요$/,''))} 관련해서 확인 중입니다. 제가 먼저 볼 기준자료가 ${esc(data.where)} 쪽이 맞는지, 그리고 판단이 필요한 부분을 어디까지 정리해서 가져가면 될까요?”</p></div></div>`;}return `<div class="result-card cc21-result"><div class="label">WHO / HOW · 척척</div><h3>업무 맥락을 아는 선임 / 책임에게 먼저</h3><p>질문 범위가 아직 넓으면 바로 외부에 묻기보다, 내가 모르는 지점과 먼저 본 자료를 짧게 정리해 사내에서 방향을 잡는 게 효율적입니다.</p><div class="script-box"><small>이렇게 물어보세요</small><p>“제가 지금 확인해야 하는 게 정확히 어느 범위인지 헷갈립니다. 현재까지 본 자료는 ○○이고, 제가 먼저 확인할 기준과 다음에 협의할 대상을 알려주실 수 있을까요?”</p></div></div>`;}
+function knownTerm(q){const t=clean(q);if(t.includes('용적률')&&t.includes('건폐율'))return {key:'건폐율 vs 용적률',desc:'건폐율은 대지에서 건물이 바닥을 얼마나 차지하는지, 용적률은 대지에 전체적으로 얼마나 많은 연면적을 쌓는지를 보는 지표입니다.',next:'실제 계산에서는 대지면적과 산입·제외되는 면적 기준, 지역별 허용 범위를 함께 확인해야 합니다.'};const terms={'qgis':['QGIS는 지적·도시계획·주변현황 등 여러 공간데이터를 겹쳐 보고 분석하는 GIS 프로그램입니다.','어떤 레이어를 왜 확인하는지가 핵심이고, 최종 법적 판단은 최신 공식 자료와 대조합니다.'],'지번':['토지를 구분하기 위해 붙인 필지 단위의 번호입니다.','설계·법규검토 전에 프로젝트의 기준 지번과 여러 필지 여부를 확인합니다.'],'건축물대장':['건축물의 공적 현황 정보를 기록한 행정 자료입니다.','현장 상태나 최신 설계와 다를 수 있으므로 목적에 맞게 다른 자료와 대조합니다.'],'건폐율':['대지면적에 대한 건축면적의 비율을 나타내는 지표입니다.','세부 산정과 허용 범위는 프로젝트의 지역·계획조건과 최신 기준을 확인합니다.'],'용적률':['대지면적에 대한 용적률 산정 연면적의 비율을 나타내는 지표입니다.','어떤 면적이 산입·제외되는지와 허용 범위를 프로젝트 조건에 맞게 확인합니다.']};const key=Object.keys(terms).find(k=>t.includes(k));if(!key)return null;return {key,desc:terms[key][0],next:terms[key][1]};}
 function renderTerm(t){return `<div class="result-card cc21-result"><div class="label">TERM · 척척</div><h3>${esc(t.key)}</h3><p>${esc(t.desc)}</p><div class="script-box"><small>같이 기억</small><p>${esc(t.next)}</p></div></div>`;}
-function enhancedRunSearch(){
- const input=$('searchInput');const out=$('searchResult');if(!input||!out)return;
- const q=input.value.trim();if(!q)return;
- let html='';
- const known=knownTerm(q);
- if(ASK.test(q)){html=askAnswer(q);}
- else if(TERM.test(q)&&known){html=renderTerm(known);}
- else if(TERM.test(q)&&typeof window.termRoute==='function'){const t=window.termRoute(q);html=`<div class="result-card cc21-result"><div class="label">TERM · 척척</div><h3>${esc(t.key)}</h3><p>${esc(t.desc)}</p><div class="script-box"><small>같이 기억</small><p>${esc(t.next)}</p></div></div>`;}
- else{
-   const hit=resolveIntent(q);
-   if(hit?.choices)html=renderChoices(hit);
-   else if(hit)html=renderTaskCard(hit);
-   else html=renderChoices(genericChoices(q));
- }
- out.innerHTML=html;
- out.querySelectorAll('[data-cc21-query]').forEach(btn=>btn.onclick=()=>{input.value=btn.dataset.cc21Query;enhancedRunSearch();input.scrollIntoView({behavior:'smooth',block:'center'});});
-}
-
-function replaceInput(id,onEnter){
- const old=$(id);if(!old)return null;const fresh=old.cloneNode(true);old.replaceWith(fresh);fresh.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();onEnter();}});return fresh;
-}
-function install(){
- if(document.body.dataset.cc21==='1')return;document.body.dataset.cc21='1';
- const style=document.createElement('style');style.id='cc21Style';style.textContent=`
- .cc21-result{border-color:#DDE7FF!important;box-shadow:0 10px 30px rgba(37,99,235,.06)!important}
- .cc21-result .label{color:#2563EB!important}.cc21-note{display:flex;gap:9px;align-items:flex-start;margin-top:11px;padding:11px 12px;border-radius:12px;background:#F5F8FF;border:1px solid #E2E9FF;color:#61708D;font-size:10px;line-height:1.55}.cc21-note b{white-space:nowrap;color:#2563EB}.cc21-note span{display:block}
- .cc21-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.cc21-choices button{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;border:1px solid #DDE5F2;background:#fff;color:#33415E;border-radius:13px;padding:12px 13px;font-size:10.5px;font-weight:900}.cc21-choices button:hover{border-color:#AFC2FF;background:#F8FAFF;color:#2563EB}.cc21-choices button span{color:#2563EB}
- @media(max-width:600px){.cc21-choices{grid-template-columns:1fr}.cc21-note{display:block}.cc21-note b{display:block;margin-bottom:3px}}
- `;document.head.appendChild(style);
- document.querySelectorAll('.version').forEach(x=>x.textContent='v'+VERSION);
- const sInput=replaceInput('searchInput',enhancedRunSearch);
- const hInput=replaceInput('homeSearch',()=>{const q=$('homeSearch').value.trim();if(!q)return;showView('search');$('searchInput').value=q;enhancedRunSearch();});
- const go=$('searchGo');if(go)go.onclick=enhancedRunSearch;
- const homeGo=$('homeSearchBtn');if(homeGo)homeGo.onclick=()=>{const q=$('homeSearch').value.trim();if(!q)return;showView('search');$('searchInput').value=q;enhancedRunSearch();};
- document.querySelectorAll('[data-example]').forEach(btn=>btn.onclick=()=>{showView('search');$('searchInput').value=btn.dataset.example||btn.textContent.trim();enhancedRunSearch();});
- if(sInput)sInput.placeholder='예: 법규검토하래 / QGIS 봐 / 지번 확인해 / 도로 검토해';
- if(hInput)hInput.placeholder='예) 법규검토하래. 뭐부터 보면 돼?';
- window.runSearch=enhancedRunSearch;
-}
-
+function enhancedRunSearch(){const input=$('searchInput');const out=$('searchResult');if(!input||!out)return;const q=input.value.trim();if(!q)return;let html='';const known=knownTerm(q);if(ASK.test(q)){html=askAnswer(q);}else if(TERM.test(q)&&known){html=renderTerm(known);}else if(TERM.test(q)&&typeof window.termRoute==='function'){const t=window.termRoute(q);html=`<div class="result-card cc21-result"><div class="label">TERM · 척척</div><h3>${esc(t.key)}</h3><p>${esc(t.desc)}</p><div class="script-box"><small>같이 기억</small><p>${esc(t.next)}</p></div></div>`;}else{const hit=resolveIntent(q);if(hit?.choices)html=renderChoices(hit);else if(hit)html=renderTaskCard(hit);else html=renderChoices(genericChoices(q));}out.innerHTML=html;out.querySelectorAll('[data-cc21-query]').forEach(btn=>btn.onclick=()=>{input.value=btn.dataset.cc21Query;enhancedRunSearch();input.scrollIntoView({behavior:'smooth',block:'center'});});}
+function replaceInput(id,onEnter){const old=$(id);if(!old)return null;const fresh=old.cloneNode(true);old.replaceWith(fresh);fresh.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();onEnter();}});return fresh;}
+function install(){if(document.body.dataset.cc21==='1')return;document.body.dataset.cc21='1';const style=document.createElement('style');style.id='cc21Style';style.textContent=`.cc21-result{border-color:#DDE7FF!important;box-shadow:0 10px 30px rgba(37,99,235,.06)!important}.cc21-result .label{color:#2563EB!important}.cc21-note{display:flex;gap:9px;align-items:flex-start;margin-top:11px;padding:11px 12px;border-radius:12px;background:#F5F8FF;border:1px solid #E2E9FF;color:#61708D;font-size:10px;line-height:1.55}.cc21-note b{white-space:nowrap;color:#2563EB}.cc21-note span{display:block}.cc21-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.cc21-choices button{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;border:1px solid #DDE5F2;background:#fff;color:#33415E;border-radius:13px;padding:12px 13px;font-size:10.5px;font-weight:900}.cc21-choices button:hover{border-color:#AFC2FF;background:#F8FAFF;color:#2563EB}.cc21-choices button span{color:#2563EB}@media(max-width:600px){.cc21-choices{grid-template-columns:1fr}.cc21-note{display:block}.cc21-note b{display:block;margin-bottom:3px}}`;document.head.appendChild(style);document.querySelectorAll('.version').forEach(x=>x.textContent='v'+VERSION);const sInput=replaceInput('searchInput',enhancedRunSearch);const hInput=replaceInput('homeSearch',()=>{const q=$('homeSearch').value.trim();if(!q)return;showView('search');$('searchInput').value=q;enhancedRunSearch();});const go=$('searchGo');if(go)go.onclick=enhancedRunSearch;const homeGo=$('homeSearchBtn');if(homeGo)homeGo.onclick=()=>{const q=$('homeSearch').value.trim();if(!q)return;showView('search');$('searchInput').value=q;enhancedRunSearch();};document.querySelectorAll('[data-example]').forEach(btn=>btn.onclick=()=>{showView('search');$('searchInput').value=btn.dataset.example||btn.textContent.trim();enhancedRunSearch();});if(sInput)sInput.placeholder='예: 법규검토하래 / QGIS 봐 / 지번 확인해 / 도로 검토해';if(hInput)hInput.placeholder='예) 법규검토하래. 뭐부터 보면 돼?';window.runSearch=enhancedRunSearch;}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
