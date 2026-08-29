@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#FBFCFE">
 <title>척척 — 건축 실무, 물으면 척척</title>
-<link rel="stylesheet" href="./v2.css?v=202">
-<link rel="stylesheet" href="./v2_brand.css?v=202">
+<link rel="stylesheet" href="./v2.css?v=210">
+<link rel="stylesheet" href="./v2_brand.css?v=210">
 </head>
 <body>
 <div id="masterBar"><div class="master-copy"><small>MASTER TEST MODE</small><b>레벨별 화면 미리보기</b></div><div class="master-levels" id="masterLevels"></div><div class="master-note">마스터 자격은 유지됩니다. 보기 레벨만 바뀌며 실제 승급 기록과 분리됩니다.</div></div>
@@ -15,7 +15,7 @@
   <div class="cc-side-brand">
     <div class="cc-logo" aria-label="척척"><div class="cc-wordmark">척척<span class="cc-rays"><i></i><i></i><i></i></span></div><span class="cc-smile"></span></div>
     <div class="cc-tagline">건축 실무, 물으면 <b>척척</b></div>
-    <span class="version">v2.0.2</span>
+    <span class="version">v2.1.0</span>
   </div>
   <nav class="nav" id="sideNav">
     <button data-view="home"><span class="ico">⌂</span>홈</button>
@@ -31,7 +31,7 @@
   <div class="level-mini"><div class="cc-mini-user"><span>♟</span><div><small>CURRENT LEVEL</small><b id="miniLevel">LV.1 · 신입사원</b></div></div><button data-view="level">내 학습 현황 보기 →</button></div>
 </aside>
 <main class="main"><div class="inner">
-  <div class="mobile-head"><div class="mobile-brand"><div class="cc-logo"><div class="cc-wordmark">척척<span class="cc-rays"><i></i><i></i><i></i></span></div><span class="cc-smile"></span></div><div class="cc-tagline">건축 실무, 물으면 <b>척척</b></div></div><span class="version">v2.0.2</span></div>
+  <div class="mobile-head"><div class="mobile-brand"><div class="cc-logo"><div class="cc-wordmark">척척<span class="cc-rays"><i></i><i></i><i></i></span></div><span class="cc-smile"></span></div><div class="cc-tagline">건축 실무, 물으면 <b>척척</b></div></div><span class="version">v2.1.0</span></div>
   <section id="view-home" class="view active">
     <div class="cc-home-tools"><button class="cc-icon-btn" aria-label="알림">♧<span class="cc-noti-dot"></span></button><button class="cc-help-btn" data-view="search">도움말</button></div>
     <div class="hero">
@@ -71,23 +71,24 @@
       </section>
       <section class="cc-ask-card">
         <div class="cc-ask-title">무엇이든 물어보세요, <b>척척</b>이 답해드릴게요!</div>
-        <div class="home-search"><input id="homeSearch" placeholder="예) 출근 전 법규검토는 어디서 시작하나요?"><button id="homeSearchBtn" aria-label="척척에게 물어보기">➤</button></div>
-        <div class="cc-popular-questions"><small>많이 묻는 질문</small><button data-example="설계도서 작성 순서가 어떻게 되나요?"># 설계도서 작성 순서가 어떻게 되나요?</button><button data-example="근린생활시설의 주차 기준은 어떻게 확인해?"># 근린생활시설의 주차 기준은?</button><button data-example="용적률과 건폐율 차이 쉽게 설명해줘"># 용적률과 건폐율 차이 쉽게 설명해줘</button></div>
+        <div class="home-search"><input id="homeSearch" placeholder="예) 법규검토하래. 뭐부터 보면 돼?"><button id="homeSearchBtn" aria-label="척척에게 물어보기">➤</button></div>
+        <div class="cc-popular-questions"><small>많이 묻는 질문</small><button data-example="법규검토하래. 뭘 먼저 봐야 해?"># 법규검토는 뭐부터?</button><button data-example="QGIS 확인해달래. 뭘 봐야 해?"># QGIS 확인하래</button><button data-example="지번 확인해달래. 어디서 봐?"># 지번 확인은 어디서?</button></div>
         <div class="cc-helper-figure" aria-hidden="true"><svg viewBox="0 0 150 130"><g fill="none" stroke="currentColor" stroke-width="2"><path d="M88 22c15 2 25 11 27 25l-5 2c-2 12-10 21-22 23-12-2-20-11-22-23l-5-2c2-14 12-23 27-25z"/><path d="M67 43h42M78 30c7-7 17-7 24 0M72 73c-16 7-23 20-24 41M104 73c16 7 23 20 24 41M63 89l27 10 26-10M63 89l3 34h44l6-34"/><path d="M76 50c3 2 6 2 9 0M94 50c3 2 6 2 9 0M84 61c4 3 8 3 12 0"/></g><text x="85" y="39" text-anchor="middle" font-size="15" font-weight="900" fill="currentColor">척</text></svg></div>
       </section>
     </div>
-    <div class="cc-topic-strip"><b>지금 많이 찾는 주제</b><div><button data-task="도면 작성"># 도면 작성</button><button data-example="창호 기준 확인해줘"># 창호 기준</button><button data-example="피난계단 기준이 뭐야?"># 피난계단</button><button data-example="주차 계산 어떻게 해?"># 주차 계산</button><button data-example="마감재 검토는 뭐부터 해?"># 마감재 검토</button><button data-example="설계 변경 시 무엇부터 확인해?"># 설계 변경</button></div><button data-view="search">더보기 ›</button></div>
+    <div class="cc-topic-strip"><b>지금 많이 찾는 주제</b><div><button data-example="법규검토하래. 뭐부터 확인해?"># 법규 검토</button><button data-example="QGIS로 뭘 확인하라는 거야?"># QGIS</button><button data-example="지번 확인해달래"># 지번 확인</button><button data-example="도로 확인해달래"># 도로 검토</button><button data-example="면적표 맞춰보래"># 면적표</button><button data-example="주차대수 계산해보래"># 주차 계산</button></div><button data-view="search">더보기 ›</button></div>
   </section>
 
   <section id="view-context" class="view"><div class="back-row"><button data-view="home">← 처음으로</button><b>내 업무 맥락</b></div><div id="contextResult"></div></section>
-  <section id="view-search" class="view"><div class="page-card search-card"><div class="kicker">SMART SEARCH · 척척</div><h2>척척에게 무엇이든 물어보세요</h2><p class="lead">상사가 시킨 업무의 의미, 누구에게 어떻게 물어볼지, 확인할 자료와 모르는 용어까지 한곳에서 찾습니다.</p><div class="caps"><button class="cap" data-example="책임님이 지구단위계획부터 찾아보래. 뭘 먼저 해야 해?"><small>01 · TODAY'S TASK</small><b>상사가 시킨 일이 뭔지 모르겠어요</b><span>업무 목적 · 먼저 할 일 · 볼 자료</span></button><button class="cap" data-example="보고서 작성 중인데 누구한테 뭐라고 물어봐?"><small>02 · WHO / HOW</small><b>누구에게, 어떻게 물어봐야 해요?</b><span>문의 대상 · 실제 질문 문장</span></button><button class="cap" data-example="사업계획승인이 뭐야?"><small>03 · TERM</small><b>이 용어가 무슨 뜻이에요?</b><span>용어 뜻 · 같이 볼 개념</span></button></div><div class="searchbox"><input id="searchInput" placeholder="예: 법규검토하래. 뭘 먼저 확인해야 해?"><button id="searchGo">물어보기 →</button></div><div class="examples"><button data-example="책임님이 지구단위계획부터 찾아보래. 뭘 먼저 해야 해?">상사가 시킨 일</button><button data-example="보고서 작성 중인데 누구한테 뭐라고 물어봐?">누구에게 물어볼까</button><button data-example="사업계획승인이 뭐야?">용어 뜻</button></div><div id="searchResult" class="search-result"></div></div></section>
+  <section id="view-search" class="view"><div class="page-card search-card"><div class="kicker">SMART SEARCH · 척척</div><h2>척척에게 무엇이든 물어보세요</h2><p class="lead">상사가 툭 던진 업무지시도 괜찮아요. 업무 의미, 먼저 볼 자료, 확인처와 물어볼 사람까지 실무 맥락으로 풀어드립니다.</p><div class="caps"><button class="cap" data-example="법규검토하래. 뭘 먼저 해야 해?"><small>01 · WORK ORDER</small><b>상사가 짧게 지시했어요</b><span>법규검토 · 지번 · 면적표 · 도로 등</span></button><button class="cap" data-example="QGIS 확인해달래"><small>02 · CLARIFY</small><b>무엇을 보라는지 애매해요</b><span>가능한 의미를 좁혀서 선택</span></button><button class="cap" data-example="보고서 작성 중인데 누구한테 뭐라고 물어봐?"><small>03 · WHO / HOW</small><b>누구에게 어떻게 물어볼까요?</b><span>문의 대상 · 실제 질문 방향</span></button></div><div class="searchbox"><input id="searchInput" placeholder="예: 법규검토하래 / QGIS 봐 / 지번 확인해 / 도로 검토해"><button id="searchGo">물어보기 →</button></div><div class="examples"><button data-example="법규검토하래">법규검토하래</button><button data-example="QGIS 확인해달래">QGIS 봐달래</button><button data-example="지번 확인해달래">지번 확인하래</button><button data-example="면적표 맞춰보래">면적표 맞춰보래</button></div><div id="searchResult" class="search-result"></div></div></section>
   <section id="view-quiz" class="view"><div class="quiz-top"><div class="page-card quiz-card"><div class="kicker">CURRENT LEVEL</div><div class="rank-big" id="quizRank"></div><p class="lead" id="quizDesc"></p><div class="progress"><div id="quizProgress"></div></div><button class="primary quiz-start" id="startQuiz">퀴즈 풀기 →</button><p class="lead" style="font-size:10px">30문항 문제은행에서 매번 5문제가 랜덤 출제됩니다.</p></div><div class="page-card"><div class="kicker">LEVEL PATH</div><div class="level-path" id="quizPath"></div></div></div><div class="quiz-area" id="quizArea"><div class="qbox"><div class="qmeta"><span id="qCount"></span><span id="qDifficulty"></span><span id="qScore"></span></div><div class="qtext" id="qText"></div><input id="qInput" placeholder="단답형으로 입력"><button class="primary quiz-start" id="qSubmit">제출하기</button><div class="feedback" id="qFeedback"></div></div></div></section>
   <section id="view-level" class="view"><div id="levelContent"></div></section>
 </div></main></div>
 <nav class="bottom-nav" id="bottomNav"><button data-view="home"><span>⌂</span>홈</button><button data-view="search"><span>⌕</span>검색</button><button data-view="quiz"><span>◇</span>퀴즈</button><button data-view="level"><span>▱</span>내 레벨</button></nav>
 <div class="overlay" id="masterOverlay"><div class="overlay-box"><div class="crown">👑✨</div><div class="kicker" style="color:#9B751D">척척 · LEGENDARY ALL CLEAR</div><div class="master-title">건 축 마 스 터</div><div style="font-size:10px;font-weight:1000;letter-spacing:.16em;color:#B07C19">LV.MAX · ARCHITECTURE MASTER</div><p>축하합니다. 이제 적어도 “누구한테 물어봐야 하지?”는 압니다.<br>모르면 검색 · 애매하면 확인 · 혼자 단정 금지.</p><button id="closeMaster">간지 유지하고 계속하기 →</button></div></div>
-<script src="./v2_data.js?v=202"></script>
-<script src="./v2_quiz.js?v=202"></script>
-<script src="./v2_core.js?v=202"></script>
+<script src="./v2_data.js?v=210"></script>
+<script src="./v2_quiz.js?v=210"></script>
+<script src="./v2_core.js?v=210"></script>
+<script src="./v21_search.js?v=210"></script>
 </body>
 </html>
