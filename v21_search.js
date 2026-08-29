@@ -1,0 +1,135 @@
+(()=>{
+'use strict';
+
+const VERSION='2.1.0';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const clean=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim();
+
+const ACTION=/(확인|검토|조사|찾아|찾기|봐|보래|보라고|체크|정리|맞춰|계산|산출|뽑아|작성|만들|알아|하래|해달래|해줘|시키|파악)/i;
+const ASK=/(누구|어디에\s*(?:물어|문의)|뭐라고\s*물어|담당자|질의|문의|확인받)/i;
+const TERM=/(무슨\s*뜻|뜻이|뭐야|무엇이야|정의|용어|쉽게\s*설명|차이)/i;
+
+const INTENTS=[
+ {id:'legal',re:/법규\s*검토|법령\s*검토|관련\s*법|적용\s*법규|법규\s*체크/i,title:'법규검토의 출발점을 잡는 업무예요',meaning:'프로젝트에 적용될 수 있는 법과 지역·대지 조건을 먼저 좁히고, 설계에 영향을 주는 항목을 체크리스트로 만드는 일입니다.',first:'① 대지 위치·용도지역/지구/구역 ② 건축물의 실제 용도 ③ 규모·층수·높이 ④ 사업방식을 먼저 적어두세요.',where:'토지이음 → 국가법령정보센터 → 지자체 조례·지구단위계획/고시 → 기존 인허가 자료',who:'애매한 적용 여부는 선임/책임 또는 사내 인허가 담당에게 먼저 검토받고, 공식 해석이 필요한 쟁점만 관할기관에 확인하세요.',note:'법규검토는 “건축법만 읽기”가 아닙니다. 프로젝트 조건에 따라 주택·도시계획·소방·주차·장애인·에너지·특별법 등이 추가될 수 있습니다.'},
+ {id:'parcel',re:/지번|필지\s*(?:번호|확인)|번지|토지\s*소재지/i,title:'대상 필지를 정확히 특정하는 업무예요',meaning:'설계·법규·인허가 자료가 모두 같은 대지를 기준으로 움직이도록 지번과 필지 구성을 확인하는 일입니다.',first:'도로명주소만 보지 말고 대상 대지의 지번, 여러 필지 여부, 합필·분필 여부를 먼저 확인하세요.',where:'토지이음 · 지적도/임야도 · 토지대장 등 공적 자료 · 발주처 제공 대지자료',who:'프로젝트 기준 지번이 여러 개거나 경계가 애매하면 선임/PM에게 기준 필지를 확인하고, 필요하면 측량자료와 대조하세요.',note:'지도 화면의 선만으로 경계를 확정하지 말고 실제 업무 기준은 공적 자료와 측량성과를 함께 확인합니다.'},
+ {id:'building-ledger',re:/건축물\s*대장|건물\s*대장/i,title:'기존 건축물의 공적 현황을 확인하는 업무예요',meaning:'기존 건물의 용도·면적·층수 등 공적 정보를 확인해 현황도면이나 계획의 전제조건과 맞는지 보는 일입니다.',first:'무엇을 확인하라는 지시인지 먼저 정하세요: 용도 / 연면적·층별면적 / 층수 / 주구조 / 사용승인 정보 등.',where:'정부·지자체의 건축물대장 발급/열람 서비스 · 기존 허가도서 · 현황도면',who:'대장과 현황이 다르면 임의로 어느 쪽이 맞다고 정하지 말고 선임/PM에게 차이와 영향부터 공유하세요.',note:'대장 정보와 실제 현장 상태가 항상 같다고 가정하지 않습니다.'},
+ {id:'cadastre',re:/지적도|임야도|토지대장|경계\s*확인|필지\s*경계/i,title:'대지 경계와 필지 정보를 확인하는 업무예요',meaning:'배치·접도·면적 검토의 기준이 되는 토지 경계와 필지 정보를 확인하는 일입니다.',first:'대상 지번을 확정한 뒤 지적 경계, 도로와의 관계, 인접 필지를 확인하세요.',where:'지적도/임야도 · 토지대장 · 측량성과 · 발주처 대지자료',who:'도면 경계와 공적 경계가 다르거나 실제 경계 확정이 필요하면 측량자료를 기준으로 선임/PM과 확인하세요.',note:'온라인 지도의 시각적 경계는 설계용 확정 경계와 다를 수 있습니다.'},
+ {id:'qgis',re:/qgis|큐지아이에스|큐지아이/i,ambiguous:true,title:'QGIS에서 무엇을 확인하라는지 목적부터 좁혀야 해요',meaning:'QGIS는 하나의 “정답 자료”가 아니라 여러 공간데이터를 겹쳐 보는 도구라서, 상사가 어떤 레이어나 관계를 보라고 한 것인지 먼저 정해야 합니다.',choices:[
+   ['지적·필지 경계를 보라는 것 같아','QGIS에서 지적·필지 경계 확인해달래'],
+   ['용도지역·도시계획을 보라는 것 같아','QGIS에서 용도지역 도시계획 확인해달래'],
+   ['주변 현황·시설을 보라는 것 같아','QGIS로 주변 현황 시설 조사해달래'],
+   ['어떤 공간데이터인지 모르겠어','QGIS에서 뭘 확인하라는 건지 모르겠어']
+ ]},
+ {id:'qgis-parcel',re:/qgis.*(?:지적|필지|경계)|(?:지적|필지|경계).*qgis/i,title:'QGIS로 대상 대지와 주변 필지 관계를 보는 업무예요',meaning:'필지 경계와 주변 공간정보를 겹쳐서 대지의 위치·형상·인접 조건을 빠르게 파악하는 데 씁니다.',first:'프로젝트 기준 지번과 좌표계를 확인한 뒤 지적 관련 레이어를 불러오고 대상 필지를 다른 자료와 겹쳐 보세요.',where:'회사/공공 공간데이터 · 지적 관련 레이어 · 공적 지적자료 · 측량자료',who:'QGIS 화면과 설계도면의 경계가 다르면 화면상 위치를 임의로 맞추지 말고 기준 좌표/측량자료를 선임과 확인하세요.',note:'QGIS는 검토·분석 도구입니다. 법적 경계 확정 자체를 QGIS 화면만으로 하지 않습니다.'},
+ {id:'qgis-plan',re:/qgis.*(?:용도지역|도시계획|지구단위)|(?:용도지역|도시계획|지구단위).*qgis/i,title:'QGIS로 도시계획 공간정보를 겹쳐 보는 업무예요',meaning:'대지와 용도지역·도시계획 관련 공간 레이어의 관계를 빠르게 파악하는 용도입니다.',first:'대상 필지를 먼저 고정하고 필요한 도시계획 레이어의 출처·기준일을 확인한 뒤 겹쳐 보세요.',where:'공공 공간데이터/지자체 GIS 레이어 → 토지이음·최신 고시/결정도서로 재확인',who:'경계나 적용 여부가 애매하면 QGIS 화면만으로 결론내리지 말고 최신 공식 도서와 선임 검토를 거치세요.',note:'공간데이터는 갱신 시점이 다를 수 있으므로 최종 판단은 최신 공식 자료와 대조합니다.'},
+ {id:'qgis-context',re:/qgis.*(?:주변|현황|시설|반경)|(?:주변|현황|시설|반경).*qgis/i,title:'QGIS로 주변 현황을 구조적으로 조사하는 업무예요',meaning:'학교·공원·교통·건물·지형 등 프로젝트와 관련 있는 주변 요소를 거리·범위와 함께 파악하는 일입니다.',first:'무엇을 왜 찾는지부터 정한 뒤 조사 반경과 필요한 레이어를 정하세요.',where:'공공 공간데이터 · 회사 보유 GIS · 항공사진/지도 · 현장조사 자료',who:'보고자료용이면 선임에게 조사 범위와 표현 기준을 먼저 확인하면 불필요한 레이어 작업을 줄일 수 있습니다.',note:'레이어를 많이 올리는 것보다 의사결정에 필요한 정보만 선별하는 게 중요합니다.'},
+ {id:'road',re:/도로\s*(?:확인|검토|조사|봐|보래|체크)|접도|도로폭|현황도로|건축법상\s*도로/i,ambiguous:true,title:'“도로 확인”은 무엇을 보라는지 갈릴 수 있어요',meaning:'건축 실무에서 도로는 접도, 실제 폭, 도시계획, 출입 동선 등 서로 다른 검토를 뜻할 수 있습니다.',choices:[
+   ['건축 가능 여부·접도를 보려는 것 같아','건축법상 도로 접도 조건 확인해달래'],
+   ['현황 도로폭을 보려는 것 같아','대지 앞 현황 도로폭 확인해달래'],
+   ['도시계획도로 여부를 보려는 것 같아','도시계획도로 여부 확인해달래'],
+   ['차량 출입·동선을 보려는 것 같아','차량 진출입 도로 조건 검토해달래']
+ ]},
+ {id:'road-access',re:/접도|건축법상\s*도로/i,title:'대지가 건축 관련 도로 조건을 어떻게 충족하는지 확인하는 업무예요',meaning:'대지와 도로의 관계가 건축 가능성·배치·출입 계획에 영향을 주므로 법적 도로 해당 여부와 접한 상태를 검토합니다.',first:'대상 대지 경계와 접한 도로를 특정하고, 도로의 법적 성격과 접한 길이·현황을 구분해 확인하세요.',where:'지적자료 · 토지이음/도시계획자료 · 기존 허가도서 · 현황/측량자료 · 관련 법령/조례',who:'도로의 법적 성격이나 인정 여부가 애매하면 사내 인허가 담당 검토 후 관할기관 확인이 필요할 수 있습니다.',note:'현장에서 길처럼 보이는 것과 법적 검토상 도로인 것은 같은 문제가 아닙니다.'},
+ {id:'road-width',re:/현황\s*도로폭|도로\s*폭/i,title:'대지 전면 도로의 실제 조건을 확인하는 업무예요',meaning:'배치·차량동선·법규검토 등에 필요한 도로 폭과 경계 상태를 확인하는 일입니다.',first:'어디부터 어디까지를 도로폭으로 볼지 기준을 정하고 현황자료·측량자료와 대조하세요.',where:'현황측량 · 지적자료 · 기존 배치도 · 현장사진',who:'자료마다 폭이 다르면 어느 수치를 설계 기준으로 쓸지 선임/PM과 먼저 정하세요.',note:'지도에서 재는 값은 개략 검토용으로 보고 확정 수치는 신뢰 가능한 기준자료를 사용합니다.'},
+ {id:'road-plan',re:/도시계획도로/i,title:'도시계획상 도로 계획이 대지에 미치는 영향을 확인하는 업무예요',meaning:'계획도로의 위치·폭·결정 상태가 대지 사용과 배치에 영향을 주는지 보는 일입니다.',first:'대상 필지와 도시계획시설 도로의 경계를 겹쳐 보고 최신 결정 상태를 확인하세요.',where:'토지이음 · 지자체 도시계획 자료 · 최신 고시/결정도서',who:'경계 해석이나 사업 반영 범위가 애매하면 선임 검토 후 관할 도시계획 부서에 확인하세요.',note:'과거 도면보다 최신 결정·변경 자료를 기준으로 확인합니다.'},
+ {id:'road-entry',re:/진출입|차량\s*출입|차량\s*동선.*도로|도로.*차량/i,title:'차량이 실제로 들어오고 나가는 조건을 검토하는 업무예요',meaning:'도로와 대지의 관계를 차량 동선·회전·출입구 계획 관점에서 확인하는 일입니다.',first:'차량 종류와 출입 방향, 도로 조건, 대지 내 회전·대기 공간부터 표시하세요.',where:'배치도 · 도로 현황/측량 · 교통 관련 자료 · 발주처 운영조건',who:'대형차·물류·운수시설 등 운영조건이 강하면 발주처/운영주체와 교통 분야 협의를 일찍 잡는 게 좋습니다.',note:'출입구 위치는 건축 배치만의 문제가 아니라 운영·교통·인허가와 연결될 수 있습니다.'},
+ {id:'area',re:/면적표|면적\s*(?:맞춰|검토|산출|계산|체크)|연면적|건축면적/i,title:'면적의 기준과 도면을 서로 맞추는 업무예요',meaning:'숫자만 더하는 게 아니라 어떤 경계를 어떤 기준으로 산정했는지 도면과 표가 일치하는지 확인하는 일입니다.',first:'기준 도면 버전 → 층별 면적 산정 범위 → 제외/포함 항목 → 합계 순으로 확인하세요.',where:'최신 평면도 · 면적산출도/면적표 · 이전 보고·허가도서 · 관련 산정기준',who:'포함·제외 판단이 애매한 공간은 임의 처리하지 말고 선임/인허가 담당에게 기준을 확인하세요.',note:'면적 변경은 용적률·주차·인허가·발주처 보고 등 다른 업무에 연쇄 영향을 줄 수 있습니다.'},
+ {id:'parking',re:/주차\s*(?:대수|계산|검토|기준|확인|산정)|법정\s*주차/i,title:'프로젝트에 필요한 주차대수와 계획 조건을 확인하는 업무예요',meaning:'용도·규모·지역 조건에 따른 주차 요구를 확인하고 실제 배치 가능성과 맞추는 일입니다.',first:'건축물의 세부 용도와 면적 기준을 정리한 뒤 프로젝트 지역의 관련 법령·조례를 확인하세요.',where:'주차 관련 법령 · 지자체 조례 · 지구단위계획/사업조건 · 최신 면적표',who:'복합용도나 예외·완화 조건이 있으면 인허가 담당/선임에게 계산 기준을 검토받으세요.',note:'주차 기준은 지역·용도·사업조건에 따라 달라질 수 있어 하나의 숫자를 모든 프로젝트에 적용하면 안 됩니다.'},
+ {id:'ratio',re:/건폐율|용적률|bcr|far/i,title:'대지에서 가능한 건축 규모의 핵심 지표를 확인하는 업무예요',meaning:'건폐율·용적률은 대지와 계획의 규모를 검토하는 기본 지표라서 현재 계획이 허용 범위 안에 있는지 보는 데 씁니다.',first:'대지면적의 기준과 용도지역 등을 확인한 뒤 현재 건축면적·연면적 산정 기준을 맞추세요.',where:'토지이음 · 국토계획 관련 법령/지자체 조례 · 지구단위계획 · 최신 면적표',who:'완화·중복규정·산입 제외가 관련되면 선임/인허가 담당에게 근거 조항과 함께 검토받으세요.',note:'단순 비율 계산보다 “어떤 면적을 분모·분자에 넣는가”가 중요합니다.'},
+ {id:'height',re:/높이\s*제한|최고\s*높이|층수\s*제한|고도\s*제한/i,title:'건물 높이에 영향을 주는 조건을 찾는 업무예요',meaning:'도시계획·지구단위·공항/경관 등 프로젝트별 조건이 건물 높이와 층수에 영향을 주는지 확인합니다.',first:'대지의 도시계획 조건과 프로젝트 특수조건을 먼저 확인하고, 높이 기준점과 산정 방식을 구분하세요.',where:'토지이음 · 지구단위계획/지자체 자료 · 관련 특별조건/협의자료 · 법령',who:'특수구역이나 공식 협의가 필요한 경우 선임/PM과 확인 경로를 먼저 정하세요.',note:'“몇 m까지”만 찾지 말고 그 수치가 어떤 기준과 범위에 적용되는지 함께 확인합니다.'},
+ {id:'egress',re:/피난|계단\s*(?:기준|검토)|직통계단|피난계단|방화구획/i,title:'사람이 안전하게 대피할 수 있는 계획인지 검토하는 업무예요',meaning:'용도·층·규모·수용인원에 따라 피난경로와 계단·방화구획 등이 계획에 적절한지 확인하는 일입니다.',first:'용도, 층별 이용인원/구성, 피난층, 계단 위치와 피난경로를 도면에서 먼저 표시하세요.',where:'최신 평면/단면 · 건축/소방 관련 법령·기준 · 소방 협력도면',who:'기술적 소방설계는 소방 협력업체와, 건축계획/인허가 영향은 사내 담당자와 함께 검토하세요.',note:'피난은 한 조항만 보는 게 아니라 경로 전체와 건축·소방 조건을 같이 봐야 합니다.'},
+ {id:'accessibility',re:/장애인|bf\s*인증|무장애|편의시설/i,title:'이용자가 끊기지 않고 접근·이용할 수 있는지 확인하는 업무예요',meaning:'접근로·출입구·수직동선·화장실 등 편의시설 요구가 계획에 반영되는지 검토하는 일입니다.',first:'프로젝트에 적용되는 대상과 범위를 먼저 확인한 뒤 주요 이용 동선을 한 줄로 연결해서 보세요.',where:'관련 법령/기준 · 인증 기준(해당 시) · 최신 평면/단면 · 외부동선 계획',who:'인증 대상이거나 해석이 필요한 경우 관련 전문 검토자와 선임/인허가 담당에게 확인하세요.',note:'체크리스트 항목을 따로 맞추기보다 실제 이동 경로가 연속되는지 함께 봅니다.'},
+ {id:'energy',re:/에너지|에너지절약|제로에너지|zeb|친환경/i,title:'에너지·환경 성능 요구가 설계에 미치는 영향을 확인하는 업무예요',meaning:'외피·창호·설비 등 여러 분야의 성능 요구가 건축계획과 도서에 반영되는지 검토합니다.',first:'해당 프로젝트의 적용 대상과 목표 수준부터 확인하고 건축·기계·전기에서 영향받는 항목을 나누세요.',where:'관련 법령/고시·인증기준 · 발주처 성능요구 · 에너지 검토자료 · 협력업체 자료',who:'세부 성능값과 계산은 관련 전문업체와 맞추고 건축에는 공간·외피·도면 영향이 무엇인지 정리하세요.',note:'인증/평가 종류와 적용 여부를 프로젝트명만으로 단정하지 않습니다.'},
+ {id:'window',re:/창호\s*(?:기준|검토|스펙|사양)|유리\s*(?:사양|검토)/i,title:'창호가 디자인·성능·법규 요구를 동시에 만족하는지 보는 업무예요',meaning:'창호는 입면뿐 아니라 열성능·채광·환기·방재·구조·시공성과 연결되므로 어떤 목적의 검토인지 구분해야 합니다.',first:'이번 검토가 입면/모듈, 성능, 개폐, 방재, 상세 중 무엇인지 먼저 정하세요.',where:'입면/평면 · 창호스케줄 · 발주처 사양 · 에너지/소방/구조 관련 자료 · 제조사/협력업체 자료',who:'성능값은 관련 협력업체와 확인하고 최종 디자인·사양 방향은 선임/책임과 맞추세요.',note:'“창호 기준” 하나로 모든 프로젝트에 같은 사양을 적용할 수는 없습니다.'},
+ {id:'finish',re:/마감재|마감\s*(?:검토|선정|스펙|사양)/i,title:'마감재를 디자인뿐 아니라 성능·시공 조건까지 검토하는 업무예요',meaning:'재료의 외관, 사용 위치, 내구성, 방화/안전, 유지관리, 예산·시공성을 함께 보는 일입니다.',first:'사용 위치와 요구 성능을 먼저 적고 기존 사양·발주처 요구·법적 요구를 구분하세요.',where:'마감스케줄 · 상세도 · 발주처 사양 · 관련 성능기준 · 제조사 자료 · 시공/견적 자료',who:'디자인 방향은 선임/책임, 성능·시공성은 해당 협력업체/시공 관련 담당과 확인하세요.',note:'제품 카탈로그의 한 성능값만 보고 최종 적용을 결정하지 않습니다.'},
+ {id:'site',re:/현황\s*조사|대지\s*조사|주변\s*조사|사이트\s*분석|site\s*analysis/i,title:'설계 전에 대지와 주변의 실제 조건을 모으는 업무예요',meaning:'도면과 법규만으로 보이지 않는 접근, 레벨, 주변 건물, 소음·일조·조망 같은 조건을 설계 입력값으로 정리합니다.',first:'조사 목적을 정하고 대지 / 도로·접근 / 주변건물 / 레벨·지형 / 인프라 / 사진으로 항목을 나누세요.',where:'현장사진 · 지도/항공사진 · 공적 공간정보 · 측량자료 · 기존 프로젝트 자료',who:'보고자료용이면 선임에게 필요한 조사 범위와 표현 방식부터 확인하세요.',note:'정보를 많이 모으는 것보다 설계 결정에 영향을 주는 조건을 구분하는 게 핵심입니다.'},
+ {id:'survey',re:/측량|레벨\s*(?:확인|조사)|표고|고저차|경사/i,title:'대지의 실제 위치·높이 정보를 설계 기준으로 맞추는 업무예요',meaning:'배치·레벨·도로 접속·토공 계획의 기준이 되는 지형과 높이 정보를 확인하는 일입니다.',first:'어떤 기준점과 측량성과를 프로젝트 기준으로 쓰는지부터 확인하세요.',where:'현황측량/지형측량 성과 · 배치도 · 토목자료 · 현장정보',who:'자료 사이 기준점이나 좌표가 다르면 임의 변환하지 말고 토목/측량 담당과 선임에게 확인하세요.',note:'지도나 임의 측정값은 개략 검토용이고 실시설계 기준은 신뢰 가능한 측량자료를 사용합니다.'},
+ {id:'drawing-set',re:/설계도서\s*(?:작성|목록|리스트|순서)|도면\s*리스트|도서\s*목록/i,title:'현재 단계에 필요한 설계도서 범위를 정리하는 업무예요',meaning:'모든 도면을 무조건 만드는 게 아니라 현재 설계단계와 제출 목적에 맞는 도서가 무엇인지 정리하는 일입니다.',first:'설계단계와 제출 목적(내부검토/보고/심의/허가/실시 등)을 먼저 특정하세요.',where:'회사 표준 도서목록 · 기존 유사 프로젝트 · 발주처 과업지시/제출목록 · 공식 작성기준(해당 시)',who:'프로젝트별 산출물 범위는 PM/책임에게 먼저 확인하고 협력업체 도서와 맞추세요.',note:'도면 목록은 프로젝트·계약·제출단계에 따라 달라지므로 하나의 고정 리스트로 단정하지 않습니다.'},
+ {id:'coordination',re:/협력업체|구조\s*검토|기계\s*검토|전기\s*검토|소방\s*검토|간섭\s*검토/i,title:'건축과 전문분야 사이의 충돌을 줄이는 조정 업무예요',meaning:'각 분야의 요구조건을 건축 계획에 반영하고, 서로 다른 도면·모델의 충돌과 결정사항을 정리하는 일입니다.',first:'무엇을 결정해야 하는지와 최신 기준 건축도면을 먼저 정한 뒤 질문 목록을 분야별로 나누세요.',where:'최신 건축도면/모델 · 구조/기계/전기/소방 도면 · 회의록 · 이슈리스트',who:'기술값은 해당 협력업체, 우선순위·건축 반영 방향은 선임/책임/PM과 함께 결정하세요.',note:'“협력업체에 물어봤다”에서 끝내지 말고 합의한 내용을 최신 건축도면에 반영해야 조정이 끝납니다.'}
+];
+
+function specificQgisFallback(){return {title:'QGIS에서 확인 목적부터 정해야 해요',meaning:'“QGIS 봐”만으로는 어떤 레이어를 확인하라는지 특정하기 어렵습니다.',choices:[['필지·지적을 볼게','QGIS에서 지적 필지 경계 확인해달래'],['도시계획을 볼게','QGIS에서 용도지역 도시계획 확인해달래'],['주변현황을 볼게','QGIS로 주변 현황 시설 조사해달래'],['일단 상사에게 되물을게','QGIS로 어떤 레이어를 확인해야 하는지 뭐라고 물어봐?']]};}
+function resolveIntent(q){
+ const text=clean(q);
+ if(/qgis|큐지아이/.test(text)&&!/(지적|필지|경계|용도지역|도시계획|지구단위|주변|현황|시설|반경)/.test(text))return specificQgisFallback();
+ const hit=INTENTS.find(x=>x.re.test(text));
+ return hit||null;
+}
+function genericChoices(q){
+ const text=clean(q);
+ const verb=ACTION.test(text)?'지시 내용을':'업무를';
+ return {title:`아직 ${verb} 한 가지로 좁히기 어려워요`,meaning:'척척이 아무 답이나 단정하기보다, 먼저 어떤 종류의 실무인지 좁혀서 안내할게요.',choices:[
+   ['대지·도시계획 확인','대지 지번 용도지역 지구단위 법규 검토하래'],
+   ['도면·면적 검토','도면 면적표 검토하래'],
+   ['인허가·법규 검토','법규검토하고 인허가 영향 확인하래'],
+   ['협력업체·기술 검토','구조 기계 전기 소방 협력업체 검토하래']
+ ]};
+}
+function renderTaskCard(data){
+ return `<div class="result-card cc21-result"><div class="label">WORK GUIDE · 척척</div><h3>${esc(data.title)}</h3><p>${esc(data.meaning)}</p><div class="result-grid"><div class="result-cell"><small>01 · 먼저</small><p>${esc(data.first)}</p></div><div class="result-cell"><small>02 · 어디서</small><p>${esc(data.where)}</p></div><div class="result-cell"><small>03 · 누구와</small><p>${esc(data.who)}</p></div></div>${data.note?`<div class="cc21-note"><b>척척 포인트</b><span>${esc(data.note)}</span></div>`:''}</div>`;
+}
+function renderChoices(data){
+ return `<div class="result-card cc21-result"><div class="label">ONE MORE STEP · 척척</div><h3>${esc(data.title)}</h3><p>${esc(data.meaning)}</p><div class="cc21-choices">${data.choices.map(([label,query])=>`<button type="button" data-cc21-query="${esc(query)}">${esc(label)} <span>→</span></button>`).join('')}</div><div class="cc21-note"><b>왜 다시 물어보나요?</b><span>같은 지시어도 프로젝트 상황에 따라 확인 자료와 담당자가 달라질 수 있어서예요.</span></div></div>`;
+}
+function askAnswer(q){
+ const data=resolveIntent(q);
+ if(data&&!data.choices){return `<div class="result-card cc21-result"><div class="label">WHO / HOW · 척척</div><h3>${esc(data.who.split('하세요.')[0]||'먼저 확인할 사람을 정리했어요')}</h3><p>${esc(data.meaning)}</p><div class="script-box"><small>이렇게 물어보세요</small><p>“지금 ${esc(data.title.replace(/예요$|업무예요$/,''))} 관련해서 확인 중입니다. 제가 먼저 볼 기준자료가 ${esc(data.where)} 쪽이 맞는지, 그리고 판단이 필요한 부분을 어디까지 정리해서 가져가면 될까요?”</p></div></div>`;}
+ return `<div class="result-card cc21-result"><div class="label">WHO / HOW · 척척</div><h3>업무 맥락을 아는 선임 / 책임에게 먼저</h3><p>질문 범위가 아직 넓으면 바로 외부에 묻기보다, 내가 모르는 지점과 먼저 본 자료를 짧게 정리해 사내에서 방향을 잡는 게 효율적입니다.</p><div class="script-box"><small>이렇게 물어보세요</small><p>“제가 지금 확인해야 하는 게 정확히 어느 범위인지 헷갈립니다. 현재까지 본 자료는 ○○이고, 제가 먼저 확인할 기준과 다음에 협의할 대상을 알려주실 수 있을까요?”</p></div></div>`;
+}
+function knownTerm(q){
+ const t=clean(q);
+ const terms={
+  'qgis':['QGIS는 지적·도시계획·주변현황 등 여러 공간데이터를 겹쳐 보고 분석하는 GIS 프로그램입니다.','어떤 레이어를 왜 확인하는지가 핵심이고, 최종 법적 판단은 최신 공식 자료와 대조합니다.'],
+  '지번':['토지를 구분하기 위해 붙인 필지 단위의 번호입니다.','설계·법규검토 전에 프로젝트의 기준 지번과 여러 필지 여부를 확인합니다.'],
+  '건축물대장':['건축물의 공적 현황 정보를 기록한 행정 자료입니다.','현장 상태나 최신 설계와 다를 수 있으므로 목적에 맞게 다른 자료와 대조합니다.'],
+  '건폐율':['대지면적에 대한 건축면적의 비율을 나타내는 지표입니다.','세부 산정과 허용 범위는 프로젝트의 지역·계획조건과 최신 기준을 확인합니다.'],
+  '용적률':['대지면적에 대한 용적률 산정 연면적의 비율을 나타내는 지표입니다.','어떤 면적이 산입·제외되는지와 허용 범위를 프로젝트 조건에 맞게 확인합니다.']
+ };
+ const key=Object.keys(terms).find(k=>t.includes(k));
+ if(!key)return null;
+ return {key,desc:terms[key][0],next:terms[key][1]};
+}
+function renderTerm(t){return `<div class="result-card cc21-result"><div class="label">TERM · 척척</div><h3>${esc(t.key)}</h3><p>${esc(t.desc)}</p><div class="script-box"><small>같이 기억</small><p>${esc(t.next)}</p></div></div>`;}
+function enhancedRunSearch(){
+ const input=$('searchInput');const out=$('searchResult');if(!input||!out)return;
+ const q=input.value.trim();if(!q)return;
+ let html='';
+ const known=knownTerm(q);
+ if(ASK.test(q)){html=askAnswer(q);}
+ else if(TERM.test(q)&&known){html=renderTerm(known);}
+ else if(TERM.test(q)&&typeof window.termRoute==='function'){const t=window.termRoute(q);html=`<div class="result-card cc21-result"><div class="label">TERM · 척척</div><h3>${esc(t.key)}</h3><p>${esc(t.desc)}</p><div class="script-box"><small>같이 기억</small><p>${esc(t.next)}</p></div></div>`;}
+ else{
+   const hit=resolveIntent(q);
+   if(hit?.choices)html=renderChoices(hit);
+   else if(hit)html=renderTaskCard(hit);
+   else html=renderChoices(genericChoices(q));
+ }
+ out.innerHTML=html;
+ out.querySelectorAll('[data-cc21-query]').forEach(btn=>btn.onclick=()=>{input.value=btn.dataset.cc21Query;enhancedRunSearch();input.scrollIntoView({behavior:'smooth',block:'center'});});
+}
+
+function replaceInput(id,onEnter){
+ const old=$(id);if(!old)return null;const fresh=old.cloneNode(true);old.replaceWith(fresh);fresh.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();onEnter();}});return fresh;
+}
+function install(){
+ if(document.body.dataset.cc21==='1')return;document.body.dataset.cc21='1';
+ const style=document.createElement('style');style.id='cc21Style';style.textContent=`
+ .cc21-result{border-color:#DDE7FF!important;box-shadow:0 10px 30px rgba(37,99,235,.06)!important}
+ .cc21-result .label{color:#2563EB!important}.cc21-note{display:flex;gap:9px;align-items:flex-start;margin-top:11px;padding:11px 12px;border-radius:12px;background:#F5F8FF;border:1px solid #E2E9FF;color:#61708D;font-size:10px;line-height:1.55}.cc21-note b{white-space:nowrap;color:#2563EB}.cc21-note span{display:block}
+ .cc21-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.cc21-choices button{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;border:1px solid #DDE5F2;background:#fff;color:#33415E;border-radius:13px;padding:12px 13px;font-size:10.5px;font-weight:900}.cc21-choices button:hover{border-color:#AFC2FF;background:#F8FAFF;color:#2563EB}.cc21-choices button span{color:#2563EB}
+ @media(max-width:600px){.cc21-choices{grid-template-columns:1fr}.cc21-note{display:block}.cc21-note b{display:block;margin-bottom:3px}}
+ `;document.head.appendChild(style);
+ document.querySelectorAll('.version').forEach(x=>x.textContent='v'+VERSION);
+ const sInput=replaceInput('searchInput',enhancedRunSearch);
+ const hInput=replaceInput('homeSearch',()=>{const q=$('homeSearch').value.trim();if(!q)return;showView('search');$('searchInput').value=q;enhancedRunSearch();});
+ const go=$('searchGo');if(go)go.onclick=enhancedRunSearch;
+ const homeGo=$('homeSearchBtn');if(homeGo)homeGo.onclick=()=>{const q=$('homeSearch').value.trim();if(!q)return;showView('search');$('searchInput').value=q;enhancedRunSearch();};
+ document.querySelectorAll('[data-example]').forEach(btn=>btn.onclick=()=>{showView('search');$('searchInput').value=btn.dataset.example||btn.textContent.trim();enhancedRunSearch();});
+ if(sInput)sInput.placeholder='예: 법규검토하래 / QGIS 봐 / 지번 확인해 / 도로 검토해';
+ if(hInput)hInput.placeholder='예) 법규검토하래. 뭐부터 보면 돼?';
+ window.runSearch=enhancedRunSearch;
+}
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+})();
