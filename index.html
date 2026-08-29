@@ -2,49 +2,26 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F6F7FB">
-<title>PROJECT CONTEXT v1.6.0</title>
-<style>
-html,body{margin:0;width:100%;height:100%;background:#F6F7FB;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
-body{display:flex;flex-direction:column;overflow:hidden}
-#masterSwitch{display:none;flex:0 0 auto;margin:8px 10px 0;padding:10px 12px;border:1px solid #E5D69F;border-radius:16px;background:linear-gradient(90deg,#FFFBEB,#F7F2FF);box-shadow:0 8px 24px rgba(119,92,24,.06);align-items:center;gap:10px;flex-wrap:wrap;position:relative;z-index:9999}
-#masterSwitch.show{display:flex}
-.master-copy{min-width:150px;margin-right:auto}.master-copy small{display:block;font-size:8.5px;letter-spacing:.11em;font-weight:950;color:#9B8140;margin-bottom:3px}.master-copy b{font-size:11.5px;color:#725C25}
-.master-levels{display:flex;gap:6px;flex-wrap:wrap}.master-btn{appearance:none;-webkit-appearance:none;border:1px solid #E6E1D3;background:#fff;color:#766F62;border-radius:999px;padding:8px 11px;font-size:10.5px;font-weight:900;cursor:pointer;touch-action:manipulation;position:relative;z-index:10000}
-.master-btn.active{background:#5A62D7;color:#fff;border-color:#5A62D7;box-shadow:0 6px 15px rgba(90,98,215,.18)}.master-btn.master.active{background:linear-gradient(135deg,#705BD2,#B58A2D);border-color:transparent}
-.master-note{width:100%;font-size:9.5px;color:#9A8E72;line-height:1.45}
-iframe{display:block;width:100%;flex:1 1 auto;min-height:0;border:0;background:#F6F7FB}
-@media(max-width:700px){#masterSwitch{margin:6px 6px 0}.master-copy{width:100%}.master-levels{width:100%}.master-btn{flex:1;text-align:center;min-width:84px}}
-</style>
+<title>PROJECT CONTEXT v2.0</title>
+<link rel="stylesheet" href="./v2.css?v=200">
 </head>
 <body>
-<div id="masterSwitch" aria-label="건축 마스터 레벨 테스트 전환">
-  <div class="master-copy"><small>MASTER TEST MODE</small><b>레벨별 화면 미리보기</b></div>
-  <div class="master-levels">
-    <button type="button" class="master-btn" data-level="1">LV.1 · 신입사원</button>
-    <button type="button" class="master-btn" data-level="2">LV.2 · 선임</button>
-    <button type="button" class="master-btn" data-level="3">LV.3 · 책임</button>
-    <button type="button" class="master-btn" data-level="4">LV.4 · 수석</button>
-    <button type="button" class="master-btn master" data-level="5">LV.MAX · 건축 마스터</button>
-  </div>
-  <div class="master-note">마스터 자격은 유지됩니다. 아래 버튼은 테스트용 ‘보기 레벨’만 바꾸며 실제 승급 기록과 분리됩니다.</div>
-</div>
-<iframe id="app" src="./project_context_v1_3_1_interactive.html?v=160" title="PROJECT CONTEXT"></iframe>
-<script src="./pc134_patch.js?v=160"></script>
-<script src="./pc141_quiz_engine.js?v=160"></script>
-<script src="./pc142_quiz_ux_fixed.js?v=160"></script>
-<script src="./pc143_polish.js?v=160"></script>
-<script src="./pc142_master_switch.js?v=160"></script>
-<script src="./pc150_ui_simplify.js?v=160"></script>
-<script src="./pc152_5b.js?v=160"></script>
-<script src="./pc153_5c_router_fix.js?v=160"></script>
-<script src="./pc154_quiz_quality.js?v=160"></script>
-<script src="./pc155_5c_finish.js?v=160"></script>
-<script src="./pc156_search_hub.js?v=160"></script>
-<script src="./pc157_master_bling.js?v=160"></script>
-<script src="./pc158_master_interaction_fix.js?v=160"></script>
-<script src="./pc159_master_gate.js?v=160"></script>
-<script src="./pc160_lv2_why.js?v=160"></script>
+<div id="masterBar"><div class="master-copy"><small>MASTER TEST MODE</small><b>레벨별 화면 미리보기</b></div><div class="master-levels" id="masterLevels"></div><div class="master-note">마스터 자격은 유지됩니다. 보기 레벨만 바뀌며 실제 승급 기록과 분리됩니다.</div></div>
+<div class="shell">
+<aside class="side"><div class="brand"><span class="logo">⌁</span>프로젝트 맥락 <span class="version">v2.0</span></div><nav class="nav" id="sideNav"><button data-view="home"><span class="ico">⌂</span>홈</button><button data-view="search"><span class="ico">⌕</span>검색</button><button data-view="quiz"><span class="ico">◇</span>퀴즈</button><button data-view="level"><span class="ico">◎</span>내 레벨</button></nav><div class="level-mini"><small>CURRENT LEVEL</small><b id="miniLevel">LV.1 · 신입사원</b><button data-view="level">레벨 보기 →</button></div></aside>
+<main class="main"><div class="inner"><div class="mobile-head"><div class="mobile-brand"><span>⌁</span>프로젝트 맥락</div><span class="version">v2.0</span></div>
+<section id="view-home" class="view active"><div class="hero"><div class="kicker">PROJECT CONTEXT</div><h1>오늘은 어떤 업무를<br>도와드릴까요?</h1><p class="lead">지금 하는 일과 프로젝트만 고르면, 필요한 맥락부터 보여드려요. 자세한 정보는 필요할 때 하나씩 열어보면 됩니다.</p><div class="form"><div class="field"><span class="num">1</span><label for="task">지금 하는 업무</label><select id="task"></select><span class="chev">⌄</span></div><div class="field"><span class="num">2</span><label for="project">어떤 프로젝트인가요?</label><select id="project"></select><span class="chev">⌄</span></div><button class="details-toggle" id="detailsToggle">+ 단계·규모도 입력할래요</button><div class="details" id="details"><div class="mini-field"><label>현재 설계 단계</label><select id="phase"></select></div><div class="mini-field"><label>규모·메모 (선택)</label><input id="meta" placeholder="예: 800세대 / 연면적 3만㎡"></div></div><button class="primary" id="analyze">내 업무 맥락 보기 →</button></div><div class="home-search"><span>⌕</span><input id="homeSearch" placeholder="업무 · 누구에게/어떻게 물어볼지 · 용어를 검색하세요"><button id="homeSearchBtn">검색 →</button></div></div><div class="quick"><div class="section-head"><b>빠른 시작</b><span>자주 받는 업무</span></div><div class="quick-grid"><button data-task="발주처 협의자료 작성"><small>CLIENT MEETING</small><b>발주처 협의자료 작성</b><em>무엇을 결정받아야 하지?</em></button><button data-task="보고서 작성"><small>REPORT</small><b>보고서 작성</b><em>무슨 내용을 넣어야 하지?</em></button><button data-task="인허가 자료 작성"><small>PERMIT</small><b>인허가 자료 작성</b><em>어떤 절차를 보고 있지?</em></button></div></div></section>
+<section id="view-context" class="view"><div class="back-row"><button data-view="home">← 처음으로</button><b>내 업무 맥락</b></div><div id="contextResult"></div></section>
+<section id="view-search" class="view"><div class="page-card search-card"><div class="kicker">SMART SEARCH</div><h2>무엇이 궁금한가요?</h2><p class="lead">한 검색창에서 상사가 시킨 업무의 의미, 누구에게 어떻게 물어볼지, 모르는 용어까지 찾을 수 있어요.</p><div class="caps"><button class="cap" data-example="책임님이 지구단위계획부터 찾아보래. 뭘 먼저 해야 해?"><small>01 · TODAY'S TASK</small><b>상사가 시킨 일이 뭔지 모르겠어요</b><span>업무 목적 · 먼저 할 일 · 볼 자료</span></button><button class="cap" data-example="보고서 작성 중인데 누구한테 뭐라고 물어봐?"><small>02 · WHO / HOW</small><b>누구에게, 어떻게 물어봐야 해요?</b><span>문의 대상 · 실제 질문 문장</span></button><button class="cap" data-example="사업계획승인이 뭐야?"><small>03 · TERM</small><b>이 용어가 무슨 뜻이에요?</b><span>용어 뜻 · 같이 볼 개념</span></button></div><div class="searchbox"><input id="searchInput" placeholder="예: 책임님이 지구단위계획 찾아보래. 뭘 먼저 해야 해?"><button id="searchGo">검색 →</button></div><div class="examples"><button data-example="책임님이 지구단위계획부터 찾아보래. 뭘 먼저 해야 해?">상사가 시킨 일</button><button data-example="보고서 작성 중인데 누구한테 뭐라고 물어봐?">누구에게 물어볼까</button><button data-example="사업계획승인이 뭐야?">용어 뜻</button></div><div id="searchResult" class="search-result"></div></div></section>
+<section id="view-quiz" class="view"><div class="quiz-top"><div class="page-card quiz-card"><div class="kicker">CURRENT LEVEL</div><div class="rank-big" id="quizRank"></div><p class="lead" id="quizDesc"></p><div class="progress"><div id="quizProgress"></div></div><button class="primary quiz-start" id="startQuiz">퀴즈 풀기 →</button><p class="lead" style="font-size:10px">30문항 문제은행에서 매번 5문제가 랜덤 출제됩니다.</p></div><div class="page-card"><div class="kicker">LEVEL PATH</div><div class="level-path" id="quizPath"></div></div></div><div class="quiz-area" id="quizArea"><div class="qbox"><div class="qmeta"><span id="qCount"></span><span id="qDifficulty"></span><span id="qScore"></span></div><div class="qtext" id="qText"></div><input id="qInput" placeholder="단답형으로 입력"><button class="primary quiz-start" id="qSubmit">제출하기</button><div class="feedback" id="qFeedback"></div></div></div></section>
+<section id="view-level" class="view"><div id="levelContent"></div></section>
+</div></main></div>
+<nav class="bottom-nav" id="bottomNav"><button data-view="home"><span>⌂</span>홈</button><button data-view="search"><span>⌕</span>검색</button><button data-view="quiz"><span>◇</span>퀴즈</button><button data-view="level"><span>◎</span>내 레벨</button></nav>
+<div class="overlay" id="masterOverlay"><div class="overlay-box"><div class="crown">👑✨</div><div class="kicker" style="color:#9B751D">PROJECT CONTEXT · LEGENDARY ALL CLEAR</div><div class="master-title">건 축 마 스 터</div><div style="font-size:10px;font-weight:1000;letter-spacing:.16em;color:#B07C19">LV.MAX · ARCHITECTURE MASTER</div><p>축하합니다. 이제 적어도 “누구한테 물어봐야 하지?”는 압니다.<br>모르면 검색 · 애매하면 확인 · 혼자 단정 금지.</p><button id="closeMaster">간지 유지하고 계속하기 →</button></div></div>
+<script src="./v2_data.js?v=200"></script>
+<script src="./v2_quiz.js?v=200"></script>
+<script src="./v2_core.js?v=200"></script>
 </body>
 </html>
