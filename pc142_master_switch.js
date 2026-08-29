@@ -22,18 +22,28 @@ function render(){
   const lv=Number(localStorage.getItem("pc_level")||5);
   buttons.forEach(b=>b.classList.toggle("active",Number(b.dataset.level)===lv));
 }
+function forceCloseCurrentOverlay(){
+  try{
+    const d=frame.contentDocument;
+    const ov=d?.getElementById("masterOverlay");
+    ov?.classList.remove("show","pc157-show");
+    d?.body?.classList.remove("pc159-master-overlay-open");
+    d?.querySelector(".pc157-confetti")?.remove();
+  }catch(_){ }
+}
 function setPreviewLevel(lv){
+  forceCloseCurrentOverlay();
   localStorage.setItem("pc_master_certified","1");
   localStorage.setItem("pc_master_preview_level",String(lv));
   localStorage.setItem("pc_level",String(lv));
   localStorage.setItem("pc_master_unlocked",lv===5?"1":"0");
   if(lv===5)localStorage.setItem("pc_master_show_bling","1");
+  else localStorage.removeItem("pc_master_show_bling");
   buttons.forEach(b=>b.classList.toggle("active",Number(b.dataset.level)===lv));
-  frame.src="./project_context_v1_3_1_interactive.html?v=158&preview="+lv+"&t="+Date.now();
+  frame.src="./project_context_v1_3_1_interactive.html?v=159&preview="+lv+"&t="+Date.now();
 }
 buttons.forEach(btn=>{
   btn.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();setPreviewLevel(Number(btn.dataset.level));});
-  btn.addEventListener("touchend",e=>{e.preventDefault();setPreviewLevel(Number(btn.dataset.level));},{passive:false});
 });
 frame.addEventListener("load",()=>setTimeout(render,60));
 window.addEventListener("pageshow",render);
