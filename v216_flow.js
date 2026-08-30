@@ -1,6 +1,6 @@
 (()=>{
 'use strict';
-const VERSION='2.1.6';
+const VERSION='2.1.7';
 function install(){
   document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
   const flow=document.querySelector('.cc-flow-line');
