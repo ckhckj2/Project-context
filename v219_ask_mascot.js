@@ -1,6 +1,6 @@
 (()=>{
 'use strict';
-const VERSION='2.1.13';
+const VERSION='2.1.14';
 function install(){
   document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
   const card=document.querySelector('.cc-ask-card');
@@ -13,13 +13,7 @@ function install(){
   const labels=['# 법규 검토는 어떻게 하나요?','# QGIS 활용 방법이 궁금합니다.','# 지번 확인은 어디서 하나요?'];
   qs.forEach((q,i)=>{if(labels[i])q.textContent=labels[i]});
   const fig=card.querySelector('.cc-helper-figure');
-  if(fig){
-    fig.innerHTML='';
-    fig.style.setProperty('background-image','url("./mascot_v2112.svg?v=2113")','important');
-    fig.style.setProperty('background-repeat','no-repeat','important');
-    fig.style.setProperty('background-position','right bottom','important');
-    fig.style.setProperty('background-size','contain','important');
-  }
+  if(fig) fig.remove();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
