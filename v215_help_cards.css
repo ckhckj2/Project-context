@@ -1,0 +1,19 @@
+/* v2.1.5 — UI STEP 2: home help cards fidelity */
+.cc-help-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:16px!important;margin-top:30px!important}
+.cc-help-card{position:relative!important;min-height:228px!important;padding:22px 22px 20px!important;border:1px solid #E3E9F1!important;border-radius:18px!important;background:#FFFFFF!important;box-shadow:0 4px 18px rgba(15,23,42,.025)!important;text-align:left!important;color:#10234A!important;overflow:hidden!important;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease!important}
+.cc-help-card:hover{transform:translateY(-2px)!important;box-shadow:0 10px 26px rgba(15,23,42,.055)!important;border-color:#D9E2EF!important}
+.cc-help-card:active{transform:translateY(0)!important}
+.cc-help-icon{width:54px!important;height:54px!important;margin:0 0 22px!important;border-radius:50%!important;display:grid!important;place-items:center!important;font-size:0!important;line-height:0!important;overflow:hidden!important;box-shadow:none!important}
+.cc-help-icon:before{display:none!important;content:none!important}
+.cc-help-icon svg{width:29px!important;height:29px!important;display:block!important}
+.cc-help-card:nth-child(1) .cc-help-icon{background:#EAF2FF!important;color:#2D72F3!important}
+.cc-help-card:nth-child(2) .cc-help-icon{background:#E8F8F2!important;color:#159A73!important}
+.cc-help-card:nth-child(3) .cc-help-icon{background:#F1EAFE!important;color:#8B5DE8!important}
+.cc-help-card:nth-child(4) .cc-help-icon{background:#FFF1DE!important;color:#E99A2E!important}
+.cc-help-card>b{display:block!important;margin:0 0 14px!important;font-size:16px!important;line-height:1.35!important;letter-spacing:-.45px!important;font-weight:900!important;color:#14264A!important}
+.cc-help-card>span:not(.cc-help-icon){display:block!important;margin:0!important;padding:0 34px 0 0!important;font-size:12px!important;line-height:1.75!important;letter-spacing:-.12px!important;font-weight:650!important;color:#7C899E!important;word-break:keep-all!important}
+.cc-help-card>em{position:absolute!important;right:18px!important;bottom:18px!important;width:34px!important;height:34px!important;border:1px solid #E1E7F0!important;border-radius:50%!important;background:#FFFFFF!important;display:grid!important;place-items:center!important;font-size:0!important;font-style:normal!important;color:#2D72F3!important;box-shadow:0 2px 7px rgba(15,23,42,.025)!important}
+.cc-help-card>em:before{content:"";width:8px;height:8px;border-top:2px solid currentColor;border-right:2px solid currentColor;transform:rotate(45deg) translate(-1px,1px)}
+@media(max-width:1050px){.cc-help-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.cc-help-card{min-height:205px!important}}
+@media(max-width:700px){.cc-help-grid{gap:10px!important;margin-top:18px!important}.cc-help-card{min-height:178px!important;padding:17px 16px 15px!important;border-radius:16px!important}.cc-help-icon{width:46px!important;height:46px!important;margin-bottom:16px!important}.cc-help-icon svg{width:25px!important;height:25px!important}.cc-help-card>b{font-size:13px!important;margin-bottom:9px!important}.cc-help-card>span:not(.cc-help-icon){font-size:10px!important;line-height:1.6!important;padding-right:25px!important}.cc-help-card>em{width:29px!important;height:29px!important;right:13px!important;bottom:13px!important}}
+@media(max-width:390px){.cc-help-grid{grid-template-columns:1fr!important}.cc-help-card{min-height:150px!important}.cc-help-card>span:not(.cc-help-icon){max-width:82%!important}}
