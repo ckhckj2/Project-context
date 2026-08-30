@@ -1,6 +1,6 @@
 (()=>{
 'use strict';
-const VERSION='2.1.12';
+const VERSION='2.1.13';
 function install(){
   document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
   const card=document.querySelector('.cc-ask-card');
@@ -15,10 +15,10 @@ function install(){
   const fig=card.querySelector('.cc-helper-figure');
   if(fig){
     fig.innerHTML='';
-    fig.style.backgroundImage='url("./mascot_v2112.svg?v=2112")';
-    fig.style.backgroundRepeat='no-repeat';
-    fig.style.backgroundPosition='right bottom';
-    fig.style.backgroundSize='contain';
+    fig.style.setProperty('background-image','url("./mascot_v2112.svg?v=2113")','important');
+    fig.style.setProperty('background-repeat','no-repeat','important');
+    fig.style.setProperty('background-position','right bottom','important');
+    fig.style.setProperty('background-size','contain','important');
   }
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
