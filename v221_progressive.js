@@ -1,8 +1,9 @@
 (()=>{
 'use strict';
-const VERSION='2.1.21';
+const VERSION='2.1.22';
 const byId=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
+const MOBILE=()=>window.matchMedia('(max-width:700px)').matches;
 
 function shortList(text,max=2){
   const raw=String(text||'').trim();
@@ -64,7 +65,7 @@ function compactSearch(){
   if(!root)return;
   const card=root.querySelector('.result-card');
   if(!card||card.dataset.cc221==='1')return;
-  if(card.querySelector('button'))return; // ambiguity choices should stay immediately usable
+  if(card.querySelector('button'))return;
   const label=card.querySelector(':scope > .label');
   const h3=card.querySelector(':scope > h3');
   if(!h3)return;
@@ -89,7 +90,37 @@ function compactSearch(){
   more.addEventListener('click',()=>toggleDetail(more,detail));
   card.dataset.cc221='1';
 }
-function scheduleContext(){setTimeout(compactContext,70);}
+function mobileDrawerClick(e){
+  if(!MOBILE())return;
+  const btn=e.target.closest('#contextResult .actions [data-drawer]');
+  if(!btn)return;
+  const root=byId('contextResult');
+  const actions=btn.closest('.actions');
+  const pane=root?.querySelector(`[data-pane="${btn.dataset.drawer}"]`);
+  if(!actions||!pane)return;
+
+  setTimeout(()=>{
+    if(!document.body.contains(btn)||!document.body.contains(pane))return;
+    const open=pane.classList.contains('show');
+    actions.querySelectorAll('[data-drawer]').forEach(other=>{
+      const otherPane=root.querySelector(`[data-pane="${other.dataset.drawer}"]`);
+      if(other!==btn&&otherPane){otherPane.classList.remove('show');other.classList.remove('cc-drawer-active');other.setAttribute('aria-expanded','false');}
+    });
+    btn.classList.toggle('cc-drawer-active',open);
+    btn.setAttribute('aria-expanded',String(open));
+    if(open)btn.insertAdjacentElement('afterend',pane);
+  },0);
+}
+function restoreDesktopDrawers(){
+  if(MOBILE())return;
+  const root=byId('contextResult');
+  const actions=root?.querySelector('.actions');
+  if(!actions)return;
+  const panes=['context','caution','why'].map(k=>root.querySelector(`[data-pane="${k}"]`)).filter(Boolean);
+  if(panes.some(p=>p.parentElement===actions))actions.after(...panes);
+  actions.querySelectorAll('[data-drawer]').forEach(btn=>btn.classList.remove('cc-drawer-active'));
+}
+function scheduleContext(){setTimeout(()=>{compactContext();restoreDesktopDrawers();},70);}
 function scheduleSearch(){setTimeout(compactSearch,90);}
 function install(){
   document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
@@ -101,7 +132,9 @@ function install(){
   document.addEventListener('click',e=>{
     if(e.target.closest('[data-example], [data-cc219-tool]'))scheduleSearch();
     if(e.target.closest('[data-drawer="why"]'))setTimeout(compactContext,20);
+    mobileDrawerClick(e);
   });
+  window.addEventListener('resize',()=>setTimeout(restoreDesktopDrawers,40),{passive:true});
   if(byId('contextResult')?.innerHTML.trim())scheduleContext();
   if(byId('searchResult')?.innerHTML.trim())scheduleSearch();
 }
