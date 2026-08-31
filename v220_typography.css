@@ -1,0 +1,98 @@
+/* v2.1.20 — readability pass: stronger information hierarchy */
+
+/* Global hierarchy: titles > section heads > key values > body > metadata */
+.hero h1{font-size:36px!important;font-weight:950!important;letter-spacing:-1.35px!important;line-height:1.16!important;color:#10234A!important}
+.hero>.lead{font-size:14px!important;line-height:1.7!important;font-weight:650!important;color:#6F7D94!important}
+
+/* Main task form: labels and selected values should read as primary working information */
+.field label{font-size:12.5px!important;font-weight:950!important;color:#263A5E!important}
+.field select{font-size:13.5px!important;font-weight:900!important;color:#334563!important}
+.primary{font-size:13.5px!important;font-weight:950!important}
+.details-toggle{font-size:11px!important}
+.mini-field label{font-size:10px!important;font-weight:950!important}
+.mini-field input,.mini-field select{font-size:12px!important}
+
+/* Home help cards */
+.cc-help-card>b{font-size:17px!important;line-height:1.35!important;font-weight:950!important;color:#10234A!important}
+.cc-help-card>span:not(.cc-help-icon){font-size:12.5px!important;line-height:1.72!important;font-weight:650!important;color:#6F7D93!important}
+
+/* Home lower cards */
+.cc-flow-card .cc-card-head>b{font-size:15.5px!important;font-weight:950!important}
+.cc-flow-card .cc-card-head>button{font-size:10.5px!important}
+.cc-flow-line>div>small{font-size:8.5px!important;font-weight:950!important}
+.cc-flow-line>div>b{font-size:10px!important;line-height:1.4!important;font-weight:900!important;color:#435977!important}
+.cc-flow-card>p{font-size:10.5px!important;line-height:1.65!important;color:#6F7D93!important}
+.cc-ask-title{font-size:15.5px!important;line-height:1.4!important;font-weight:950!important}
+.cc-ask-card .home-search input{font-size:11.5px!important;font-weight:650!important}
+.cc-popular-questions small{font-size:9px!important;font-weight:950!important}
+.cc-popular-questions button{font-size:9.7px!important;line-height:1.5!important;font-weight:750!important}
+
+/* Sidebar */
+.nav button{font-size:13px!important;font-weight:900!important}
+.cc-side-subnav button{font-size:11.5px!important;font-weight:850!important}
+.level-mini b{font-size:14px!important;font-weight:950!important}
+.level-mini button{font-size:11px!important}
+
+/* Context screen */
+.back-row b{font-size:16px!important;font-weight:950!important}
+.stage-copy small{font-size:9.5px!important;font-weight:950!important}
+.stage-copy b{font-size:17px!important;font-weight:950!important;letter-spacing:-.35px!important}
+.stage-copy p{font-size:12px!important;line-height:1.55!important;color:#687890!important}
+.stage-task{font-size:11.5px!important;font-weight:900!important}
+.map-head b{font-size:15px!important;font-weight:950!important}
+.map-head span{font-size:10.5px!important;font-weight:750!important}
+.flow .node{font-size:11.5px!important;font-weight:900!important}
+.actions button{font-size:12px!important;line-height:1.4!important;font-weight:900!important}
+.actions button small{font-size:9px!important;font-weight:950!important}
+.why-title{font-size:17px!important;line-height:1.4!important;font-weight:950!important}
+.detail-cell small{font-size:9.5px!important;font-weight:950!important;color:#7F8CA2!important}
+.detail-cell p{font-size:12px!important;line-height:1.62!important;color:#52637E!important}
+.context-note{font-size:11.5px!important;line-height:1.65!important;font-weight:700!important}
+.caution{font-size:12px!important;line-height:1.7!important}
+
+/* Search / results */
+.kicker{font-size:10px!important;font-weight:950!important}
+.search-card h2,.quiz-card h2,.level-card h2{font-size:28px!important;line-height:1.2!important;font-weight:950!important;letter-spacing:-.85px!important}
+.search-card>.lead,.quiz-card>.lead,.level-card>.lead{font-size:13px!important;line-height:1.7!important}
+.cap small{font-size:8.5px!important;font-weight:950!important}
+.cap b{font-size:12px!important;line-height:1.45!important;font-weight:950!important;color:#263A5E!important}
+.cap span{font-size:10px!important;line-height:1.5!important}
+.searchbox input{font-size:13px!important}
+.searchbox button{font-size:11.5px!important;font-weight:950!important}
+.examples button{font-size:10px!important;font-weight:850!important}
+.result-card .label{font-size:9px!important;font-weight:950!important}
+.result-card h3{font-size:19px!important;line-height:1.35!important;font-weight:950!important;letter-spacing:-.35px!important;color:#172B4D!important}
+.result-card>p{font-size:12.5px!important;line-height:1.7!important;color:#61718A!important}
+.result-cell small{font-size:9px!important;font-weight:950!important;color:#78869D!important}
+.result-cell p{font-size:11px!important;line-height:1.62!important;color:#53647D!important}
+.script-box small{font-size:9px!important;font-weight:950!important}
+.script-box p{font-size:11.5px!important;line-height:1.65!important}
+
+/* LV2 practical tools (dynamic styles load later, so force hierarchy here) */
+.cc218-where-head small,.cc219-tools-head small,.cc219-tool-detail-head small{font-size:9px!important;font-weight:950!important}
+.cc218-where-head b,.cc219-tools-head b,.cc219-tool-detail-head b{font-size:13.5px!important;line-height:1.4!important;font-weight:950!important;color:#263A5E!important}
+.cc219-tools-head span{font-size:10px!important}
+.cc219-tool-tabs button{font-size:10px!important;font-weight:900!important}
+.cc219-tool-link{font-size:9.5px!important;font-weight:950!important}
+.cc219-tool-caution b{font-size:9.5px!important;font-weight:950!important}
+.cc219-tool-caution span{font-size:10.5px!important;line-height:1.6!important}
+
+/* Quiz / level */
+.rank-big{font-size:32px!important;font-weight:950!important}
+.qmeta{font-size:10.5px!important;font-weight:900!important}
+.qtext{font-size:18px!important;line-height:1.55!important;font-weight:950!important}
+
+@media(max-width:700px){
+  .hero h1{font-size:28px!important;letter-spacing:-.9px!important}
+  .hero>.lead{font-size:13px!important}
+  .field label{font-size:11.5px!important}.field select{font-size:12.5px!important}
+  .cc-help-card>b{font-size:14.5px!important}.cc-help-card>span:not(.cc-help-icon){font-size:11px!important;line-height:1.65!important}
+  .cc-flow-card .cc-card-head>b{font-size:13.5px!important}.cc-flow-line>div>b{font-size:9.2px!important}.cc-flow-card>p{font-size:9.8px!important}
+  .cc-ask-title{font-size:13.5px!important}.cc-ask-card .home-search input{font-size:10.8px!important}.cc-popular-questions button{font-size:9.2px!important}
+  .search-card h2,.quiz-card h2,.level-card h2{font-size:23px!important}
+  .stage-copy b{font-size:15px!important}.stage-copy p{font-size:11px!important}.stage-task{font-size:10.5px!important}
+  .map-head b{font-size:13.5px!important}.flow .node{font-size:10.5px!important}.actions button{font-size:11px!important}
+  .why-title{font-size:15px!important}.detail-cell p{font-size:11px!important}.context-note{font-size:10.8px!important}
+  .result-card h3{font-size:17px!important}.result-card>p{font-size:11.5px!important}.result-cell p{font-size:10.5px!important}
+  .cc218-where-head b,.cc219-tools-head b,.cc219-tool-detail-head b{font-size:12.5px!important}
+}
