@@ -1,0 +1,38 @@
+/* v2.1.21 — progressive disclosure: answer first, details on demand */
+
+/* Search page itself: keep the entry screen light */
+#view-search .caps .cap span{display:none!important}
+#view-search .caps .cap{min-height:74px!important;padding:12px 13px!important}
+
+/* LV2 WHY / WHERE: three quick answers first */
+.cc221-summary{display:grid;gap:8px;margin:10px 0 0}
+.cc221-summary-row{display:grid;grid-template-columns:86px minmax(0,1fr);gap:12px;align-items:start;padding:11px 12px;border:1px solid #E5EAF3;border-radius:12px;background:#fff}
+.cc221-summary-row:first-child{background:#F5F8FF;border-color:#D8E4FF}
+.cc221-summary-row small{padding-top:1px;font-size:9px!important;line-height:1.35;font-weight:950!important;letter-spacing:.02em;color:#78869D!important}
+.cc221-summary-row b{font-size:12.5px!important;line-height:1.55;font-weight:900!important;letter-spacing:-.15px;color:#2E405E!important;word-break:keep-all}
+.cc221-summary-row:first-child b{font-size:14px!important;color:#214FAD!important}
+.cc221-more{width:100%;margin-top:9px;padding:9px 12px;border:1px solid #DDE5F2;border-radius:11px;background:#FAFBFD;color:#52647D;font-size:10.5px;font-weight:900;text-align:center}
+.cc221-more:hover{background:#F4F7FC;color:#2D63D5}
+.cc221-more:after{content:'  ▾';color:#7C8AA2}
+.cc221-more[aria-expanded="true"]:after{content:'  ▴'}
+.cc221-detail{display:none;margin-top:10px;padding-top:10px;border-top:1px solid #E8ECF3}
+.cc221-detail.open{display:block}
+.cc221-detail>.why-title{font-size:14px!important;margin:0 0 9px!important;color:#4B5D78!important}
+
+/* Search results: one actionable line first, full explanation on request */
+.cc221-search-summary{margin:10px 0 0;padding:12px 13px;border:1px solid #DCE6F6;border-radius:12px;background:#F7F9FD}
+.cc221-search-summary small{display:block;margin-bottom:5px;font-size:9px;font-weight:950;letter-spacing:.04em;color:#7D8BA1}
+.cc221-search-summary b{display:block;font-size:13px;line-height:1.58;font-weight:900;letter-spacing:-.18px;color:#30435F;word-break:keep-all}
+.result-card>.cc221-more{margin-top:9px}
+.result-card>.cc221-detail{padding-top:12px}
+
+/* Secondary copy should not compete with the answer */
+.cc221-detail .detail-cell p,.cc221-detail .result-cell p{color:#617089!important}
+.cc221-detail .context-note{font-weight:650!important}
+
+@media(max-width:700px){
+  .cc221-summary-row{grid-template-columns:68px minmax(0,1fr);gap:8px;padding:10px}
+  .cc221-summary-row b{font-size:11.5px!important}.cc221-summary-row:first-child b{font-size:12.8px!important}
+  .cc221-more{font-size:10px;padding:9px 10px}
+  .cc221-search-summary b{font-size:12px}
+}
