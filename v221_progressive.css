@@ -1,4 +1,4 @@
-/* v2.1.21 — progressive disclosure: answer first, details on demand */
+/* v2.1.22 — progressive disclosure + mobile context accordion */
 
 /* Search page itself: keep the entry screen light */
 #view-search .caps .cap span{display:none!important}
@@ -35,4 +35,17 @@
   .cc221-summary-row b{font-size:11.5px!important}.cc221-summary-row:first-child b{font-size:12.8px!important}
   .cc221-more{font-size:10px;padding:9px 10px}
   .cc221-search-summary b{font-size:12px}
+
+  /* Context actions become a true accordion on mobile. The answer opens directly below what was tapped. */
+  #contextResult .actions{grid-template-columns:1fr!important;gap:7px!important}
+  #contextResult .actions>[data-drawer],#contextResult .actions>[data-ask-context]{position:relative!important;width:100%!important;min-height:58px!important;padding:11px 38px 11px 13px!important;border-radius:13px!important}
+  #contextResult .actions>[data-drawer]:after{content:'+';position:absolute;right:14px;top:50%;transform:translateY(-50%);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#F1F4F9;color:#718099;font-size:15px;font-weight:700;line-height:1}
+  #contextResult .actions>[data-drawer].cc-drawer-active{border-color:#BFD2FA!important;background:#F7FAFF!important;color:#315FAF!important}
+  #contextResult .actions>[data-drawer].cc-drawer-active:after{content:'−';background:#E8F0FF;color:#2E68DA}
+  #contextResult .actions>.drawer{grid-column:1/-1!important;margin:0 0 2px!important;padding:13px!important;border-radius:13px!important;box-shadow:0 5px 16px rgba(29,55,99,.045)!important}
+  #contextResult .actions>.drawer.show{display:block!important}
+  #contextResult .actions>.drawer .detail-grid{grid-template-columns:1fr!important;gap:7px!important}
+  #contextResult .actions>.drawer[data-pane="context"]{background:#FBFCFF!important;border-color:#DFE7F3!important}
+  #contextResult .actions>.drawer[data-pane="caution"]{background:#FFF9F0!important;border-color:#F1DDB9!important}
+  #contextResult .actions>.drawer[data-pane="why"]{background:linear-gradient(145deg,#FBFCFF,#F6F8FF)!important;border-color:#DDE5FF!important}
 }
