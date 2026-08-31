@@ -2,7 +2,7 @@
 'use strict';
 const VERSION='2.1.22';
 const byId=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const MOBILE=()=>window.matchMedia('(max-width:700px)').matches;
 
 function shortList(text,max=2){
@@ -25,17 +25,14 @@ function compactContext(){
   const pane=root.querySelector('[data-pane="why"]');
   if(!pane||pane.dataset.cc221==='1')return;
   if(pane.textContent.includes('LV.2 선임부터'))return;
-
   const title=pane.querySelector('.why-title');
   const topGrid=pane.querySelector(':scope > .detail-grid');
   const where=pane.querySelector('.cc218-where');
   if(!title||!topGrid)return;
-
   const why=title.textContent.trim();
   const wherePs=where?[...where.querySelectorAll('.detail-cell p')]:[];
   const first=shortList(wherePs[0]?.textContent||topGrid.querySelector('.detail-cell p')?.textContent,2);
   const source=shortList(wherePs[1]?.textContent||'프로젝트 기준자료 · 공식 자료',2);
-
   const original=[...pane.children];
   const kicker=pane.querySelector(':scope > .kicker');
   const summary=document.createElement('div');
@@ -48,7 +45,6 @@ function compactContext(){
   more.append(document.createTextNode('자세히 보기'));
   const detail=document.createElement('div');
   detail.className='cc221-detail';
-
   original.forEach(node=>{if(node!==kicker)detail.appendChild(node);});
   pane.append(summary,more,detail);
   more.addEventListener('click',()=>toggleDetail(more,detail));
@@ -73,7 +69,6 @@ function compactSearch(){
   const intro=card.querySelector(':scope > p');
   const core=cell?.querySelector('p')?.textContent?.trim()||intro?.textContent?.trim()||'';
   if(!core)return;
-
   const original=[...card.children];
   const summary=document.createElement('div');
   summary.className='cc221-search-summary';
@@ -98,7 +93,6 @@ function mobileDrawerClick(e){
   const actions=btn.closest('.actions');
   const pane=root?.querySelector(`[data-pane="${btn.dataset.drawer}"]`);
   if(!actions||!pane)return;
-
   setTimeout(()=>{
     if(!document.body.contains(btn)||!document.body.contains(pane))return;
     const open=pane.classList.contains('show');
