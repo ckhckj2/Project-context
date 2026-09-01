@@ -36,7 +36,7 @@ const REVIEWS={
 
 function topic(q){
   const s=String(q||'').trim();
-  if(!s)return null;
+  if(!s||COMPARE.test(s))return null;
   if(/심의\s*(종류|뭐|무엇|어떤)|어떤\s*심의|심의.*확인|심의.*대상.*한번|주요\s*심의/i.test(s))return {kind:'overview'};
   if(/건축\s*심의|건축위원회/i.test(s))return {kind:'review',key:'building'};
   if(/경관\s*심의|경관위원회/i.test(s))return {kind:'review',key:'landscape'};
