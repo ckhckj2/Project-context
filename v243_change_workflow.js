@@ -7,6 +7,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&
 const CHANGE=/(변경\s*(?:업무|허가|신고|승인|인가)|(?:허가|신고|승인|인가|인허가)\s*(?:사항\s*)?변경|사업계획\s*변경|사업시행계획\s*변경|실시계획\s*변경|공장설립[^\n]*변경|설계변경[^\n]*(?:허가|신고|승인|인가|인허가|행정|절차)|경미한\s*변경)/i;
 const EXCLUDE=/용도\s*변경/i;
 const WHO_ONLY=/(누구에게|누구한테|어디에\s*물어|뭐라고\s*(?:말|물어)|문의하면)/i;
+const COMPARE=/(?:차이|비교|vs\.?|다른\s*점|어떻게\s*달라|뭐가\s*달라|둘\s*중)/i;
 
 const SOURCES={
   building:['건축법 제16조 · 국가법령정보센터','https://www.law.go.kr/LSW/lsLinkCommonInfo.do?ancYnChk=&chrClsCd=010202&lsJoLnkSeq=1026847027'],
@@ -20,12 +21,13 @@ const SOURCES={
 const GUIDES={
   building:{
     tag:'건축법 · 허가/신고사항 변경',
-    title:'건축허가 변경은 “달라진 도면”보다 기존 허가사항과의 차이부터 판단해요',
-    summary:'건축법상 허가·신고사항을 바꾸는 경우에는 변경 전에 변경허가·변경신고 대상인지, 경미한 변경 또는 사용승인 때 일괄신고 가능한 범위인지 확인해야 해요.',
+    classification:'인허가 실무 · 승인 후 변경관리',
+    title:'변경허가·변경신고는 도면수정이 아니라 승인 후 변경관리 절차예요',
+    summary:'기존 승인도서와 달라지는 설계를 합법적인 승인도서로 다시 연결하는 업무예요. 변경허가·변경신고·경미한 변경·사용승인 시 일괄신고 가능성을 변경 전에 구분합니다.',
     steps:[
-      ['기존 허가 기준본 고정','허가서·허가도서·조건부여사항·협의의견 중 현재 유효한 기준본과 승인일을 확인합니다.'],
+      ['원 승인경로·기준본 고정','건축허가인지 건축신고인지 확인하고, 허가서·신고필증·승인도서·조건·협의의견 중 현재 유효한 기준본을 고정합니다.'],
       ['변경비교표 작성','배치·면적·높이·용도·구조·주차·피난·입면 등 바뀐 항목을 기존/변경으로 나누고 영향도서를 연결합니다.'],
-      ['변경절차와 선행시점 확인','변경허가·변경신고·경미한 변경·사용승인 시 일괄신고 가능성 중 무엇인지 사내 검토 후 허가권자 기준을 확인합니다.']
+      ['처리유형·선행시점 확인','변경의 종류와 면적 등 시행령 기준을 대조해 변경허가·변경신고·경미한 변경·일괄신고 중 무엇인지 사내 검토 후 허가권자와 확인합니다.']
     ],
     more:[
       ['연쇄 영향 확인','최초 허가 때 의제·협의된 소방, 구조, 개발행위, 도로, 경관 등 조건이 다시 영향을 받는지 확인합니다.'],
@@ -118,7 +120,7 @@ const GUIDES={
 
 function classify(q){
   q=String(q||'').trim();
-  if(!q||!CHANGE.test(q)||EXCLUDE.test(q)||WHO_ONLY.test(q))return null;
+  if(!q||!CHANGE.test(q)||EXCLUDE.test(q)||WHO_ONLY.test(q)||COMPARE.test(q))return null;
   if(/정비사업|재개발|재건축|사업시행계획/i.test(q))return 'renewal';
   if(/주택법|사업계획\s*(?:승인)?\s*변경|공동주택\s*사업계획/i.test(q))return 'housing';
   if(/공항|비행장|항공.*실시계획/i.test(q))return 'airport';
@@ -163,7 +165,7 @@ function selectRoute(key){
 function renderGuide(key){
   const d=GUIDES[key],out=$('searchResult');if(!d||!out)return false;
   const ctx=contextText(),source=SOURCES[d.source];
-  out.innerHTML=`<div class="result-card cc243-card" data-cc221="1" data-cc243-guide="${esc(key)}"><div class="label">CHANGE HOW · LV3 · 척척</div><h3>${esc(d.title)}</h3>${ctx?`<div class="cc243-context">현재 선택 · ${esc(ctx)}</div>`:''}<div class="cc243-tag">${esc(d.tag)}</div><p class="cc243-summary">${esc(d.summary)}</p><div class="cc243-steps"><small>지금 할 일</small>${d.steps.map(([t,b],i)=>`<div><em>${i+1}</em><section><b>${esc(t)}</b><p>${esc(b)}</p></section></div>`).join('')}</div><div class="cc243-done"><small>변경비교표 최소 항목</small><b>변경항목 · 기존 승인내용 · 변경내용 · 영향도서 · 협의대상 · 절차판단 · 처리시점</b></div><div class="cc243-more"><div class="cc243-more-steps">${d.more.map(([t,b],i)=>`<div><em>${i+4}</em><section><b>${esc(t)}</b><p>${esc(b)}</p></section></div>`).join('')}</div><div class="cc243-caution"><b>주의</b><span>${esc(d.caution)}</span></div><a class="cc243-source" href="${esc(source[1])}" target="_blank" rel="noopener noreferrer">${esc(source[0])} ↗</a></div><div class="cc243-switch"><small>다른 승인경로 보기</small><button data-cc243-back>승인경로 다시 선택</button></div></div>`;
+  out.innerHTML=`<div class="result-card cc243-card" data-cc221="1" data-cc243-guide="${esc(key)}"><div class="label">CHANGE HOW · LV3 · 척척</div><h3>${esc(d.title)}</h3>${ctx?`<div class="cc243-context">현재 선택 · ${esc(ctx)}</div>`:''}${d.classification?`<div class="cc243-classification">업무 분류 · ${esc(d.classification)}</div>`:''}<div class="cc243-tag">${esc(d.tag)}</div><p class="cc243-summary">${esc(d.summary)}</p><div class="cc243-steps"><small>지금 할 일</small>${d.steps.map(([t,b],i)=>`<div><em>${i+1}</em><section><b>${esc(t)}</b><p>${esc(b)}</p></section></div>`).join('')}</div><div class="cc243-done"><small>변경비교표 최소 항목</small><b>변경항목 · 기존 승인내용 · 변경내용 · 영향도서 · 협의대상 · 절차판단 · 처리시점</b></div><div class="cc243-more"><div class="cc243-more-steps">${d.more.map(([t,b],i)=>`<div><em>${i+4}</em><section><b>${esc(t)}</b><p>${esc(b)}</p></section></div>`).join('')}</div><div class="cc243-caution"><b>주의</b><span>${esc(d.caution)}</span></div><a class="cc243-source" href="${esc(source[1])}" target="_blank" rel="noopener noreferrer">${esc(source[0])} ↗</a></div><div class="cc243-switch"><small>다른 승인경로 보기</small><button data-cc243-back>승인경로 다시 선택</button></div></div>`;
   out.querySelector('[data-cc243-back]')?.addEventListener('click',()=>renderChooser(false));
   return true;
 }
@@ -198,7 +200,7 @@ function installStyle(){
   if($('#cc243Style'))return;
   const s=document.createElement('style');s.id='cc243Style';s.textContent=`
   .cc243-chooser .cc242-toggle{display:none!important}.cc243-chooser>p{max-width:760px;color:#63738A;font-size:11.5px;line-height:1.6}.cc243-routes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}.cc243-routes button{position:relative;display:grid;gap:4px;padding:13px 38px 13px 14px;border:1px solid #E0E7F1;border-radius:12px;background:#fff;text-align:left;cursor:pointer}.cc243-routes button:hover{border-color:#AEC5EF;background:#F6F9FF}.cc243-routes b{color:#334B6B;font-size:11.5px}.cc243-routes span{color:#77869A;font-size:9.5px;line-height:1.4}.cc243-routes em{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#3A69C3;font-style:normal;font-weight:950}
-  .cc243-tag,.cc243-context{display:inline-block;margin:0 6px 9px 0;padding:5px 8px;border-radius:999px;background:#F1F5FB;color:#65758B;font-size:9px;font-weight:900}.cc243-summary{margin:0 0 12px;color:#5D6F88;font-size:11.5px;line-height:1.6}.cc243-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.cc243-steps>small{grid-column:1/-1;color:#78879B;font-size:9px;font-weight:950}.cc243-steps>div,.cc243-more-steps>div{display:grid;grid-template-columns:25px 1fr;gap:8px;padding:10px 11px;border:1px solid #E1E7F1;border-radius:11px;background:#fff}.cc243-steps em,.cc243-more-steps em{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:#EAF2FF;color:#3166CE;font-size:9px;font-style:normal;font-weight:950}.cc243-steps section b,.cc243-more-steps section b{display:block;color:#344A68;font-size:11.5px}.cc243-steps section p,.cc243-more-steps section p{margin:4px 0 0;color:#687991;font-size:10px;line-height:1.5}
+  .cc243-tag,.cc243-context,.cc243-classification{display:inline-block;margin:0 6px 9px 0;padding:5px 8px;border-radius:999px;background:#F1F5FB;color:#65758B;font-size:9px;font-weight:900}.cc243-classification{background:#EEF7F1;color:#44745A}.cc243-summary{margin:0 0 12px;color:#5D6F88;font-size:11.5px;line-height:1.6}.cc243-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.cc243-steps>small{grid-column:1/-1;color:#78879B;font-size:9px;font-weight:950}.cc243-steps>div,.cc243-more-steps>div{display:grid;grid-template-columns:25px 1fr;gap:8px;padding:10px 11px;border:1px solid #E1E7F1;border-radius:11px;background:#fff}.cc243-steps em,.cc243-more-steps em{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;background:#EAF2FF;color:#3166CE;font-size:9px;font-style:normal;font-weight:950}.cc243-steps section b,.cc243-more-steps section b{display:block;color:#344A68;font-size:11.5px}.cc243-steps section p,.cc243-more-steps section p{margin:4px 0 0;color:#687991;font-size:10px;line-height:1.5}
   .cc243-card:not(.cc242-expanded) .cc243-steps section p{display:none}.cc243-card:not(.cc242-expanded) .cc243-more{display:none}.cc243-done{margin-top:9px;padding:10px 12px;border:1px solid #D8EBDD;border-radius:11px;background:#F4FAF6}.cc243-done small{display:block;margin-bottom:3px;color:#538069;font-size:9px;font-weight:950}.cc243-done b{color:#365F49;font-size:10.5px;line-height:1.5}.cc243-more{margin-top:9px}.cc243-more-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.cc243-caution{display:flex;gap:9px;margin-top:8px;padding:10px 11px;border-radius:11px;background:#FFF9F2;border:1px solid #F1E4D3}.cc243-caution b{color:#90602A;font-size:9.5px}.cc243-caution span{color:#756553;font-size:10px;line-height:1.5}.cc243-source{display:inline-block;margin-top:8px;color:#3767BE;font-size:9.5px;font-weight:850;text-decoration:none}.cc243-switch{display:flex;align-items:center;gap:8px;margin-top:10px}.cc243-switch small{color:#7B899C;font-size:9px;font-weight:900}.cc243-switch button{padding:7px 9px;border:1px solid #DDE5F0;border-radius:999px;background:#fff;color:#506680;font-size:9.5px;font-weight:900}
   @media(max-width:800px){.cc243-routes,.cc243-steps,.cc243-more-steps{grid-template-columns:1fr}.cc243-steps>small{grid-column:auto}.cc243-card:not(.cc242-expanded) .cc243-steps>div:nth-child(n+3){display:none}.cc243-switch{align-items:flex-start;flex-direction:column}}
   `;document.head.appendChild(s);
