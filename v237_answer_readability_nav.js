@@ -1,8 +1,16 @@
 (()=>{
 'use strict';
-const VERSION='2.1.37';
+const VERSION='2.1.38';
 const $=id=>document.getElementById(id);
 let searchOrigin='';
+
+function loadUnifiedSearchTypography(){
+  if(document.querySelector('script[data-cc238]'))return;
+  const s=document.createElement('script');
+  s.src='./v238_search_typography_unify.js?v=2138';
+  s.dataset.cc238='1';
+  document.head.appendChild(s);
+}
 
 function installStyle(){
   if($('cc237Style'))return;
@@ -100,7 +108,7 @@ function captureNavigation(e){
 }
 
 function install(){
-  installStyle();ensureBack();
+  installStyle();ensureBack();loadUnifiedSearchTypography();
   window.addEventListener('click',captureNavigation,true);
   document.addEventListener('click',()=>setTimeout(syncBack,90));
   document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
