@@ -79,16 +79,16 @@ function renderSelect(route,preserve=false){
     const key=b.dataset.cc244Item,on=!state.selected.includes(key);
     state.selected=on?[...state.selected,key]:state.selected.filter(x=>x!==key);
     b.classList.toggle('selected',on);b.setAttribute('aria-pressed',String(on));b.querySelector('span').textContent=on?'✓':'＋';
-    $('#cc244Count').textContent=`${state.selected.length}개 선택`;$('#cc244Next').disabled=!state.selected.length;
+    $('cc244Count').textContent=`${state.selected.length}개 선택`;$('cc244Next').disabled=!state.selected.length;
   }));
-  $('#cc244Next').addEventListener('click',renderInputs);wireGuide();
+  $('cc244Next').addEventListener('click',renderInputs);wireGuide();
 }
 function renderInputs(){
   const out=$('searchResult');if(!out||!state.selected.length)return;
   out.innerHTML=shell(`<p class="cc244-lead">모르는 값은 비워두세요. 결과에서는 ‘확인 필요’로 표시됩니다.</p><div class="cc244-inputs">${state.selected.map(k=>`<div data-cc244-row="${k}"><b>${esc(IMPACTS[k].label)}</b><label><small>기존 승인내용</small><input data-side="before" value="${esc(state.values[k]?.before||'')}" placeholder="예: 43층 / 273세대"></label><span>→</span><label><small>변경내용</small><input data-side="after" value="${esc(state.values[k]?.after||'')}" placeholder="예: 48층 / 251세대"></label></div>`).join('')}</div><div class="cc244-bottom"><button class="cc244-secondary" id="cc244Prev">← 항목 다시 선택</button><button class="cc244-primary" id="cc244Analyze">영향 초안 만들기 →</button></div>`,2,'기존과 변경 내용을 비교해 주세요');
   const collectValues=()=>{out.querySelectorAll('[data-cc244-row]').forEach(row=>{const k=row.dataset.cc244Row;state.values[k]={before:row.querySelector('[data-side="before"]').value.trim(),after:row.querySelector('[data-side="after"]').value.trim()}})};
-  $('#cc244Prev').addEventListener('click',()=>{collectValues();renderSelect(state.route,true)});
-  $('#cc244Analyze').addEventListener('click',()=>{
+  $('cc244Prev').addEventListener('click',()=>{collectValues();renderSelect(state.route,true)});
+  $('cc244Analyze').addEventListener('click',()=>{
     collectValues();
     renderResult();
   });wireGuide();
@@ -105,7 +105,7 @@ function renderResult(){
     out.querySelectorAll('[data-cc244-tab]').forEach(x=>x.classList.toggle('active',x===b));
     out.querySelectorAll('[data-cc244-panel]').forEach(x=>x.classList.toggle('active',x.dataset.cc244Panel===b.dataset.cc244Tab));
   }));
-  $('#cc244Edit').addEventListener('click',renderInputs);wireGuide();
+  $('cc244Edit').addEventListener('click',renderInputs);wireGuide();
 }
 function attach(){
   const root=$('searchResult');if(!root)return;
@@ -117,7 +117,7 @@ function attach(){
   });
 }
 function installStyle(){
-  if($('#cc244Style'))return;
+  if($('cc244Style'))return;
   const s=document.createElement('style');s.id='cc244Style';s.textContent=`
   .cc243-switch .cc244-launch{margin-left:auto;border-color:#AEC4EC!important;background:#EEF4FF!important;color:#2E61C1!important}.cc244-analyzer{position:relative;margin-top:12px;padding:22px 24px;border:1px solid #DFE6F0;border-radius:16px;background:#fff;box-shadow:0 10px 28px rgba(45,66,96,.05)}.cc244-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.cc244-head h3{margin:7px 0 0;color:#253A57;font-size:20px;line-height:1.35}.cc244-head>button{padding:7px 10px;border:1px solid #DDE5F0;border-radius:999px;background:#fff;color:#62738A;font-size:9.5px;font-weight:900}.cc244-route{display:inline-block;margin-top:10px;padding:5px 8px;border-radius:999px;background:#EEF4FF;color:#3564BD;font-size:9px;font-weight:900}.cc244-stage{display:flex;align-items:center;max-width:520px;margin:15px 0 13px}.cc244-stage span{color:#A0AABD;font-size:9px;font-weight:900}.cc244-stage span.on{color:#3264C4}.cc244-stage i{flex:1;height:1px;margin:0 9px;background:#E1E7F0}.cc244-lead{margin:0 0 11px;color:#65768D;font-size:11px;line-height:1.55}.cc244-options{display:flex;flex-wrap:wrap;gap:7px}.cc244-options button{display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid #DDE5EF;border-radius:999px;background:#fff;color:#4C607D;font-size:10.5px;font-weight:850}.cc244-options button.selected{border-color:#8FB0EB;background:#EDF4FF;color:#285BB9}.cc244-options button span{font-size:10px}.cc244-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:16px}.cc244-bottom small{color:#74849A;font-size:9.5px;font-weight:900}.cc244-primary,.cc244-secondary{padding:9px 12px;border-radius:10px;font-size:10px;font-weight:900}.cc244-primary{border:1px solid #3E70D5;background:#4779DD;color:#fff}.cc244-primary:disabled{border-color:#DCE3ED;background:#E9EDF3;color:#A4ADBA}.cc244-secondary{border:1px solid #DDE5EF;background:#fff;color:#5A6D87}
   .cc244-inputs{display:grid;gap:8px}.cc244-inputs>div{display:grid;grid-template-columns:115px 1fr 20px 1fr;gap:8px;align-items:end;padding:10px;border:1px solid #E1E7F0;border-radius:11px}.cc244-inputs>div>b{align-self:center;color:#354C6A;font-size:10.5px}.cc244-inputs label{display:grid;gap:4px}.cc244-inputs label small{color:#7D8A9C;font-size:8.5px;font-weight:850}.cc244-inputs input{min-width:0;padding:8px 9px;border:1px solid #DCE4EF;border-radius:8px;color:#354A67;font-size:10px}.cc244-inputs>div>span{align-self:center;color:#8B98AA;text-align:center}
