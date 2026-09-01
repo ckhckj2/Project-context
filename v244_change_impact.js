@@ -86,9 +86,10 @@ function renderSelect(route,preserve=false){
 function renderInputs(){
   const out=$('searchResult');if(!out||!state.selected.length)return;
   out.innerHTML=shell(`<p class="cc244-lead">모르는 값은 비워두세요. 결과에서는 ‘확인 필요’로 표시됩니다.</p><div class="cc244-inputs">${state.selected.map(k=>`<div data-cc244-row="${k}"><b>${esc(IMPACTS[k].label)}</b><label><small>기존 승인내용</small><input data-side="before" value="${esc(state.values[k]?.before||'')}" placeholder="예: 43층 / 273세대"></label><span>→</span><label><small>변경내용</small><input data-side="after" value="${esc(state.values[k]?.after||'')}" placeholder="예: 48층 / 251세대"></label></div>`).join('')}</div><div class="cc244-bottom"><button class="cc244-secondary" id="cc244Prev">← 항목 다시 선택</button><button class="cc244-primary" id="cc244Analyze">영향 초안 만들기 →</button></div>`,2,'기존과 변경 내용을 비교해 주세요');
-  $('#cc244Prev').addEventListener('click',()=>renderSelect(state.route,true));
+  const collectValues=()=>{out.querySelectorAll('[data-cc244-row]').forEach(row=>{const k=row.dataset.cc244Row;state.values[k]={before:row.querySelector('[data-side="before"]').value.trim(),after:row.querySelector('[data-side="after"]').value.trim()}})};
+  $('#cc244Prev').addEventListener('click',()=>{collectValues();renderSelect(state.route,true)});
   $('#cc244Analyze').addEventListener('click',()=>{
-    out.querySelectorAll('[data-cc244-row]').forEach(row=>{const k=row.dataset.cc244Row;state.values[k]={before:row.querySelector('[data-side="before"]').value.trim(),after:row.querySelector('[data-side="after"]').value.trim()}});
+    collectValues();
     renderResult();
   });wireGuide();
 }
