@@ -5,7 +5,9 @@ const PROJECT_STORAGE='cc_projects_v1';
 const ACTIVE_STORAGE='cc_active_project_v1';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const COMPARE=/(?:차이|비교|vs\\.?|다른\\s*점|어떻게\\s*달라|뭐가\\s*달라|둘\\s*중)/i;\n\nfunction level(){try{return typeof viewLevel==='function'?viewLevel():Number(localStorage.getItem('pc_level')||1)}catch(e){return 1}}
+const COMPARE=/(?:차이|비교|vs\.?|다른\s*점|어떻게\s*달라|뭐가\s*달라|둘\s*중)/i;
+
+function level(){try{return typeof viewLevel==='function'?viewLevel():Number(localStorage.getItem('pc_level')||1)}catch(e){return 1}}
 function readProjects(){try{const v=JSON.parse(localStorage.getItem(PROJECT_STORAGE)||'[]');return Array.isArray(v)?v:[]}catch(e){return []}}
 function activeProject(){try{const id=localStorage.getItem(ACTIVE_STORAGE)||'';return readProjects().find(p=>p.id===id)||null}catch(e){return null}}
 
