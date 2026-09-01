@@ -150,7 +150,7 @@ function installStyle(){
   `;document.head.appendChild(s);
 }
 function install(){
-  installStyle();document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  installStyle();setTimeout(()=>document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION),0);
   const previous=window.runSearch;
   window.runSearch=function(){const q=$('searchInput')?.value.trim()||'';if(!render(q)&&typeof previous==='function')return previous();};
   window.addEventListener('click',intercept,true);window.addEventListener('keydown',intercept,true);
