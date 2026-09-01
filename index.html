@@ -5,17 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#FBFCFE">
 <title>척척 — 건축 실무, 물으면 척척</title>
-<link rel="stylesheet" href="./v2.css?v=2134">
-<link rel="stylesheet" href="./v2_brand.css?v=2134">
-<link rel="stylesheet" href="./v211_ui.css?v=2134">
-<link rel="stylesheet" href="./v212_sidebar.css?v=2134">
-<link rel="stylesheet" href="./v213_logo.css?v=2134">
-<link rel="stylesheet" href="./v215_help_cards.css?v=2134">
-<link rel="stylesheet" href="./v216_flow.css?v=2134">
-<link rel="stylesheet" href="./v219_ask_mascot.css?v=2134">
-<link rel="stylesheet" href="./v220_typography.css?v=2134">
-<link rel="stylesheet" href="./v221_progressive.css?v=2134">
-<link rel="stylesheet" href="./v223_ask_router.css?v=2134">
+<link rel="stylesheet" href="./v2.css?v=2135">
+<link rel="stylesheet" href="./v2_brand.css?v=2135">
+<link rel="stylesheet" href="./v211_ui.css?v=2135">
+<link rel="stylesheet" href="./v212_sidebar.css?v=2135">
+<link rel="stylesheet" href="./v213_logo.css?v=2135">
+<link rel="stylesheet" href="./v215_help_cards.css?v=2135">
+<link rel="stylesheet" href="./v216_flow.css?v=2135">
+<link rel="stylesheet" href="./v219_ask_mascot.css?v=2135">
+<link rel="stylesheet" href="./v220_typography.css?v=2135">
+<link rel="stylesheet" href="./v221_progressive.css?v=2135">
+<link rel="stylesheet" href="./v223_ask_router.css?v=2135">
 </head>
 <body>
 <div id="masterBar"><div class="master-copy"><small>MASTER TEST MODE</small><b>레벨별 화면 미리보기</b></div><div class="master-levels" id="masterLevels"></div><div class="master-note">마스터 자격은 유지됩니다. 보기 레벨만 바뀌며 실제 승급 기록과 분리됩니다.</div></div>
@@ -24,7 +24,7 @@
   <div class="cc-side-brand">
     <div class="cc-logo" aria-label="척척"><div class="cc-wordmark">척척<span class="cc-rays"><i></i><i></i><i></i></span></div><span class="cc-smile"></span></div>
     <div class="cc-tagline">건축 실무, 물으면 <b>척척</b></div>
-    <span class="version">v2.1.34</span>
+    <span class="version">v2.1.35</span>
   </div>
   <nav class="nav" id="sideNav">
     <button data-view="home"><span class="ico">⌂</span>홈</button>
@@ -40,7 +40,7 @@
   <div class="level-mini"><div class="cc-mini-user"><span>♟</span><div><small>CURRENT LEVEL</small><b id="miniLevel">LV.1 · 신입사원</b></div></div><button data-view="level">내 학습 현황 보기 →</button></div>
 </aside>
 <main class="main"><div class="inner">
-  <div class="mobile-head"><div class="mobile-brand"><div class="cc-logo"><div class="cc-wordmark">척척<span class="cc-rays"><i></i><i></i><i></i></span></div><span class="cc-smile"></span></div><div class="cc-tagline">건축 실무, 물으면 <b>척척</b></div></div><span class="version">v2.1.34</span></div>
+  <div class="mobile-head"><div class="mobile-brand"><div class="cc-logo"><div class="cc-wordmark">척척<span class="cc-rays"><i></i><i></i><i></i></span></div><span class="cc-smile"></span></div><div class="cc-tagline">건축 실무, 물으면 <b>척척</b></div></div><span class="version">v2.1.35</span></div>
   <section id="view-home" class="view active">
     <div class="cc-home-tools"><button class="cc-icon-btn" aria-label="알림">♧<span class="cc-noti-dot"></span></button><button class="cc-help-btn" data-view="search">도움말</button></div>
     <div class="hero">
@@ -89,37 +89,38 @@
 
   <section id="view-context" class="view"><div class="back-row"><button data-view="home">← 처음으로</button><b>내 업무 맥락</b></div><div id="contextResult"></div></section>
   <section id="view-search" class="view"><div class="page-card search-card"><div class="kicker">SMART SEARCH · 척척</div><h2>척척에게 무엇이든 물어보세요</h2><p class="lead">업무를 요청받은 상황을 자연스럽게 적어보세요. 업무 의미, 먼저 볼 자료, 확인처와 협업할 사람까지 실무 맥락으로 풀어드립니다.</p><div class="caps"><button class="cap" data-example="책임님께 법규검토 업무를 요청받았어요. 무엇부터 확인하면 될까요?"><small>01 · WORK REQUEST</small><b>업무를 요청받았어요. 어떻게 시작할까요?</b><span>법규검토 · 지번 · 면적표 · 도로 등</span></button><button class="cap" data-example="QGIS 확인을 요청받았어요. 어떤 내용을 보면 될까요?"><small>02 · CLARIFY</small><b>확인 범위가 조금 애매해요</b><span>가능한 의미를 좁혀서 선택</span></button><button class="cap" data-example="보고서 작성 중인데 누구에게 어떤 내용으로 문의하면 좋을까요?"><small>03 · WHO / HOW</small><b>누구에게 어떻게 문의할까요?</b><span>문의 대상 · 실제 질문 방향</span></button></div><div class="searchbox"><input id="searchInput" placeholder="예: 책임님께 법규검토 업무를 요청받았어요 / QGIS 확인을 요청받았어요"><button id="searchGo">물어보기 →</button></div><div class="examples"><button data-example="책임님께 법규검토 업무를 요청받았어요. 무엇부터 보면 될까요?">법규검토 요청받았어요</button><button data-example="QGIS 확인을 요청받았어요. 어떤 내용을 보면 될까요?">QGIS 확인 요청</button><button data-example="지번 확인을 요청받았어요. 어디서 확인하면 될까요?">지번 확인 요청</button><button data-example="면적표 검토를 요청받았어요. 무엇부터 맞추면 될까요?">면적표 검토 요청</button></div><div id="searchResult" class="search-result"></div></div></section>
-  <section id="view-quiz" class="view"><div class="quiz-top"><div class="page-card quiz-card"><div class="kicker">CURRENT LEVEL</div><div class="rank-big" id="quizRank"></div><p class="lead" id="quizDesc"></p><div class="progress"><div id="quizProgress"></div></div><button class="primary quiz-start" id="startQuiz">퀴즈 풀기 →</button><p class="lead" style="font-size:10px">30문항 문제은행에서 매번 5문제가 랜덤 출제됩니다.</p></div><div class="page-card"><div class="kicker">LEVEL PATH</div><div class="level-path" id="quizPath"></div></div></div><div class="quiz-area" id="quizArea"><div class="qbox"><div class="qmeta"><span id="qCount"></span><span id="qDifficulty"></span><span id="qScore"></span></div><div class="qtext" id="qText"></div><input id="qInput" placeholder="단답형으로 입력"><button class="primary quiz-start" id="qSubmit">제출하기</button><div class="feedback" id="qFeedback"></div></div></div></section>
+  <section id="view-quiz" class="view"><div class="quiz-top"><div class="page-card quiz-card"><div class="kicker">CURRENT LEVEL</div><div class="rank-big" id="quizRank"></div><p class="lead" id="quizDesc"></p><div class="progress"><div id="quizProgress"></div><button class="primary quiz-start" id="startQuiz">퀴즈 풀기 →</button><p class="lead" style="font-size:10px">30문항 문제은행에서 매번 5문제가 랜덤 출제됩니다.</p></div><div class="page-card"><div class="kicker">LEVEL PATH</div><div class="level-path" id="quizPath"></div></div></div><div class="quiz-area" id="quizArea"><div class="qbox"><div class="qmeta"><span id="qCount"></span><span id="qDifficulty"></span><span id="qScore"></span></div><div class="qtext" id="qText"></div><input id="qInput" placeholder="단답형으로 입력"><button class="primary quiz-start" id="qSubmit">제출하기</button><div class="feedback" id="qFeedback"></div></div></div></section>
   <section id="view-level" class="view"><div id="levelContent"></div></section>
 </div></main></div>
 <nav class="bottom-nav" id="bottomNav"><button data-view="home"><span>⌂</span>홈</button><button data-view="search"><span>⌕</span>검색</button><button data-view="quiz"><span>◇</span>퀴즈</button><button data-view="level"><span>▱</span>내 레벨</button></nav>
 <div class="overlay" id="masterOverlay"><div class="overlay-box"><div class="crown">👑✨</div><div class="kicker" style="color:#9B751D">척척 · LEGENDARY ALL CLEAR</div><div class="master-title">건 축 마 스 터</div><div style="font-size:10px;font-weight:1000;letter-spacing:.16em;color:#B07C19">LV.MAX · ARCHITECTURE MASTER</div><p>축하합니다. 이제 적어도 “누구한테 물어봐야 하지?”는 압니다.<br>모르면 검색 · 애매하면 확인 · 혼자 단정 금지.</p><button id="closeMaster">간지 유지하고 계속하기 →</button></div></div>
-<script src="./v2_data.js?v=2134"></script>
-<script src="./v2_quiz.js?v=2134"></script>
-<script src="./v2_core.js?v=2134"></script>
-<script src="./v21_search.js?v=2134"></script>
-<script src="./v211_polish.js?v=2134"></script>
-<script src="./v212_sidebar.js?v=2134"></script>
-<script src="./v213_logo.js?v=2134"></script>
-<script src="./v215_help_cards.js?v=2134"></script>
-<script src="./v216_flow.js?v=2134"></script>
-<script src="./v219_ask_mascot.js?v=2134"></script>
-<script src="./v216_search_expand.js?v=2134"></script>
-<script src="./v217_precedent_search.js?v=2134"></script>
-<script src="./v218_lv2_context.js?v=2134"></script>
-<script src="./v219_lv2_tools.js?v=2134"></script>
-<script src="./v220_typography.js?v=2134"></script>
-<script src="./v221_progressive.js?v=2134"></script>
-<script src="./v223_ask_router.js?v=2134"></script>
-<script src="./v224_public_classification.js?v=2134"></script>
-<script src="./v226_facility_first.js?v=2134"></script>
-<script src="./v227_public_procurement.js?v=2134"></script>
-<script src="./v228_search_quality.js?v=2134"></script>
-<script src="./v229_glossary.js?v=2134"></script>
-<script src="./v230_projects.js?v=2134"></script>
-<script src="./v231_projects_fix.js?v=2134"></script>
-<script src="./v232_lv3_bim.js?v=2134"></script>
-<script src="./v233_bim_context.js?v=2134"></script>
-<script src="./v234_bim_search_fix.js?v=2134"></script>
+<script src="./v2_data.js?v=2135"></script>
+<script src="./v2_quiz.js?v=2135"></script>
+<script src="./v2_core.js?v=2135"></script>
+<script src="./v21_search.js?v=2135"></script>
+<script src="./v211_polish.js?v=2135"></script>
+<script src="./v212_sidebar.js?v=2135"></script>
+<script src="./v213_logo.js?v=2135"></script>
+<script src="./v215_help_cards.js?v=2135"></script>
+<script src="./v216_flow.js?v=2135"></script>
+<script src="./v219_ask_mascot.js?v=2135"></script>
+<script src="./v216_search_expand.js?v=2135"></script>
+<script src="./v217_precedent_search.js?v=2135"></script>
+<script src="./v218_lv2_context.js?v=2135"></script>
+<script src="./v219_lv2_tools.js?v=2135"></script>
+<script src="./v220_typography.js?v=2135"></script>
+<script src="./v221_progressive.js?v=2135"></script>
+<script src="./v223_ask_router.js?v=2135"></script>
+<script src="./v224_public_classification.js?v=2135"></script>
+<script src="./v226_facility_first.js?v=2135"></script>
+<script src="./v227_public_procurement.js?v=2135"></script>
+<script src="./v228_search_quality.js?v=2135"></script>
+<script src="./v229_glossary.js?v=2135"></script>
+<script src="./v230_projects.js?v=2135"></script>
+<script src="./v231_projects_fix.js?v=2135"></script>
+<script src="./v232_lv3_bim.js?v=2135"></script>
+<script src="./v233_bim_context.js?v=2135"></script>
+<script src="./v234_bim_search_fix.js?v=2135"></script>
+<script src="./v235_permit_reviews.js?v=2135"></script>
 </body>
 </html>
