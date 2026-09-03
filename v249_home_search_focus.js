@@ -122,6 +122,7 @@ function installStyle(){
   style.textContent=`
   /* v2.1.51 — first-screen focus: one question, optional structure, details on demand */
   .cc251-fold{margin-top:12px;border:1px solid #E2E8F1;border-radius:14px;background:#fff;box-shadow:0 3px 14px rgba(15,23,42,.025);overflow:hidden}
+  .cc251-fold:not([open])>:not(summary){display:none!important}
   .cc251-fold>summary{list-style:none;min-height:52px;padding:0 17px;display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer;color:#263A5C}
   .cc251-fold>summary::-webkit-details-marker{display:none}
   .cc251-fold>summary>span{display:flex;align-items:baseline;gap:10px;min-width:0}
