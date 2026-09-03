@@ -39,19 +39,27 @@ function prepareHome(){
 
   const heading=hero&&hero.querySelector('h1');
   const lead=hero&&hero.querySelector(':scope > .lead');
-  if(lead)lead.textContent='업무를 문장으로 물어보면, 필요한 첫 행동부터 정리해드려요.';
+  if(lead)lead.textContent='업무·프로젝트·단계를 연결해 지금 필요한 판단부터 확인하세요.';
   if(ask&&hero&&form){
     const askTitle=ask.querySelector('.cc-ask-title');
     const askInput=ask.querySelector('#homeSearch');
-    if(askTitle)askTitle.innerHTML='<b>척척</b>에게 바로 물어보세요';
+    if(askTitle)askTitle.innerHTML='<b>빠르게</b> 질문하기';
     if(askInput)askInput.placeholder='예: 입면 디자인 검토를 맡았어요. 무엇부터 확인할까요?';
     hero.insertBefore(ask,form);
   }
 
   if(form&&!form.closest('.cc251-structured')){
-    const fold=makeFold('cc251-structured','직접 선택해서 찾기','업무 · 프로젝트 · 단계');
+    const fold=makeFold('cc251-structured','내 업무 맥락 보기','업무 · 프로젝트 · 단계를 연결해 전후업무와 수행방법 확인');
     form.parentNode.insertBefore(fold,form);
     fold.append(form);
+  }
+
+  const structured=hero&&hero.querySelector('.cc251-structured');
+  if(structured&&ask&&!structured.closest('.cc251-entry-grid')){
+    const entry=document.createElement('div');
+    entry.className='cc251-entry-grid';
+    hero.insertBefore(entry,ask);
+    entry.append(structured,ask);
   }
 
   preparePopularQuestions();
@@ -141,7 +149,8 @@ function installStyle(){
 
   .cc251-home .hero{padding-bottom:0!important}
   .cc251-home .hero>.lead{max-width:560px!important}
-  .cc251-home .cc-ask-card{min-height:0!important;max-width:900px!important;margin:24px auto 0!important;padding:20px 22px!important;border-color:#DCE6F5!important}
+  .cc251-entry-grid{position:relative;z-index:2;max-width:900px;margin:24px auto 0;display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,.92fr);gap:12px;align-items:start}
+  .cc251-home .cc-ask-card{min-height:166px!important;max-width:none!important;margin:0!important;padding:20px 22px!important;border-color:#DCE6F5!important;background:#fff!important;box-shadow:0 5px 18px rgba(15,23,42,.035)!important}
   .cc251-home .cc-ask-card:after{display:none!important}
   .cc251-home .cc-ask-title{margin-bottom:11px!important}
   .cc251-home .cc251-popular-fold{margin-top:10px;border-color:#DFE7F3;background:rgba(255,255,255,.72);box-shadow:none}
@@ -151,7 +160,17 @@ function installStyle(){
   .cc251-popular-body{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px 12px}
   .cc251-popular-body button{border:1px solid #E0E7F1;background:#fff;border-radius:999px;padding:7px 9px;color:#60728C;font-size:9px;font-weight:850;cursor:pointer}
 
-  .cc251-home .cc251-structured{max-width:900px;margin:10px auto 0}
+  .cc251-home .cc251-structured{max-width:none;margin:0;border:0;background:linear-gradient(145deg,#3479F5,#205FD9);box-shadow:0 10px 24px rgba(37,99,235,.19)}
+  .cc251-home .cc251-structured>summary{min-height:166px;padding:22px 24px;color:#fff}
+  .cc251-home .cc251-structured>summary:hover{background:rgba(255,255,255,.045)}
+  .cc251-home .cc251-structured>summary>span{display:grid;gap:9px;align-content:center}
+  .cc251-home .cc251-structured>summary b{font-size:18px;letter-spacing:-.5px}
+  .cc251-home .cc251-structured>summary small{max-width:330px;color:#DCE9FF;font-size:10.5px;line-height:1.55}
+  .cc251-home .cc251-structured>summary i{width:34px;height:34px;flex-basis:34px;background:rgba(255,255,255,.16)}
+  .cc251-home .cc251-structured>summary i:before,.cc251-home .cc251-structured>summary i:after{left:11px;top:16px;width:12px;background:#fff}
+  .cc251-home .cc251-structured[open]{grid-column:1/-1;background:#fff;border:1px solid #DCE6F5}
+  .cc251-home .cc251-structured[open]>summary{min-height:68px;background:linear-gradient(145deg,#3479F5,#205FD9)}
+  .cc251-home .cc251-structured[open]>summary>span{display:flex;gap:10px}
   .cc251-home .cc251-structured>.form{margin:0!important;border:0!important;border-top:1px solid #EDF1F6!important;border-radius:0!important;box-shadow:none!important}
 
   .cc251-home .cc-help-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;margin-top:14px!important}
@@ -181,6 +200,9 @@ function installStyle(){
   .cc251-search .cc251-example-fold>.caps{margin:0!important;padding:12px;border-top:1px solid #EDF1F6;grid-template-columns:repeat(3,minmax(0,1fr))}
 
   @media(max-width:1050px){
+    .cc251-entry-grid{grid-template-columns:1fr}
+    .cc251-home .cc251-structured[open]{grid-column:auto}
+    .cc251-home .cc251-structured>summary,.cc251-home .cc-ask-card{min-height:142px!important}
     .cc251-home .cc-help-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   }
   @media(max-width:700px){
@@ -188,8 +210,14 @@ function installStyle(){
     .cc251-fold>summary>span{display:grid;gap:1px}
     .cc251-fold>summary small{font-size:8.5px}
     .cc251-home .hero h1{text-align:left!important}
-    .cc251-home .cc-ask-card{margin-top:17px!important;padding:15px!important}
-    .cc251-home .cc251-structured{margin-top:9px}
+    .cc251-entry-grid{margin-top:17px;gap:9px}
+    .cc251-home .cc-ask-card{padding:15px!important}
+    .cc251-home .cc251-structured{margin:0}
+    .cc251-home .cc251-structured>summary{min-height:104px!important;padding:16px 17px}
+    .cc251-home .cc251-structured>summary b{font-size:15px}
+    .cc251-home .cc251-structured>summary small{font-size:9.5px}
+    .cc251-home .cc251-structured[open]>summary{min-height:64px!important}
+    .cc251-home .cc-ask-card{min-height:0!important}
     .cc251-home .cc-help-grid{grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:11px!important}
     .cc251-home .cc-help-card{min-height:66px!important;padding:10px!important;grid-template-columns:32px 1fr!important;gap:8px!important}
     .cc251-home .cc-help-icon{width:32px!important;height:32px!important}
