@@ -150,7 +150,7 @@ function installStyle(){
 
   .cc251-home .hero{padding-bottom:0!important}
   .cc251-home .hero>.lead{max-width:560px!important}
-  .cc251-entry-grid{position:relative;z-index:2;max-width:900px;margin:24px auto 0;display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,.92fr);gap:12px;align-items:start}
+  .cc251-entry-grid{position:relative;z-index:2;max-width:900px;margin:24px auto 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
   .cc251-entry-grid.cc251-context-open .cc-ask-card{display:none!important}
   .cc251-home .cc-ask-card{min-height:166px!important;max-width:none!important;margin:0!important;padding:20px 22px!important;border-color:#DCE6F5!important;background:#fff!important;box-shadow:0 5px 18px rgba(15,23,42,.035)!important}
   .cc251-home .cc-ask-card:after{display:none!important}
