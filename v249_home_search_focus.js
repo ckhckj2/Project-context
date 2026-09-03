@@ -73,7 +73,9 @@ function prepareHome(){
 }
 
 function addQuickExample(container,label,query){
-  if(!container||[...container.querySelectorAll('button')].some(b=>b.textContent.trim()===label))return;
+  if(!container)return null;
+  const existing=[...container.querySelectorAll('button')].find(b=>b.textContent.trim()===label);
+  if(existing)return existing;
   const button=document.createElement('button');
   button.type='button';
   button.textContent=label;
@@ -85,6 +87,7 @@ function addQuickExample(container,label,query){
     if(go)go.click();
   });
   container.append(button);
+  return button;
 }
 
 function prepareSearch(){
@@ -103,8 +106,10 @@ function prepareSearch(){
 
   if(examples){
     examples.classList.add('cc251-quick-examples');
-    addQuickExample(examples,'허가·신고 차이','건축허가와 건축신고는 무엇이 다르고, 변경허가와 변경신고는 어떻게 구분하나요?');
-    addQuickExample(examples,'입면 디자인 검토','입면 디자인 검토 업무를 맡았어요. 무엇부터 확인하면 될까요?');
+    const permit=addQuickExample(examples,'허가·신고 차이','건축허가와 건축신고는 무엇이 다르고, 변경허가와 변경신고는 어떻게 구분하나요?');
+    const elevation=addQuickExample(examples,'입면 디자인 검토','입면 디자인 검토 업무를 맡았어요. 무엇부터 확인하면 될까요?');
+    if(permit)examples.insertBefore(permit,examples.children[4]||null);
+    if(elevation)examples.insertBefore(elevation,examples.children[5]||null);
     if(searchbox)searchbox.insertAdjacentElement('afterend',examples);
   }
 
