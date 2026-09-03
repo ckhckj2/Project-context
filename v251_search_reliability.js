@@ -190,11 +190,8 @@ function install(){
   installStyle();
   const previous=window.runSearch;
   window.runSearch=function(){const query=$('searchInput')?.value||'';return finalRoute(query,false)||(typeof previous==='function'?previous():undefined)};
-  $('searchGo')?.addEventListener('click',intercept,true);
-  $('homeSearchBtn')?.addEventListener('click',intercept,true);
-  $('searchInput')?.addEventListener('keydown',intercept,true);
-  $('homeSearch')?.addEventListener('keydown',intercept,true);
-  document.addEventListener('click',event=>{if(event.target.closest?.('[data-example],[data-cc245-query]'))intercept(event)},true);
+  window.addEventListener('click',intercept,true);
+  window.addEventListener('keydown',intercept,true);
   const result=$('searchResult');if(result)new MutationObserver(()=>setTimeout(repairLegacy,260)).observe(result,{childList:true,subtree:true});
   const markVersion=()=>document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
   markVersion();setTimeout(markVersion,40);
