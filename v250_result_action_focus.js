@@ -34,7 +34,7 @@ function currentLevel(){const match=clean($('miniLevel')?.textContent).match(/LV
 
 function textParts(element){
   if(!element)return null;
-  const label=clean(element.querySelector('small')?.textContent||element.querySelector('b')?.textContent||'지금 확인');
+  const label=clean(element.querySelector('small')?.textContent||element.querySelector('b')?.textContent||'지금 확인').replace(/^\d+\s*[·.\-]?\s*/,'');
   const body=clean(element.querySelector('p')?.textContent||element.querySelector('span')?.textContent||element.textContent);
   return body?{label:short(label,28),body:short(body,120)}:null;
 }
@@ -110,6 +110,15 @@ function basicHow(rule,task,phase){
   return `<div class="cc252-pane-head"><small>기본 공개 · HOW</small><b>${esc(phase)} · ${esc(task)} 기본 수행순서</b><span>신입도 업무를 시작할 수 있는 최소 실행정보예요.</span></div><div class="cc252-how-sequence">${rule.steps.map((step,index)=>`<div><small>0${index+1}</small><b>${esc(step)}</b></div>`).join('')}</div><div class="cc252-pane-grid cc252-how-meta"><div><small>기준자료</small><p>${esc(rule.material)}</p></div><div><small>누구와 확인?</small><p>${esc(rule.owner)}</p></div><div><small>완료 기준</small><p>${esc(rule.done)}</p></div></div><div class="cc252-level-note">LV.3부터 전체 체크리스트·협력업체 조정·프로젝트 조건별 판단이 더해집니다.</div>`;
 }
 
+function deepWhy(rule,task,phase){
+  return `<div class="cc252-pane-head"><small>LV.2 · WHY / WHERE</small><b>${esc(task)}의 목적·근거·확인처</b><span>${esc(phase)}에서 적용할 조건과 놓쳤을 때의 영향까지 확인합니다.</span></div><div class="cc252-pane-grid"><div><small>WHY</small><p>${esc(rule.why)}</p></div><div><small>놓치면</small><p>기준자료·적용조건·검토시점이 어긋나 재작업이나 승인·협의 지연이 생길 수 있어요.</p></div><div><small>먼저 볼 자료</small><p>${esc(rule.material)}</p></div><div><small>공식·외부 확인</small><p>프로젝트 원문 기준과 최신 법령·고시·관할기관 안내를 함께 확인하세요.</p></div><div><small>누구와 확인?</small><p>${esc(rule.owner)}</p></div><div><small>완료 기준</small><p>${esc(rule.done)}</p></div></div>`;
+}
+
+function deepHow(rule,task,phase){
+  const checklist=[rule.steps[0],rule.steps[1],rule.steps[2],'관련 도면·수치·분야에 미치는 영향을 교차검토','결과·미결사항·기준일·다음 담당자를 기록하고 공유'];
+  return `<div class="cc252-pane-head"><small>LV.3 · HOW</small><b>${esc(phase)} · ${esc(task)} 실행 절차</b><span>하나의 순서로 실행한 뒤 필요할 때 상세 체크리스트를 펼치세요.</span></div><div class="cc252-how-sequence">${rule.steps.map((step,index)=>`<div><small>0${index+1}</small><b>${esc(step)}</b></div>`).join('')}</div><details class="cc252-deep-detail"><summary>전체 실행 체크리스트 보기</summary><div class="cc252-checklist">${checklist.map((step,index)=>`<div><span>${index+1}</span><p>${esc(step)}</p></div>`).join('')}</div><div class="cc252-pane-grid cc252-how-meta"><div><small>CHECK</small><p>${esc(rule.material)}</p></div><div><small>WHO</small><p>${esc(rule.owner)}</p></div><div><small>완료 기준</small><p>${esc(rule.done)}</p></div></div></details>`;
+}
+
 function bindDrawer(button,pane){
   if(!button||!pane)return button;
   const clone=button.cloneNode(true);
@@ -170,10 +179,15 @@ function patchContext(){
   if(level<2&&whyPane){
     whyPane.innerHTML=basicWhy(rule,task,phase);
     whyButton=bindDrawer(whyButton,whyPane);
+  }else if(level>=2&&whyPane?.querySelector('.cc252-pane-head')){
+    whyPane.innerHTML=deepWhy(rule,task,phase);
   }
   if(level<3&&howPane){
     howPane.innerHTML=basicHow(rule,task,phase);
     howButton=bindDrawer(howButton,howPane);
+  }else if(level>=3&&howPane?.querySelector('.cc252-pane-head')){
+    howPane.innerHTML=deepHow(rule,task,phase);
+    howPane.classList.add('cc252-unified-how');
   }else if(howPane&&!howPane.querySelector(':scope>.cc252-how-sequence')){
     const sequence=document.createElement('div');
     sequence.className='cc252-how-sequence cc252-deep-sequence';
@@ -257,6 +271,12 @@ function installStyle(){
   .cc252-level-note{padding:10px 13px;border:1px solid #DEE6F1;border-top:0;border-radius:0 0 14px 14px;background:#fff;color:#7A8799;font-size:9px;line-height:1.55}
   .cc252-deep-sequence{margin:0!important;border-top:0!important}
   .cc252-unified-how>.cc232-how-steps{display:none!important}
+  .cc252-deep-detail{padding:0 12px 12px;border:1px solid #DEE6F1;border-top:0;border-radius:0 0 14px 14px;background:#fff}
+  .cc252-deep-detail>summary{padding:12px 2px;cursor:pointer;color:#50637E;font-size:10px;font-weight:900}
+  .cc252-checklist{display:grid;gap:6px}
+  .cc252-checklist>div{display:grid;grid-template-columns:23px 1fr;gap:8px;align-items:start}
+  .cc252-checklist span{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#EEF3FB;color:#5270A4;font-size:9px;font-weight:950}
+  .cc252-checklist p{margin:2px 0 0;color:#405570;font-size:10.5px;line-height:1.55}
 
   @media(max-width:760px){
     .cc252-action-grid,.cc252-brief-grid,.cc252-pane-grid,.cc252-how-sequence{grid-template-columns:1fr}
