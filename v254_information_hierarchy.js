@@ -44,7 +44,8 @@ function compactDepthGuide(guide){
 
 function arrangeContext(){
   const root=$('contextResult');
-  if(!root||!root.innerHTML.trim()||root.classList.contains('cc256-building'))return;
+  if(!root||!root.innerHTML.trim())return;
+  if(root.classList.contains('cc256-building')){scheduleContext(140);return}
   const map=root.querySelector('.map');
   const brief=map?.querySelector(':scope>.cc252-context-brief');
   const actions=map?.querySelector(':scope>.actions.cc252-actions');
@@ -194,7 +195,7 @@ function install(){
   if(context)new MutationObserver(()=>scheduleContext()).observe(context,{childList:true,subtree:true});
   if(result)new MutationObserver(()=>scheduleResult()).observe(result,{childList:true,subtree:true});
   document.addEventListener('click',event=>{
-    if(event.target.closest('#analyze,.master-levels button'))scheduleContext(360);
+    if(event.target.closest('#analyze,.master-levels button'))scheduleContext(1050);
     if(event.target.closest('#searchGo,#homeSearchBtn,[data-example]'))scheduleResult(100);
   });
   document.addEventListener('keydown',event=>{
