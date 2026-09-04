@@ -139,10 +139,10 @@ function style(){
 function install(){
   style();document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
   document.addEventListener('click',e=>{
-    if(e.target.closest('#analyze'))setTimeout(enhance,280);
-    if(e.target.closest('.master-levels button'))setTimeout(enhance,230);
+    if(e.target.closest('#analyze'))setTimeout(enhance,40);
+    if(e.target.closest('.master-levels button'))setTimeout(enhance,40);
   });
-  if($('contextResult')?.innerHTML.trim())setTimeout(enhance,320);
+  if($('contextResult')?.innerHTML.trim())setTimeout(enhance,60);
   window.CC_PHASE_CONTEXT={version:VERSION,phases:PHASE_ORDER.length,phaseAware:true};
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
