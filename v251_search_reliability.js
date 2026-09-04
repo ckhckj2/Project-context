@@ -120,10 +120,10 @@ function queryFromEvent(event){
   const target=event.target;
   if(event.type==='keydown'&&event.key==='Enter'&&(target===$('searchInput')||target===$('homeSearch')))return {query:target.value||'',home:target===$('homeSearch')};
   if(event.type==='click'){
-    if(target.closest?.('#searchGo'))return {query:$('searchInput')?.value||'',home:false};
-    if(target.closest?.('#homeSearchBtn'))return {query:$('homeSearch')?.value||'',home:true};
-    const example=target.closest?.('[data-example],[data-cc245-query]');
-    if(example)return {query:example.dataset.example||example.dataset.cc245Query||'',home:!!example.closest('#view-home')};
+    if(target.closest?.('#searchGo,#cc253SearchGo'))return {query:$('searchInput')?.value||'',home:false};
+    if(target.closest?.('#homeSearchBtn,#cc253HomeSearchBtn'))return {query:$('homeSearch')?.value||'',home:true};
+    const example=target.closest?.('[data-example],[data-cc245-query],[data-cc253-query]');
+    if(example)return {query:example.dataset.example||example.dataset.cc245Query||example.dataset.cc253Query||'',home:!!example.closest('#view-home')};
   }
   return null;
 }
@@ -186,10 +186,26 @@ function installStyle(){
   `;document.head.append(style);
 }
 
+function claimControls(){
+  const searchGo=$('searchGo');
+  if(searchGo){searchGo.id='cc253SearchGo';searchGo.addEventListener('click',intercept,true)}
+  const homeGo=$('homeSearchBtn');
+  if(homeGo){homeGo.id='cc253HomeSearchBtn';homeGo.addEventListener('click',intercept,true)}
+  document.querySelectorAll('[data-example],[data-cc245-query]').forEach(node=>{
+    const query=node.dataset.example||node.dataset.cc245Query||'';
+    if(routeQuery(query).type==='legacy')return;
+    node.dataset.cc253Query=query;
+    node.removeAttribute('data-example');
+    node.removeAttribute('data-cc245-query');
+    node.addEventListener('click',intercept,true);
+  });
+}
+
 function install(){
   installStyle();
   const previous=window.runSearch;
   window.runSearch=function(){const query=$('searchInput')?.value||'';return finalRoute(query,false)||(typeof previous==='function'?previous():undefined)};
+  claimControls();
   window.addEventListener('click',intercept,true);
   window.addEventListener('keydown',intercept,true);
   const result=$('searchResult');if(result)new MutationObserver(()=>setTimeout(repairLegacy,260)).observe(result,{childList:true,subtree:true});
