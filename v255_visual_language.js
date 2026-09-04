@@ -193,7 +193,8 @@ function install(){
   });
   decorate();
   markVersion();
-  setTimeout(()=>{decorate();markVersion()},450);
+  setTimeout(()=>{decorate();markVersion()},700);
+  setTimeout(markVersion,1300);
 }
 
 window.CC_VISUAL_LANGUAGE={version:VERSION,classify,toggleDrawer,decorate};
