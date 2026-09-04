@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 
-const VERSION='2.1.54';
+const VERSION='2.1.55';
 const $=id=>document.getElementById(id);
 const clean=value=>String(value??'').replace(/\s+/g,' ').trim();
 const setText=(node,value)=>{if(node&&node.textContent!==value)node.textContent=value};
@@ -167,16 +167,16 @@ function installStyle(){
 }
 
 let timer=null;
-function schedule(delay=360){clearTimeout(timer);timer=setTimeout(patchContext,delay)}
+function schedule(delay=40){clearTimeout(timer);timer=setTimeout(patchContext,delay)}
 
 function install(){
   installStyle();
   const context=$('contextResult');
-  if(context)new MutationObserver(()=>schedule(360)).observe(context,{childList:true,subtree:true});
+  if(context)new MutationObserver(()=>schedule(40)).observe(context,{childList:true,subtree:true});
   document.addEventListener('click',event=>{
-    if(event.target.closest('#analyze,.master-levels button'))schedule(1150);
+    if(event.target.closest('#analyze,.master-levels button'))schedule(230);
   });
-  if(context?.innerHTML.trim())schedule(1050);
+  if(context?.innerHTML.trim())schedule(230);
   const markVersion=()=>document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
   markVersion();setTimeout(markVersion,40);
   document.documentElement.dataset.uiVersion=VERSION;
