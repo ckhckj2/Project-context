@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 
-const VERSION='2.1.60';
+const VERSION='2.1.61';
 const $=id=>document.getElementById(id);
 const clean=value=>String(value??'').replace(/\s+/g,' ').trim();
 
@@ -31,7 +31,8 @@ function decorateContext(){
 
   const phase=clean($('phase')?.selectedOptions?.[0]?.textContent);
   root.querySelectorAll('.flow .node,.cc252-context-flow .node').forEach(node=>{
-    node.classList.toggle('cc260-current-phase',Boolean(phase&&phase!=='잘 모르겠습니다'&&clean(node.textContent).includes(phase)));
+    const current=Boolean(phase&&phase!=='잘 모르겠습니다'&&clean(node.textContent).includes(phase));
+    if(node.classList.contains('cc260-current-phase')!==current)node.classList.toggle('cc260-current-phase',current);
   });
 
   const task=clean($('task')?.selectedOptions?.[0]?.textContent||$('task')?.value);
@@ -40,7 +41,7 @@ function decorateContext(){
     anchor?.insertAdjacentElement('afterend',changeStrip());
   }
   const first=root.querySelector('.cc252-brief-grid>div:first-child,.cc252-how-sequence>div:first-child');
-  first?.classList.add('cc260-first-action');
+  if(first&&!first.classList.contains('cc260-first-action'))first.classList.add('cc260-first-action');
 }
 
 function decorateSearch(){
@@ -51,7 +52,8 @@ function decorateSearch(){
     const anchor=card.querySelector('.cc243-summary,.cc243-tag');
     anchor?.insertAdjacentElement('afterend',changeStrip());
   }
-  root.querySelector('.cc252-action-grid>div:first-child,.cc243-steps>div:first-of-type,.cc241-steps>div:first-child')?.classList.add('cc260-first-action');
+  const first=root.querySelector('.cc252-action-grid>div:first-child,.cc243-steps>div:first-of-type,.cc241-steps>div:first-child');
+  if(first&&!first.classList.contains('cc260-first-action'))first.classList.add('cc260-first-action');
 }
 
 function updateQuiz(){
@@ -61,15 +63,17 @@ function updateQuiz(){
     const nums=clean(count.textContent).match(/(\d+)\D+(\d+)/);
     if(nums){
       const value=Math.max(0,Math.min(100,Number(nums[1])/Number(nums[2])*100));
-      area.style.setProperty('--cc260-quiz-progress',`${value}%`);
-      area.classList.add('cc260-quiz-active');
+      const next=`${value}%`;
+      if(area.style.getPropertyValue('--cc260-quiz-progress')!==next)area.style.setProperty('--cc260-quiz-progress',next);
+      if(!area.classList.contains('cc260-quiz-active'))area.classList.add('cc260-quiz-active');
     }
   }
   const feedback=$('qFeedback');
   if(feedback){
     const text=clean(feedback.textContent);
-    feedback.classList.toggle('cc260-feedback-on',Boolean(text));
-    feedback.classList.toggle('cc260-feedback-good',/정답|맞았|축하|통과/.test(text)&&!/오답|아니/.test(text));
+    const on=Boolean(text),good=/정답|맞았|축하|통과/.test(text)&&!/오답|아니/.test(text);
+    if(feedback.classList.contains('cc260-feedback-on')!==on)feedback.classList.toggle('cc260-feedback-on',on);
+    if(feedback.classList.contains('cc260-feedback-good')!==good)feedback.classList.toggle('cc260-feedback-good',good);
   }
 }
 
@@ -86,6 +90,8 @@ function updateProjectProgress(){
   const optional=[$('cc230Location'),$('cc230Scale'),$('cc230Memo')];
   const complete=[...required,...optional].filter(input=>clean(input?.value)&&input?.value!=='잘 모르겠습니다').length;
   const percent=Math.round(complete/6*100);
+  if(meter.dataset.cc260Percent===String(percent))return;
+  meter.dataset.cc260Percent=String(percent);
   meter.style.setProperty('--cc260-project-progress',`${percent}%`);
   meter.innerHTML=`<span><b>등록 정보 ${percent}%</b><small>${complete<3?'필수 정보부터 입력하세요':'필수 정보 입력 완료'}</small></span><i></i>`;
 }
@@ -122,6 +128,9 @@ function installStyle(){
   .cc260-first-action:after{content:"먼저";position:absolute;right:8px;top:8px;padding:2px 6px;border-radius:999px;background:#DCEAFF;color:#3463A9;font-size:8px;font-weight:950}
   .cc258-comparison-answer .cc258-compare-side{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
   .cc258-comparison-answer .cc258-compare-side:hover{z-index:1;transform:translateY(-2px);border-color:#9EBBE5!important;box-shadow:0 8px 18px rgba(39,79,139,.10)}
+  .cc221-more,.cc242-toggle,.cc252-detail-toggle,.cc-topic-strip>button{transform:none!important;animation:none!important;transition:background-color .16s ease,border-color .16s ease,color .16s ease!important}
+  .cc221-more:hover,.cc242-toggle:hover,.cc252-detail-toggle:hover,.cc-topic-strip>button:hover{transform:none!important}
+  .cc221-more:after{display:inline-block;min-width:14px;transform:none!important;transition:none!important}
 
   #quizArea.cc260-quiz-active:before{content:"";display:block;width:var(--cc260-quiz-progress,0);height:4px;margin:0 0 10px;border-radius:999px;background:#4B78CF;transition:width .22s ease}
   #qFeedback.cc260-feedback-on{animation:cc260-feedback-in .2s ease-out both}
@@ -153,7 +162,7 @@ function markVersion(){
 function install(){
   installStyle();
   ['contextResult','searchResult','quizArea','cc230Editor'].forEach(id=>{
-    const root=$(id);if(root)new MutationObserver(()=>refresh()).observe(root,{childList:true,subtree:true,characterData:true,attributes:true});
+    const root=$(id);if(root)new MutationObserver(()=>refresh()).observe(root,{childList:true,subtree:true,characterData:true});
   });
   document.addEventListener('click',event=>{
     if(event.target.closest('#analyze,#searchGo,#homeSearchBtn,[data-example],[data-drawer],#startQuiz,#qSubmit,#cc230New,#cc230Save'))refresh(80);
