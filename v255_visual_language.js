@@ -85,6 +85,17 @@ function revealPane(pane){
   });
 }
 
+function ensurePaneSlot(map,actions){
+  let slot=map.querySelector(':scope>.cc259-active-pane-slot');
+  if(!slot){
+    slot=document.createElement('section');
+    slot.className='cc259-active-pane-slot';
+    slot.setAttribute('aria-live','polite');
+  }
+  if(actions.nextElementSibling!==slot)actions.after(slot);
+  return slot;
+}
+
 function toggleDrawer(button){
   const root=button.closest('#contextResult');
   const map=button.closest('.map');
@@ -93,6 +104,7 @@ function toggleDrawer(button){
   const pane=map?.querySelector(`[data-pane="${key}"]`);
   if(!root||!map||!actions||!pane)return;
   const open=!pane.classList.contains('show');
+  const slot=ensurePaneSlot(map,actions);
 
   map.querySelectorAll('.drawer.show').forEach(item=>item.classList.remove('show'));
   map.querySelectorAll('.actions [data-drawer]').forEach(item=>{
@@ -100,7 +112,8 @@ function toggleDrawer(button){
     item.setAttribute('aria-expanded','false');
   });
   if(open){
-    actions.after(pane);
+    slot.querySelectorAll(':scope>.drawer').forEach(item=>map.append(item));
+    slot.append(pane);
     pane.classList.add('show','cc259-pane-reveal');
     button.classList.add('cc-drawer-active');
     button.setAttribute('aria-expanded','true');
@@ -148,6 +161,10 @@ function installStyle(){
   #contextResult .actions.cc252-actions>button.cc-drawer-active small{color:#E7F0FF!important}
   #contextResult .actions.cc252-actions>button.cc-drawer-active:before{background-color:rgba(255,255,255,.18)}
   #contextResult .actions.cc252-actions+.drawer.show{margin-top:0!important;margin-bottom:9px!important}
+  #contextResult .cc259-active-pane-slot{display:block;min-width:0;margin:0 0 9px}
+  #contextResult .cc259-active-pane-slot:empty{display:none}
+  #contextResult .cc259-active-pane-slot>.drawer{position:relative!important;inset:auto!important;transform:none!important;float:none!important;width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;margin:0!important;visibility:visible!important;opacity:1!important;z-index:auto!important}
+  #contextResult .cc259-active-pane-slot>.drawer.show{display:block!important}
 
   .cc259-semantic-label{display:flex!important;align-items:center;gap:7px!important;line-height:1.35!important}
   .cc259-icon{display:grid;place-items:center;flex:0 0 23px;width:23px;height:23px;margin:-3px 0;border-radius:7px;background:#EAF1FB;color:#3F68A4}
