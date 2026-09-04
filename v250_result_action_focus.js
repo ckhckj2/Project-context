@@ -159,7 +159,9 @@ function patchContext(){
   const rule=taskRule(task);
   const level=currentLevel();
   const contextKey=[task,phase,level,clean(root.querySelector('.stage-banner')?.textContent)].join('|');
-  const readyHow=actions.querySelector('[data-drawer="how"][data-cc252-unlocked="1"]')&&map.querySelector('[data-pane="how"] .cc252-pane-head');
+  const readyHow=level>=3
+    ? actions.querySelector('[data-drawer="how"]')&&map.querySelector('[data-pane="how"]:not(.cc232-how-lock)')&&!map.querySelector('[data-pane="how"] .cc232-how-lock')
+    : actions.querySelector('[data-drawer="how"][data-cc252-unlocked="1"]')&&map.querySelector('[data-pane="how"] .cc252-pane-head');
   if(root.dataset.cc252Key===contextKey&&map.querySelector(':scope>.cc252-context-brief')&&actions.classList.contains('cc252-actions')&&readyHow)return;
   root.dataset.cc252Key=contextKey;
 
