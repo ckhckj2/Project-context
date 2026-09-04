@@ -61,7 +61,10 @@ function arrangeContext(){
     map.prepend(brief);
   }
   if(brief.nextElementSibling!==actions)brief.after(actions);
-  if(guide&&actions.nextElementSibling!==guide)actions.after(guide);
+  const openPane=map.querySelector(':scope>.drawer.show');
+  if(openPane&&actions.nextElementSibling!==openPane)actions.after(openPane);
+  const guideAnchor=openPane||actions;
+  if(guide&&guideAnchor.nextElementSibling!==guide)guideAnchor.after(guide);
   if(flow&&guide&&guide.nextElementSibling!==flow)guide.after(flow);
 
   actions.querySelectorAll('[data-drawer]').forEach(button=>{
