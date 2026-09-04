@@ -66,6 +66,22 @@ function unlockInformationAreas(root){
   }
 }
 
+function normalizeActionShell(actions){
+  if(!actions)return;
+  const items=[
+    [actions.querySelector('[data-drawer="context"]'),'<small>CONTEXT</small>앞뒤 업무'],
+    [actions.querySelector('[data-drawer="how"]'),'<small>HOW</small>수행 순서'],
+    [actions.querySelector('[data-drawer="why"]'),'<small>WHY / WHERE</small>목적·확인자료'],
+    [actions.querySelector('[data-ask-context]'),'<small>WHO</small>누구에게 물어보기'],
+    [actions.querySelector('[data-drawer="caution"]'),'<small>CAUTION</small>놓치기 쉬운 점']
+  ];
+  for(const [button,html] of items){
+    if(!button)continue;
+    if(button.innerHTML!==html)button.innerHTML=html;
+    actions.append(button);
+  }
+}
+
 function depthGuide(level){
   const current=DEPTHS[level-1];
   const guide=document.createElement('section');
@@ -119,6 +135,7 @@ function patchContext(){
   const level=currentLevel();
   const key=[level,clean($('task')?.value),clean($('phase')?.value),clean(root.querySelector('.stage-banner')?.textContent)].join('|');
   unlockInformationAreas(root);
+  normalizeActionShell(actions);
   normalizeCopy(root,level);
   let guide=map.querySelector(':scope>.cc254-depth-guide');
   if(!guide||guide.dataset.cc254Key!==key){
