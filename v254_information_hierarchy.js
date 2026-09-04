@@ -180,8 +180,14 @@ function installStyle(){
 
 let contextTimer=null;
 let resultTimer=null;
-function scheduleContext(delay=55){clearTimeout(contextTimer);contextTimer=setTimeout(arrangeContext,delay)}
-function scheduleResult(delay=55){clearTimeout(resultTimer);resultTimer=setTimeout(arrangeSearchResult,delay)}
+function scheduleContext(delay=55){
+  if(contextTimer)return;
+  contextTimer=setTimeout(()=>{contextTimer=null;arrangeContext()},delay);
+}
+function scheduleResult(delay=55){
+  if(resultTimer)return;
+  resultTimer=setTimeout(()=>{resultTimer=null;arrangeSearchResult()},delay);
+}
 
 function markVersion(){
   document.querySelectorAll('.version').forEach(element=>element.textContent='v'+VERSION);
