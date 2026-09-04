@@ -167,16 +167,16 @@ function installStyle(){
 }
 
 let timer=null;
-function schedule(delay=1050){clearTimeout(timer);timer=setTimeout(patchContext,delay)}
+function schedule(delay=360){clearTimeout(timer);timer=setTimeout(patchContext,delay)}
 
 function install(){
   installStyle();
   const context=$('contextResult');
-  if(context)new MutationObserver(()=>schedule(1100)).observe(context,{childList:true,subtree:true});
+  if(context)new MutationObserver(()=>schedule(360)).observe(context,{childList:true,subtree:true});
   document.addEventListener('click',event=>{
-    if(event.target.closest('#analyze,.master-levels button'))schedule(1200);
+    if(event.target.closest('#analyze,.master-levels button'))schedule(1150);
   });
-  if(context?.innerHTML.trim())schedule(1200);
+  if(context?.innerHTML.trim())schedule(1050);
   const markVersion=()=>document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
   markVersion();setTimeout(markVersion,40);
   document.documentElement.dataset.uiVersion=VERSION;
