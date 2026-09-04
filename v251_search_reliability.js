@@ -42,6 +42,11 @@ const PAIR_SUMMARY={
   'bim|revit':'BIM은 정보와 협업을 포함한 업무방식이고, Revit은 그 업무에 사용할 수 있는 소프트웨어 중 하나예요.'
 };
 
+const PAIR_FIRST={
+  'bim|revit':'① 프로젝트의 BIM 목적·요구사항 확인 → ② BEP에서 산출물·협업방식 확인 → ③ 그 업무에 Revit이 필요한지와 사용기준 확인',
+  'building_review|landscape_review':'① 대상 심의와 근거기준 확인 → ② 각 심의의 접수시기·도서·위원회 대조 → ③ 공동심의 여부와 후속 인허가 일정 확인'
+};
+
 function conceptsIn(query){
   const q=compact(query);
   const found=CONCEPTS.filter(item=>item.terms.some(term=>q.includes(compact(term))));
@@ -65,7 +70,7 @@ function routeQuery(query){
   const terms=conceptsIn(q);
   const compare=/(?:차이|비교|vs\.?|다른\s*점|뭐가\s*(?:달라|다른)|어떻게\s*(?:달라|다른)|무엇이\s*(?:달라|다른)|구분)/i.test(q);
   if(compare&&terms.length>=2)return {type:'comparison',terms:terms.slice(0,2),persona:persona(q),query:q};
-  const define=/(?:뭐|무엇|뜻|의미|정의|어떤\s*(?:건가|것|의미)|설명해)/i.test(q);
+  const define=/(?:뭐|뭔|무엇|뜻|의미|정의|어떤\s*(?:건가|것|의미)|설명해)/i.test(q);
   if(terms.length&&define)return {type:'definition',terms:[terms[0]],persona:persona(q),query:q};
   if(terms.length&&['qgis','seumteo','bep','workset'].includes(terms[0].id)&&/(?:확인|사용|어떻게|시작|업무|요청)/i.test(q))return {type:'definition',terms:[terms[0]],persona:persona(q),query:q};
   return {type:'legacy',terms,persona:persona(q),query:q};
@@ -88,7 +93,7 @@ function renderComparison(route){
   const [left,right]=route.terms;
   const key=[left.id,right.id].sort().join('|');
   const title=PAIR_SUMMARY[key]||`${left.label}와 ${right.label}는 적용대상·확인범위·처리주체와 시점을 나눠 봐야 해요.`;
-  const first=`① 우리 프로젝트에 적용되는 원래 승인경로 확인 → ② ${left.label}·${right.label}의 대상과 시점 대조 → ③ 최신 원문과 담당기관 기준으로 최종 확인`;
+  const first=PAIR_FIRST[key]||`① 우리 프로젝트에 적용되는 원래 승인경로 확인 → ② ${left.label}·${right.label}의 대상과 시점 대조 → ③ 최신 원문과 담당기관 기준으로 최종 확인`;
   const caution=(left.caution+' '+right.caution).replace(/\s+/g,' ');
   const sources=[...left.sources,...right.sources];
   const out=$('searchResult');if(!out)return;
@@ -132,7 +137,18 @@ function intercept(event){
   const input=queryFromEvent(event);if(!input)return;
   const route=routeQuery(input.query);
   lastQuery=route.query;
-  if(route.type==='legacy'){setTimeout(repairLegacy,320);return}
+  if(route.type==='legacy'){
+    const claimed=event.type==='click'&&event.target.closest?.('#cc253SearchGo,#cc253HomeSearchBtn');
+    if(claimed){
+      event.preventDefault();event.stopImmediatePropagation();
+      const claimedId=claimed.id;
+      claimed.id=claimedId==='cc253SearchGo'?'searchGo':'homeSearchBtn';
+      claimed.click();
+      setTimeout(()=>{claimed.id=claimedId},0);
+    }
+    setTimeout(repairLegacy,320);
+    return;
+  }
   event.preventDefault();event.stopImmediatePropagation();
   finalRoute(input.query,input.home);
 }
