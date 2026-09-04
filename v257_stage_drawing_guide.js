@@ -228,8 +228,8 @@ function install(){
       renderGuide(guide,tab.dataset.cc257Stage,phase,project);
       return;
     }
-    if(event.target.closest('#analyze,.master-levels button'))schedule(360);
-  });
+    if(event.target.closest('#analyze,.master-levels button'))schedule(420);
+  },true);
   if(root?.innerHTML.trim())schedule(240);
   markVersion();setTimeout(markVersion,800);setTimeout(markVersion,1500);
 }
