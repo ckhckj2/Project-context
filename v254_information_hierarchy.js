@@ -105,6 +105,16 @@ function arrangeSearchResult(){
   const source=root?.querySelector(':scope>.cc252-source-card');
   if(!summary||!source)return;
   const key=[clean(source.querySelector('h3')?.textContent),clean(source.querySelector('.cc245-head')?.textContent)].join('|');
+  if(root.dataset.cc258SearchKey!==key){
+    root.dataset.cc258SearchKey=key;
+    root.classList.remove('cc252-detail-open');
+    root.querySelectorAll(':scope>.cc252-source-card').forEach(card=>card.classList.remove('cc242-expanded'));
+    const toggle=summary.querySelector('.cc252-detail-toggle');
+    if(toggle){
+      toggle.setAttribute('aria-expanded','false');
+      toggle.replaceChildren(document.createTextNode('상세 답변 보기 '),node('span','','↓'));
+    }
+  }
   if(summary.dataset.cc258Key===key)return;
   summary.dataset.cc258Key=key;
   if(source.classList.contains('cc245-card')&&comparisonPreview(summary,source))return;
