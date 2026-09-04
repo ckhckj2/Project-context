@@ -86,6 +86,7 @@ function compactSearch(){
   card.dataset.cc221='1';
 }
 function mobileDrawerClick(e){
+  if(window.CC_VISUAL_LANGUAGE)return;
   if(!MOBILE())return;
   const btn=e.target.closest('#contextResult .actions [data-drawer]');
   if(!btn)return;
@@ -106,6 +107,7 @@ function mobileDrawerClick(e){
   },0);
 }
 function restoreDesktopDrawers(){
+  if(window.CC_VISUAL_LANGUAGE)return;
   if(MOBILE())return;
   const root=byId('contextResult');
   const actions=root?.querySelector('.actions');
