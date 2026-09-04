@@ -75,11 +75,16 @@ function normalizeActionShell(actions){
     [actions.querySelector('[data-ask-context]'),'<small>WHO</small>누구에게 물어보기'],
     [actions.querySelector('[data-drawer="caution"]'),'<small>CAUTION</small>놓치기 쉬운 점']
   ];
+  const ordered=[];
   for(const [button,html] of items){
     if(!button)continue;
     if(button.innerHTML!==html)button.innerHTML=html;
-    actions.append(button);
+    ordered.push(button);
   }
+  ordered.forEach((button,index)=>{
+    const current=actions.children[index];
+    if(current!==button)actions.insertBefore(button,current||null);
+  });
 }
 
 function depthGuide(level){
