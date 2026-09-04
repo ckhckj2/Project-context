@@ -234,8 +234,8 @@ function style(){
 }
 function install(){
   style();document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
-  document.addEventListener('click',e=>{if(e.target.closest('#analyze'))setTimeout(enhance,390);if(e.target.closest('.master-levels button'))setTimeout(enhance,320)});
-  if($('contextResult')?.innerHTML.trim())setTimeout(enhance,430);
+  document.addEventListener('click',e=>{if(e.target.closest('#analyze'))setTimeout(enhance,90);if(e.target.closest('.master-levels button'))setTimeout(enhance,90)});
+  if($('contextResult')?.innerHTML.trim())setTimeout(enhance,110);
   const counts={normal:0,prep:0,conditional:0,mismatch:0};
   Object.values(MATRIX).forEach(x=>Object.values(x.phases).forEach(v=>counts[v]++));
   window.CC_TASK_PHASE_FIT={version:VERSION,scope:'all-13',tasks:Object.keys(MATRIX).length,decisions:Object.keys(MATRIX).length*6,statuses:Object.keys(STATUS),counts};
