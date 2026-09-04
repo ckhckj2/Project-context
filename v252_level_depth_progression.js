@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 
-const VERSION='2.1.55';
+const VERSION='2.1.56';
 const $=id=>document.getElementById(id);
 const clean=value=>String(value??'').replace(/\s+/g,' ').trim();
 const setText=(node,value)=>{if(node&&node.textContent!==value)node.textContent=value};
@@ -12,6 +12,7 @@ const DEPTHS=[
   {level:3,name:'절차·협업',desc:'전체 체크리스트·분야별 조정'},
   {level:4,name:'판단·예외',desc:'복합조건·특별법·충돌 판단'}
 ];
+const OPEN_AREAS=['context','how','why','who','caution'];
 
 function currentLevel(){
   const match=clean($('miniLevel')?.textContent).match(/LV\.(\d)/i);
@@ -109,11 +110,12 @@ function normalizeCopy(root,level){
 
 function patchContext(){
   const root=$('contextResult');
-  if(!root||!root.innerHTML.trim())return;
+  if(!root||!root.innerHTML.trim()){if(root?.classList.contains('cc256-building'))schedule(40);return}
+  if(revealAt&&Date.now()<revealAt){schedule(Math.max(20,revealAt-Date.now()));return}
   const map=root.querySelector('.map');
   const brief=map?.querySelector(':scope>.cc252-context-brief');
   const actions=map?.querySelector(':scope>.actions');
-  if(!map||!brief||!actions)return;
+  if(!map||!brief||!actions){if(root.classList.contains('cc256-building'))schedule(40);return}
   const level=currentLevel();
   const key=[level,clean($('task')?.value),clean($('phase')?.value),clean(root.querySelector('.stage-banner')?.textContent)].join('|');
   unlockInformationAreas(root);
@@ -126,6 +128,47 @@ function patchContext(){
     brief.after(next);
   }
   root.dataset.cc254Depth=String(level);
+  const contextLevel=Number((root.dataset.cc252Key||'').split('|')[2]);
+  const howButton=actions.querySelector('[data-drawer="how"]');
+  const howPane=map.querySelector('[data-pane="how"]');
+  const howReady=level>=3
+    ? !!(howButton&&howPane&&!howPane.querySelector('.cc232-how-lock'))
+    : !!(howButton?.dataset.cc252Unlocked&&howPane?.querySelector('.cc252-pane-head'));
+  if(root.classList.contains('cc256-building')&&(!howReady||contextLevel!==level)){
+    schedule(40);
+    return;
+  }
+  finishAtomic(root);
+}
+
+let revealAt=0;
+let failsafeTimer=null;
+function beginAtomic(){
+  const root=$('contextResult');
+  revealAt=Date.now()+260;
+  if(!root)return;
+  root.classList.remove('cc256-ready');
+  root.classList.add('cc256-building');
+  root.setAttribute('aria-busy','true');
+  delete root.dataset.cc246Phase;
+  delete root.dataset.cc252Key;
+  delete root.dataset.cc254Depth;
+  clearTimeout(failsafeTimer);
+  failsafeTimer=setTimeout(()=>{
+    if(root.classList.contains('cc256-building')){
+      patchContext();
+      setTimeout(()=>finishAtomic(root),80);
+    }
+  },850);
+}
+
+function finishAtomic(root){
+  if(!root?.classList.contains('cc256-building'))return;
+  clearTimeout(failsafeTimer);
+  root.classList.remove('cc256-building');
+  root.classList.add('cc256-ready');
+  root.setAttribute('aria-busy','false');
+  setTimeout(()=>root.classList.remove('cc256-ready'),220);
 }
 
 function installStyle(){
@@ -133,8 +176,15 @@ function installStyle(){
   const style=document.createElement('style');
   style.id='cc254Style';
   style.textContent=`
-  /* v2.1.54 — every information area is open; level changes answer depth */
+  /* v2.1.56 — atomic context reveal; every area open; level changes depth */
   #contextResult .actions [data-drawer],#contextResult .actions [data-ask-context]{opacity:1!important;filter:none!important;pointer-events:auto!important}
+  #contextResult.cc256-building{position:relative;min-height:250px;overflow:hidden}
+  #contextResult.cc256-building>*{visibility:hidden!important}
+  #contextResult.cc256-building:before{content:"";position:absolute;z-index:3;left:50%;top:88px;width:24px;height:24px;margin-left:-12px;border:2px solid #DCE6F4;border-top-color:#3E73C8;border-radius:50%;animation:cc256-spin .7s linear infinite}
+  #contextResult.cc256-building:after{content:"업무 맥락을 정리하고 있어요";position:absolute;z-index:3;left:0;right:0;top:126px;text-align:center;color:#60738F;font-size:10px;font-weight:850}
+  #contextResult.cc256-ready{animation:cc256-reveal .18s ease-out both}
+  @keyframes cc256-spin{to{transform:rotate(360deg)}}
+  @keyframes cc256-reveal{from{opacity:.35;transform:translateY(3px)}to{opacity:1;transform:none}}
   .cc254-depth-guide{margin:0 0 10px;padding:15px 16px;border:1px solid #D9E3F1;border-radius:15px;background:#fff}
   .cc254-depth-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .cc254-depth-head small{display:block;color:#6E7F97;font-size:8.5px;font-weight:900}
@@ -162,6 +212,7 @@ function installStyle(){
     .cc254-depth-track{grid-template-columns:1fr 1fr}
     .cc254-depth-track small{display:none}
   }
+  @media(prefers-reduced-motion:reduce){#contextResult.cc256-building:before{animation:none}#contextResult.cc256-ready{animation:none}}
   `;
   document.head.append(style);
 }
@@ -174,15 +225,15 @@ function install(){
   const context=$('contextResult');
   if(context)new MutationObserver(()=>schedule(40)).observe(context,{childList:true,subtree:true});
   document.addEventListener('click',event=>{
-    if(event.target.closest('#analyze,.master-levels button'))schedule(230);
-  });
+    if(event.target.closest('#analyze,.master-levels button')){beginAtomic();schedule(270)}
+  },true);
   if(context?.innerHTML.trim())schedule(230);
   const markVersion=()=>document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
   markVersion();setTimeout(markVersion,40);
   document.documentElement.dataset.uiVersion=VERSION;
 }
 
-window.CC_LEVEL_DEPTH={version:VERSION,depths:DEPTHS.map(item=>({...item}))};
+window.CC_LEVEL_DEPTH={version:VERSION,depths:DEPTHS.map(item=>({...item})),openAreas:[...OPEN_AREAS]};
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
 else install();
