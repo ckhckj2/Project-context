@@ -117,7 +117,7 @@ function finalRoute(query,fromHome=false){
     if($('searchInput'))$('searchInput').value=route.query;
   }
   const token=++routeToken;
-  setTimeout(()=>{if(token===routeToken)renderRoute(route)},220);
+  setTimeout(()=>{if(token===routeToken)renderRoute(route)},25);
   return true;
 }
 
@@ -146,7 +146,7 @@ function intercept(event){
       claimed.click();
       setTimeout(()=>{claimed.id=claimedId},0);
     }
-    setTimeout(repairLegacy,320);
+    setTimeout(repairLegacy,160);
     return;
   }
   event.preventDefault();event.stopImmediatePropagation();
@@ -224,7 +224,7 @@ function install(){
   claimControls();
   window.addEventListener('click',intercept,true);
   window.addEventListener('keydown',intercept,true);
-  const result=$('searchResult');if(result)new MutationObserver(()=>setTimeout(repairLegacy,260)).observe(result,{childList:true,subtree:true});
+  const result=$('searchResult');if(result)new MutationObserver(()=>setTimeout(repairLegacy,120)).observe(result,{childList:true,subtree:true});
   const markVersion=()=>document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
   markVersion();setTimeout(markVersion,40);
   document.documentElement.dataset.uiVersion=VERSION;
