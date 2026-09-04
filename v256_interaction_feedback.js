@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 
-const VERSION='2.1.61';
+const VERSION='2.1.62';
 const $=id=>document.getElementById(id);
 const clean=value=>String(value??'').replace(/\s+/g,' ').trim();
 
@@ -20,15 +20,6 @@ function changeStrip(){
 function decorateContext(){
   const root=$('contextResult');
   if(!root||!root.innerHTML.trim())return;
-  const actions=root.querySelector('.actions.cc252-actions');
-  actions?.querySelectorAll('[data-drawer]').forEach(button=>{
-    if(button.querySelector('.cc260-chevron'))return;
-    const arrow=document.createElement('span');
-    arrow.className='cc260-chevron';
-    arrow.setAttribute('aria-hidden','true');
-    button.append(arrow);
-  });
-
   const phase=clean($('phase')?.selectedOptions?.[0]?.textContent);
   root.querySelectorAll('.flow .node,.cc252-context-flow .node').forEach(node=>{
     const current=Boolean(phase&&phase!=='잘 모르겠습니다'&&clean(node.textContent).includes(phase));
@@ -108,12 +99,10 @@ function installStyle(){
   style.id='cc260Style';
   style.textContent=`
   /* v2.1.60 — restrained interaction feedback and visible progress */
-  #contextResult .actions.cc252-actions>button{transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease!important}
-  #contextResult .actions.cc252-actions>button:hover{transform:translateY(-2px)}
-  #contextResult .actions.cc252-actions>button:active{transform:translateY(0) scale(.99)}
-  .cc260-chevron{position:absolute;right:10px;bottom:9px;width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);opacity:.65;transition:transform .18s ease}
-  #contextResult .actions.cc252-actions>button.cc-drawer-active .cc260-chevron{transform:rotate(225deg);bottom:6px;opacity:1}
-  #contextResult .actions.cc252-actions>button.cc-drawer-active:after{content:"열림 ↑"!important}
+  #contextResult .actions.cc252-actions>button{transform:none!important;animation:none!important;transition:border-color .18s ease,background-color .18s ease,box-shadow .18s ease!important}
+  #contextResult .actions.cc252-actions>button:hover,#contextResult .actions.cc252-actions>button:active{transform:none!important}
+  #contextResult .actions.cc252-actions>button:hover:before{transform:translateY(-50%)!important}
+  #contextResult .actions.cc252-actions>button.cc-drawer-active:after{content:"열림"!important}
 
   .flow .node.cc260-current-phase,.cc252-context-flow .node.cc260-current-phase{position:relative;border-color:#5D8DD8!important;background:#EAF3FF!important;color:#24599F!important;box-shadow:0 0 0 3px rgba(53,111,199,.10)!important}
   .flow .node.cc260-current-phase:after,.cc252-context-flow .node.cc260-current-phase:after{content:"현재";position:absolute;right:-4px;top:-8px;padding:2px 6px;border-radius:999px;background:#356FC7;color:#fff;font-size:8px;font-weight:950}
@@ -147,7 +136,7 @@ function installStyle(){
     #contextResult .actions.cc252-actions>button:hover{transform:none}
   }
   @media(prefers-reduced-motion:reduce){
-    #contextResult .actions.cc252-actions>button,.cc260-chevron,.cc258-comparison-answer .cc258-compare-side,#quizArea.cc260-quiz-active:before,.cc260-project-progress>i{transition:none!important}
+    #contextResult .actions.cc252-actions>button,.cc258-comparison-answer .cc258-compare-side,#quizArea.cc260-quiz-active:before,.cc260-project-progress>i{transition:none!important}
     #qFeedback.cc260-feedback-on{animation:none!important}
   }
   `;
