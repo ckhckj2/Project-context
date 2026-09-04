@@ -293,24 +293,24 @@ function installStyle(){
 
 let resultTimer=null;
 let contextTimer=null;
-function scheduleResult(){clearTimeout(resultTimer);resultTimer=setTimeout(prepareResult,80)}
-function scheduleContext(delay=120){clearTimeout(contextTimer);contextTimer=setTimeout(patchContext,delay)}
+function scheduleResult(){clearTimeout(resultTimer);resultTimer=setTimeout(prepareResult,45)}
+function scheduleContext(delay=40){clearTimeout(contextTimer);contextTimer=setTimeout(patchContext,delay)}
 
 function install(){
   installStyle();
   const result=$('searchResult');
   const context=$('contextResult');
   if(result)new MutationObserver(scheduleResult).observe(result,{childList:true,subtree:true});
-  if(context)new MutationObserver(()=>scheduleContext(700)).observe(context,{childList:true,subtree:true});
+  if(context)new MutationObserver(()=>scheduleContext(40)).observe(context,{childList:true,subtree:true});
   document.addEventListener('click',event=>{
     if(event.target.closest('#searchGo,#homeSearchBtn,[data-example]'))scheduleResult();
-    if(event.target.closest('#analyze,.master-levels button'))scheduleContext(900);
+    if(event.target.closest('#analyze,.master-levels button'))scheduleContext(190);
   });
   document.addEventListener('keydown',event=>{
     if(event.key==='Enter'&&(event.target===$('searchInput')||event.target===$('homeSearch')))scheduleResult();
   });
   if(result?.children.length)scheduleResult();
-  if(context?.innerHTML.trim())scheduleContext(900);
+  if(context?.innerHTML.trim())scheduleContext(190);
   const markVersion=()=>document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
   markVersion();setTimeout(markVersion,30);
   document.documentElement.dataset.uiVersion=VERSION;
