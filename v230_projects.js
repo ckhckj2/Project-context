@@ -24,7 +24,7 @@ function injectView(){
   const s=document.createElement('section');s.id='view-projects';s.className='view';
   s.innerHTML=`<div class="cc230-page">
     <div class="cc230-head"><div><div class="kicker">MY PROJECTS · LOCAL ONLY</div><h2>내 프로젝트</h2><p>프로젝트를 저장해두면 유형·단계·규모 정보를 다시 입력하지 않고 바로 전환할 수 있어요.</p></div><button id="cc230New" class="primary">+ 새 프로젝트</button></div>
-    <div class="cc230-local"><b>이 브라우저에만 저장됩니다.</b><span>별도 서버 전송이나 계정 동기화 없이 localStorage에 저장돼요. 다른 PC·브라우저에서는 자동으로 보이지 않습니다.</span></div>
+    <div class="cc230-local"><b>기밀정보 입력 금지</b><span>이 브라우저의 localStorage에 평문으로 저장됩니다. 고객 개인정보·계약정보·비공개 도면 링크는 입력하지 마세요.</span></div>
     <div id="cc230Editor" class="cc230-editor" hidden></div>
     <div id="cc230List" class="cc230-list"></div>
   </div>`;
