@@ -137,13 +137,13 @@ function install(){
     const edit=e.target.closest('.cc230-card [data-edit]');if(edit)editingId=edit.closest('.cc230-card')?.dataset.pid||null;
     if(e.target.closest('#cc230New,#cc230EmptyNew'))editingId=null;
     if(e.target.closest('#cc230Save')){const name=$('cc230Name')?.value.trim()||'';if(name){const snap={id:editingId,name,businessMode:$('cc250Business')?.value||'unknown',approvalRoute:$('cc250Route')?.value||'unknown',routeException:$('cc250Exception')?.value||'unknown'};setTimeout(()=>persistExtra(snap),60)}}
-    if(e.target.closest('#analyze'))setTimeout(enhanceContext,560);
-    if(e.target.closest('.master-levels button'))setTimeout(enhanceContext,480);
+    if(e.target.closest('#analyze'))setTimeout(enhanceContext,140);
+    if(e.target.closest('.master-levels button'))setTimeout(enhanceContext,140);
     scheduleUI();
   },true);
   document.addEventListener('cc:project-profile-updated',()=>setTimeout(enhanceContext,80));
   new MutationObserver(scheduleUI).observe(document.body,{childList:true,subtree:true});
-  scheduleUI();if($('contextResult')?.innerHTML.trim())setTimeout(enhanceContext,600);
+  scheduleUI();if($('contextResult')?.innerHTML.trim())setTimeout(enhanceContext,160);
   window.CC_PROJECT_ROUTE_JUDGEMENT={version:VERSION,fields:['businessMode','approvalRoute','routeException'],business:BUSINESS,routes:ROUTES,exceptions:EXCEPTIONS,judgement};
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
