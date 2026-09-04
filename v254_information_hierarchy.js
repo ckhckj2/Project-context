@@ -61,9 +61,11 @@ function arrangeContext(){
     map.prepend(brief);
   }
   if(brief.nextElementSibling!==actions)brief.after(actions);
-  const openPane=map.querySelector(':scope>.drawer.show');
-  if(openPane&&actions.nextElementSibling!==openPane)actions.after(openPane);
-  const guideAnchor=openPane||actions;
+  const paneSlot=map.querySelector(':scope>.cc259-active-pane-slot');
+  if(paneSlot&&actions.nextElementSibling!==paneSlot)actions.after(paneSlot);
+  const openPane=paneSlot?.querySelector(':scope>.drawer.show')||map.querySelector(':scope>.drawer.show');
+  if(openPane&&!paneSlot&&actions.nextElementSibling!==openPane)actions.after(openPane);
+  const guideAnchor=paneSlot||openPane||actions;
   if(guide&&guideAnchor.nextElementSibling!==guide)guideAnchor.after(guide);
   if(flow&&guide&&guide.nextElementSibling!==flow)guide.after(flow);
 
