@@ -14,6 +14,7 @@ function navButton(view,icon,label){return `<button data-view="${view}" class="c
 function install(){
   const side=document.querySelector('.side');
   if(!side||side.dataset.cc212==='1')return;
+  const releaseBadge=side.querySelector('.version');
   const current=document.getElementById('miniLevel')?.textContent||'LV.1 · 신입사원';
   const active=document.querySelector('.view.active')?.id?.replace('view-','')||'home';
   side.dataset.cc212='1';
@@ -21,7 +22,7 @@ function install(){
     <div class="cc212-brand">
       <div class="cc212-brand-row">
         <div class="cc-logo" aria-label="척척"><div class="cc-wordmark">척척<span class="cc-rays"><i></i><i></i><i></i></span></div><span class="cc-smile"></span></div>
-        <span class="version">v${VERSION}</span>
+        <span class="cc212-version-slot"></span>
       </div>
       <div class="cc-tagline">건축 실무, 물으면 <b>척척</b></div>
     </div>
@@ -43,6 +44,7 @@ function install(){
       </div>
       <button data-view="level">내 학습 현황 보기 <span>→</span></button>
     </div>`;
+  if(releaseBadge)side.querySelector('.cc212-version-slot').replaceWith(releaseBadge);
   side.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===active&&b.closest('.cc212-main-nav')));
   
 }

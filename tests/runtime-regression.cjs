@@ -21,6 +21,12 @@ for(const file of scripts){
 assert(!html.includes('</script>\\n<script'),'no literal newline text between scripts');
 assert(html.includes("script-src 'self'"),'keep CSP script isolation');
 assert(html.includes("connect-src 'none'"),'keep no-network data policy');
+let preservedBadge;
+const releaseBadge={textContent:'v2.1.65'};
+const side={dataset:{},querySelector:selector=>selector==='.version'?releaseBadge:{replaceWith(node){preservedBadge=node}},querySelectorAll:()=>[]};
+const sidebarContext={document:{readyState:'complete',querySelector:selector=>selector==='.side'?side:null,getElementById:()=>null}};
+vm.createContext(sidebarContext);vm.runInContext(read('v212_sidebar.js'),sidebarContext);
+assert.equal(preservedBadge,releaseBadge,'sidebar must preserve the index release badge node');
 
 // Exercise the real delegated handler and renderer with a small DOM fixture.
 let install,clickHandler,writes=0;
