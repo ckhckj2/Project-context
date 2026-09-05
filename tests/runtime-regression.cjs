@@ -7,10 +7,15 @@ const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const html=read('index.html');
 const scripts=[...html.matchAll(/<script src="\.\/(.*?)\?/g)].map(m=>m[1]);
+const styleIds=new Map();
 assert.equal(new Set(scripts).size,scripts.length,'scripts must load once');
 for(const file of scripts){
   const source=read(file);
   new vm.Script(source,{filename:file});
+  for(const match of source.matchAll(/(?:style|s)\.id\s*=\s*['"]([^'"]*(?:Style|style))['"]/g)){
+    assert(!styleIds.has(match[1]),`${file}: duplicate style id ${match[1]} also in ${styleIds.get(match[1])}`);
+    styleIds.set(match[1],file);
+  }
   assert(!/querySelectorAll\(['"]\.version['"]\)|dataset\.uiVersion\s*=|markVersion/.test(source),`${file}: release labels belong to index.html`);
 }
 assert(!html.includes('</script>\\n<script'),'no literal newline text between scripts');
