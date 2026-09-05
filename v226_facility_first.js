@@ -118,7 +118,7 @@ function installStyle(){
 }
 function install(){
   configureData();rebuildSelect();installStyle();
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
   const analyze=document.getElementById('analyze');if(analyze)analyze.addEventListener('click',()=>setTimeout(renderLegal,140));
   if(document.getElementById('contextResult')?.innerHTML.trim())renderLegal();
 }

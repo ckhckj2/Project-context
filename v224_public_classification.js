@@ -77,7 +77,7 @@ function installStyle(){
 }
 function install(){
   addData();addSelectOptions();installStyle();
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
   const analyze=document.getElementById('analyze');
   if(analyze)analyze.addEventListener('click',()=>setTimeout(renderLegalUse,80));
   if(document.getElementById('contextResult')?.innerHTML.trim())renderLegalUse();

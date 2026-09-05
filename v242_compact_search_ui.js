@@ -128,7 +128,7 @@ function installStyle(){
 }
 function install(){
   installStyle();
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
   compact();
   const root=$('searchResult');
   if(root)new MutationObserver(()=>compact()).observe(root,{childList:true,subtree:true});

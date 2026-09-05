@@ -119,7 +119,7 @@ function restoreDesktopDrawers(){
 function scheduleContext(){setTimeout(()=>{compactContext();restoreDesktopDrawers();},70);}
 function scheduleSearch(){setTimeout(compactSearch,90);}
 function install(){
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
   const analyze=byId('analyze');if(analyze)analyze.addEventListener('click',scheduleContext);
   const searchGo=byId('searchGo');if(searchGo)searchGo.addEventListener('click',scheduleSearch);
   const homeGo=byId('homeSearchBtn');if(homeGo)homeGo.addEventListener('click',scheduleSearch);

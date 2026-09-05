@@ -90,7 +90,7 @@ function updateProjectProgress(){
 let timer;
 function refresh(delay=30){
   clearTimeout(timer);
-  timer=setTimeout(()=>{decorateContext();decorateSearch();updateQuiz();updateProjectProgress();markVersion()},delay);
+  timer=setTimeout(()=>{decorateContext();decorateSearch();updateQuiz();updateProjectProgress()},delay);
 }
 
 function installStyle(){
@@ -143,10 +143,7 @@ function installStyle(){
   document.head.append(style);
 }
 
-function markVersion(){
-  document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
-  document.documentElement.dataset.uiVersion=VERSION;
-}
+
 
 function install(){
   installStyle();
@@ -158,7 +155,7 @@ function install(){
   });
   document.addEventListener('input',event=>{if(event.target.closest('#cc230Editor'))updateProjectProgress()});
   document.addEventListener('change',event=>{if(event.target.closest('#phase,#task,#cc230Editor'))refresh()});
-  refresh(0);setTimeout(()=>refresh(0),700);setTimeout(markVersion,1400);
+  refresh(0);setTimeout(()=>refresh(0),700);
 }
 
 window.CC_INTERACTION_FEEDBACK={version:VERSION,refresh,decorateContext,decorateSearch};

@@ -233,7 +233,7 @@ function style(){
   document.head.appendChild(s);
 }
 function install(){
-  style();document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  style();
   document.addEventListener('click',e=>{if(e.target.closest('#analyze'))setTimeout(enhance,90);if(e.target.closest('.master-levels button'))setTimeout(enhance,90)});
   if($('contextResult')?.innerHTML.trim())setTimeout(enhance,110);
   const counts={normal:0,prep:0,conditional:0,mismatch:0};

@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 
-const VERSION='1.0.0';
+const VERSION='1.1.0';
 const INPUT_LIMITS={searchInput:500,homeSearch:500,meta:500,qInput:200,cc230Name:60,cc230Location:80,cc230Scale:100,cc230Memo:500};
 
 function safeText(value,max=500){
@@ -15,12 +15,12 @@ function safeJson(value,fallback=null){
 function safeExternalUrl(value){
   try{
     const url=new URL(value,location.href);
-    return url.protocol==='https:'?url:null;
+    return url.protocol==='https:'&&!url.username&&!url.password?url:null;
   }catch{return null}
 }
 
 function hardenLink(anchor){
-  if(!anchor||anchor.dataset.ccSecurity==='1')return;
+  if(!anchor)return;
   if(anchor.target==='_blank'){
     anchor.rel='noopener noreferrer';
     anchor.referrerPolicy='no-referrer';
@@ -31,12 +31,12 @@ function hardenLink(anchor){
 function applyInputLimits(root=document){
   Object.entries(INPUT_LIMITS).forEach(([id,max])=>{
     const input=root.getElementById?.(id)||root.querySelector?.(`#${id}`);
-    if(input&&input.maxLength<0)input.maxLength=max;
+    if(input&&(input.maxLength<0||input.maxLength>max))input.maxLength=max;
   });
 }
 
 function protectNavigation(event){
-  const anchor=event.target.closest?.('a[target="_blank"]');
+  const anchor=event.target.closest?.('a[href]');
   if(!anchor)return;
   hardenLink(anchor);
   if(!safeExternalUrl(anchor.getAttribute('href'))){
@@ -49,6 +49,7 @@ function install(){
   document.querySelectorAll('a').forEach(hardenLink);
   applyInputLimits();
   document.addEventListener('click',protectNavigation,true);
+  document.addEventListener('auxclick',protectNavigation,true);
   document.addEventListener('focusin',event=>{
     if(event.target.matches?.('input,textarea'))applyInputLimits(document);
   },true);

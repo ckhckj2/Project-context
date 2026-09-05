@@ -66,7 +66,7 @@ function enhanceContext(){
 }
 
 function install(){
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
   if(!document.getElementById('cc218Style')){
     const style=document.createElement('style');
     style.id='cc218Style';

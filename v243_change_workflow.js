@@ -207,7 +207,7 @@ function installStyle(){
 }
 function install(){
   installStyle();
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
   const previous=window.runSearch;
   window.runSearch=function(){const q=$('searchInput')?.value.trim()||'';if(!renderQuery(q)&&typeof previous==='function')return previous();};
   window.addEventListener('click',intercept,true);

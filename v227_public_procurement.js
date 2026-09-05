@@ -123,7 +123,7 @@ function style(){
   `;document.head.appendChild(s);
 }
 function install(){
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);style();addExample();
+  style();addExample();
   const analyze=$('analyze');if(analyze)analyze.addEventListener('click',()=>setTimeout(contextHint,180));
   const go=$('searchGo');if(go)go.addEventListener('click',()=>{const q=$('searchInput')?.value||'';if(PUBLIC_RE.test(q))setTimeout(()=>renderSearch(q),40);});
   const input=$('searchInput');if(input)input.addEventListener('keydown',e=>{if(e.key==='Enter'&&PUBLIC_RE.test(input.value)){e.preventDefault();setTimeout(()=>renderSearch(input.value),40);}});

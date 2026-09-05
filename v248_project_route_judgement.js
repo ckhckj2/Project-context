@@ -132,7 +132,7 @@ function style(){
   `;document.head.appendChild(s);
 }
 function install(){
-  style();document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  style();
   document.addEventListener('click',e=>{
     const edit=e.target.closest('.cc230-card [data-edit]');if(edit)editingId=edit.closest('.cc230-card')?.dataset.pid||null;
     if(e.target.closest('#cc230New,#cc230EmptyNew'))editingId=null;

@@ -67,7 +67,7 @@ function saveEditor(){
   if(!name){if(msg)msg.textContent='프로젝트명을 입력해주세요.';$('cc230Name')?.focus();return}
   const items=readProjects();
   const old=items.find(x=>x.id===editingId);
-  const p={id:editingId||uid(),name,typeId:$('cc230Type')?.value||'',phase:$('cc230Phase')?.value||'잘 모르겠습니다',location:$('cc230Location')?.value.trim()||'',scale:$('cc230Scale')?.value.trim()||'',memo:$('cc230Memo')?.value.trim()||'',createdAt:old?.createdAt||Date.now(),updatedAt:Date.now()};
+  const p={...old,id:editingId||uid(),name,typeId:$('cc230Type')?.value||'',phase:$('cc230Phase')?.value||'잘 모르겠습니다',location:$('cc230Location')?.value.trim()||'',scale:$('cc230Scale')?.value.trim()||'',memo:$('cc230Memo')?.value.trim()||'',createdAt:old?.createdAt||Date.now(),updatedAt:Date.now()};
   const next=old?items.map(x=>x.id===p.id?p:x):[p,...items];
   if(!writeProjects(next)){if(msg)msg.textContent='브라우저 저장소를 사용할 수 없습니다.';return}
   if(!activeId())setActiveId(p.id);
@@ -143,7 +143,7 @@ function install(){
   const p=activeProject();if(p)applyProject(p);
   renderList();renderActiveUI();
   $('analyze')?.addEventListener('click',()=>setTimeout(renderContextProject,140));
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

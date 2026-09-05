@@ -202,10 +202,7 @@ function scheduleDecorate(delay=55){
   decorateTimer=setTimeout(()=>{decorateTimer=null;decorate()},delay);
 }
 
-function markVersion(){
-  document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
-  document.documentElement.dataset.uiVersion=VERSION;
-}
+
 
 function install(){
   installStyle();
@@ -218,9 +215,9 @@ function install(){
     if(event.target.closest('#analyze,.master-levels button,#searchGo,#homeSearchBtn,[data-example]'))scheduleDecorate(250);
   });
   decorate();
-  markVersion();
-  setTimeout(()=>{decorate();markVersion()},700);
-  setTimeout(markVersion,1300);
+  
+  setTimeout(decorate,700);
+  
 }
 
 window.CC_VISUAL_LANGUAGE={version:VERSION,classify,toggleDrawer,decorate};

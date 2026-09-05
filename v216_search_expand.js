@@ -46,7 +46,7 @@ function runExpanded(){
 function cloneInput(id,handler){const old=$(id);if(!old)return null;const fresh=old.cloneNode(true);old.replaceWith(fresh);fresh.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();handler();}});return fresh;}
 function openFromHome(){const h=$('homeSearch');if(!h)return;const q=h.value.trim();if(!q)return;if(typeof showView==='function')showView('search');const s=$('searchInput');if(s)s.value=q;runExpanded();}
 function install(){
-  document.querySelectorAll('.version').forEach(x=>x.textContent='v'+VERSION);
+  
   const s=cloneInput('searchInput',runExpanded);
   const h=cloneInput('homeSearch',openFromHome);
   const go=$('searchGo');if(go)go.onclick=runExpanded;

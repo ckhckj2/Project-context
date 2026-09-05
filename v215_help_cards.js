@@ -23,7 +23,7 @@ function install(){
    if(title)title.textContent=COPY[i]?.[0]||title.textContent;
    if(desc)desc.textContent=COPY[i]?.[1]||desc.textContent;
  });
- document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+ 
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

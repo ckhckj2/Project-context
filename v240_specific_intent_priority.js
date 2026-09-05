@@ -32,6 +32,6 @@ function run(){
   if(d){render(d);return;}
   if(typeof previousRunSearch==='function')previousRunSearch();
 }
-function install(){window.runSearch=run;document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION)}
+function install(){window.runSearch=run;}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

@@ -314,9 +314,9 @@ function install(){
   });
   if(result?.children.length)scheduleResult();
   if(context?.innerHTML.trim())scheduleContext(190);
-  const markVersion=()=>document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
-  markVersion();setTimeout(markVersion,30);
-  document.documentElement.dataset.uiVersion=VERSION;
+  
+  
+  
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});

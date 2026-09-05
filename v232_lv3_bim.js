@@ -148,7 +148,7 @@ function install(){
   window.addEventListener('resize',()=>setTimeout(restoreHowDesktop,50),{passive:true});
   if($('contextResult')?.innerHTML.trim())setTimeout(addHow,100);
   scheduleProjectEnhance();refreshActiveBimTag();
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

@@ -75,7 +75,7 @@ function installStyle(){
   `;document.head.appendChild(s);
 }
 function install(){
-  installStyle();document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  installStyle();
   const previous=window.runSearch;
   window.runSearch=function(){const q=$('searchInput')?.value.trim()||'';if(!route(q)&&typeof previous==='function')return previous();};
   document.addEventListener('click',e=>{

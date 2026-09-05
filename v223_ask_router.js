@@ -137,7 +137,7 @@ function installExamples(){
   items.forEach(([q,label])=>{const b=document.createElement('button');b.dataset.cc223='1';b.textContent=label;b.addEventListener('click',()=>{byId('searchInput').value=q;renderIfAsk();});box.appendChild(b);});
 }
 function install(){
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
   installExamples();
   window.runSearch=runSearch;
   const go=byId('searchGo');if(go)go.addEventListener('click',e=>{if(ASK.test(byId('searchInput')?.value||'')){e.preventDefault();e.stopImmediatePropagation();renderIfAsk();}},true);

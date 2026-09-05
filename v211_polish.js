@@ -24,7 +24,7 @@ function replaceText(root){
 }
 
 function installCopy(){
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
   const lead=document.querySelector('#view-search .search-card>.lead');
   setText(lead,'업무를 요청받은 상황을 자연스럽게 적어보세요. 업무 의미, 먼저 볼 자료, 확인처와 협업할 사람까지 실무 맥락으로 풀어드립니다.');
 

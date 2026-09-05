@@ -137,7 +137,7 @@ function style(){
   `;document.head.appendChild(s);
 }
 function install(){
-  style();document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  style();
   document.addEventListener('click',e=>{
     if(e.target.closest('#analyze'))setTimeout(enhance,40);
     if(e.target.closest('.master-levels button'))setTimeout(enhance,40);

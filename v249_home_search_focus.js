@@ -240,10 +240,10 @@ function install(){
   installStyle();
   prepareHome();
   prepareSearch();
-  const markVersion=()=>document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
-  markVersion();
-  setTimeout(markVersion,20);
-  document.documentElement.dataset.uiVersion=VERSION;
+  
+  
+  
+  
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});

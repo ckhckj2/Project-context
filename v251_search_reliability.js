@@ -225,9 +225,9 @@ function install(){
   window.addEventListener('click',intercept,true);
   window.addEventListener('keydown',intercept,true);
   const result=$('searchResult');if(result)new MutationObserver(()=>setTimeout(repairLegacy,120)).observe(result,{childList:true,subtree:true});
-  const markVersion=()=>document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
-  markVersion();setTimeout(markVersion,40);
-  document.documentElement.dataset.uiVersion=VERSION;
+  
+  
+  
 }
 
 window.CC_SEARCH_RELIABILITY={version:VERSION,routeQuery,persona,concepts:CONCEPTS.map(item=>item.id)};

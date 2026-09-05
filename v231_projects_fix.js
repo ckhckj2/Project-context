@@ -44,7 +44,7 @@ function install(){
   wireProjectNav();
   installMobileShortcut();
   installStyle();
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});

@@ -94,7 +94,7 @@ function install(){
   }
   `;
   document.head.appendChild(s);
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

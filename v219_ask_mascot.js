@@ -39,7 +39,7 @@ function fixedPhaseIndex(flow,phase){
 window.phaseIndex=fixedPhaseIndex;
 
 function install(){
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
   const card=document.querySelector('.cc-ask-card');
   if(!card)return;
   const title=card.querySelector('.cc-ask-title');

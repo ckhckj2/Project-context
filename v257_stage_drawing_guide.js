@@ -1,7 +1,7 @@
 (()=>{
 'use strict';
 
-const VERSION='2.1.64';
+const VERSION='2.1.65';
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({
   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -62,7 +62,9 @@ const CONFIRM_ORDER=[
 ];
 
 function level(){
-  const matched=clean($('miniLevel')?.textContent).match(/LV\.(\d)/i);
+  const label=clean($('miniLevel')?.textContent);
+  if(/LV\.MAX/i.test(label))return 4;
+  const matched=label.match(/LV\.(\d)/i);
   return Math.min(4,Math.max(1,matched?Number(matched[1]):1));
 }
 
@@ -133,11 +135,18 @@ function shellMarkup(phase,stageKey){
 }
 
 function renderGuide(guide,stageKey,phase,project){
+  if(!guide||!Object.hasOwn(STAGES,stageKey))return;
   const body=guide.querySelector('.cc257-body');
   if(!body)return;
+  const key=JSON.stringify([phase,project,level(),stageKey]);
+  if(guide.dataset.cc257Key===key)return;
+  const expanded=body.querySelector('.cc257-more')?.open||false;
+  const focusedStage=body.contains(document.activeElement)?document.activeElement.dataset.cc257Stage:null;
   body.innerHTML=bodyMarkup(stageKey,phase,project);
-  guide.dataset.cc257Stage=stageKey;
-  guide.dataset.cc257Key=[phase,project,level(),stageKey].join('|');
+  body.querySelector('.cc257-more').open=expanded;
+  guide.dataset.cc257SelectedStage=stageKey;
+  guide.dataset.cc257Key=key;
+  if(focusedStage&&Object.hasOwn(STAGES,focusedStage))body.querySelector(`button[data-cc257-stage="${focusedStage}"]`)?.focus();
 }
 
 function enhance(){
@@ -155,15 +164,17 @@ function enhance(){
     guide=document.createElement('details');
     guide.className='cc257-drawing-guide';
     guide.innerHTML=shellMarkup(phase,stageKey);
-    actions.before(guide);
+    map.append(guide);
   }
-  const expected=[phase,project,level(),guide.dataset.cc257Stage||stageKey].join('|');
-  if(guide.dataset.cc257Key!==expected)renderGuide(guide,guide.dataset.cc257Stage||stageKey,phase,project);
-  setTimeout(markVersion,120);
+  renderGuide(guide,guide.dataset.cc257SelectedStage||stageKey,phase,project);
+  
 }
 
 let timer=null;
-function schedule(delay=80){clearTimeout(timer);timer=setTimeout(enhance,delay);}
+function schedule(delay=80){
+  if(timer!==null)return;
+  timer=setTimeout(()=>{timer=null;enhance()},delay);
+}
 
 function installStyle(){
   if($('cc264DrawingStyle'))return;
@@ -216,29 +227,30 @@ function installStyle(){
   document.head.append(style);
 }
 
-function markVersion(){
-  document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
-  document.documentElement.dataset.uiVersion=VERSION;
-}
+
 
 function install(){
   installStyle();
   const root=$('contextResult');
-  if(root)new MutationObserver(()=>schedule()).observe(root,{childList:true,subtree:true});
-  document.addEventListener('click',event=>{
-    const tab=event.target.closest('[data-cc257-stage]');
+  if(root)new MutationObserver(records=>{
+    if(records.some(record=>!record.target.closest?.('.cc257-drawing-guide')))schedule();
+  }).observe(root,{childList:true,subtree:true});
+  root?.addEventListener('click',event=>{
+    const tab=event.target.closest('button[data-cc257-stage]');
     if(tab){
       const guide=tab.closest('.cc257-drawing-guide');
       const phase=clean($('phase')?.value);
       const project=clean($('project')?.selectedOptions?.[0]?.textContent||$('project')?.value);
       renderGuide(guide,tab.dataset.cc257Stage,phase,project);
-      setTimeout(markVersion,120);
+      
       return;
     }
+  });
+  document.addEventListener('click',event=>{
     if(event.target.closest('#analyze,.master-levels button'))schedule(420);
   },true);
   if(root?.innerHTML.trim())schedule(240);
-  markVersion();setTimeout(markVersion,800);setTimeout(markVersion,1500);
+  
 }
 
 window.CC_STAGE_DRAWING_GUIDE={

@@ -93,7 +93,7 @@ function installStyle(){
   `;document.head.appendChild(s);
 }
 function install(){
-  installStyle();document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  installStyle();
   window.runSearch=runQuality;
   document.addEventListener('click',e=>{
     const ex=e.target.closest('[data-example]');

@@ -139,17 +139,14 @@ function installStyle(){
   document.head.append(style);
 }
 
-function markVersion(){
-  document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
-  document.documentElement.dataset.uiVersion=VERSION;
-}
+
 
 function install(){
   installStyle();
   installNavigationFix();
-  markVersion();
-  setTimeout(markVersion,100);
-  setTimeout(()=>{markVersion();syncNavigation()},450);
+  
+  
+  setTimeout(syncNavigation,450);
 }
 
 window.CC_UI_FOUNDATION={version:VERSION,syncNavigation};

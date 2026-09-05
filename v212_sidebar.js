@@ -44,7 +44,7 @@ function install(){
       <button data-view="level">내 학습 현황 보기 <span>→</span></button>
     </div>`;
   side.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===active&&b.closest('.cc212-main-nav')));
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

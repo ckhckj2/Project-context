@@ -111,7 +111,7 @@ function install(){
   installStyle();ensureBack();loadUnifiedSearchTypography();
   window.addEventListener('click',captureNavigation,true);
   document.addEventListener('click',()=>setTimeout(syncBack,90));
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

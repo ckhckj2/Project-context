@@ -204,10 +204,7 @@ function scheduleResult(delay=55){
   resultTimer=setTimeout(()=>{resultTimer=null;arrangeSearchResult()},delay);
 }
 
-function markVersion(){
-  document.querySelectorAll('.version').forEach(element=>element.textContent='v'+VERSION);
-  document.documentElement.dataset.uiVersion=VERSION;
-}
+
 
 function install(){
   installStyle();
@@ -224,9 +221,9 @@ function install(){
   });
   if(context?.innerHTML.trim())scheduleContext(260);
   if(result?.children.length)scheduleResult(100);
-  markVersion();
-  setTimeout(markVersion,80);
-  setTimeout(markVersion,500);
+  
+  
+  
 }
 
 window.CC_INFORMATION_HIERARCHY={version:VERSION,arrangeContext,arrangeSearchResult};

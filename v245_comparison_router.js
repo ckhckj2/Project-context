@@ -150,7 +150,7 @@ function installStyle(){
   `;document.head.appendChild(s);
 }
 function install(){
-  installStyle();setTimeout(()=>document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION),0);
+  installStyle();
   const previous=window.runSearch;
   window.runSearch=function(){const q=$('searchInput')?.value.trim()||'';if(!render(q)&&typeof previous==='function')return previous();};
   window.addEventListener('click',intercept,true);window.addEventListener('keydown',intercept,true);

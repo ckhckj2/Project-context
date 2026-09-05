@@ -90,7 +90,7 @@ function install(){
   $('homeSearch')?.addEventListener('keydown',e=>{if(e.key==='Enter')scheduleSearch()});
   if($('contextResult')?.innerHTML.trim())scheduleHow();
   if($('searchResult')?.innerHTML.trim())scheduleSearch();
-  document.querySelectorAll('.version').forEach(v=>v.textContent='v'+VERSION);
+  
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

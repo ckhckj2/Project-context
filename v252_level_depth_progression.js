@@ -250,9 +250,9 @@ function install(){
     if(event.target.closest('#analyze,.master-levels button')){beginAtomic();schedule(270)}
   },true);
   if(context?.innerHTML.trim())schedule(230);
-  const markVersion=()=>document.querySelectorAll('.version').forEach(node=>node.textContent='v'+VERSION);
-  markVersion();setTimeout(markVersion,40);
-  document.documentElement.dataset.uiVersion=VERSION;
+  
+  
+  
 }
 
 window.CC_LEVEL_DEPTH={version:VERSION,depths:DEPTHS.map(item=>({...item})),openAreas:[...OPEN_AREAS]};
