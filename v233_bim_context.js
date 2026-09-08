@@ -1,13 +1,11 @@
 (()=>{
 'use strict';
 const VERSION='2.1.33';
-const PROJECT_STORAGE='cc_projects_v1';
-const ACTIVE_STORAGE='cc_active_project_v1';
+const store=window.CC_PROJECT_STORE;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
-function readProjects(){try{const v=JSON.parse(localStorage.getItem(PROJECT_STORAGE)||'[]');return Array.isArray(v)?v:[]}catch(e){return []}}
-function activeProject(){try{const id=localStorage.getItem(ACTIVE_STORAGE)||'';return readProjects().find(p=>p.id===id)||null}catch(e){return null}}
+const activeProject=()=>store.active();
 function hasBim(p){return !!(p&&p.bimMode&&p.bimMode!=='none')}
 function modeLabel(mode){return ({revit:'Revit 협업',coordination:'BIM 코디네이션',delivery:'BIM 납품 프로젝트',other:'기타 BIM'})[mode]||'BIM 프로젝트'}
 function isExplicitBim(q){return /\bbim\b|revit|레빗|중앙파일|로컬파일|워크셋|workset|공유좌표|shared\s*coordinate|\bifc\b|clash|간섭검토|\bbep\b|\blod\b|패밀리|파라미터/i.test(q||'')}

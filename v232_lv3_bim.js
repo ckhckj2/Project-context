@@ -1,18 +1,16 @@
 (()=>{
 'use strict';
 const VERSION='2.1.32';
-const PROJECT_STORAGE='cc_projects_v1';
-const ACTIVE_STORAGE='cc_active_project_v1';
+const store=window.CC_PROJECT_STORE;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const MOBILE=()=>window.matchMedia('(max-width:700px)').matches;
 const prevRunSearch=window.runSearch;
 
 function level(){try{return typeof viewLevel==='function'?viewLevel():Number(localStorage.getItem('pc_level')||1)}catch(e){return 1}}
-function readProjects(){try{const v=JSON.parse(localStorage.getItem(PROJECT_STORAGE)||'[]');return Array.isArray(v)?v:[]}catch(e){return []}}
-function writeProjects(v){try{localStorage.setItem(PROJECT_STORAGE,JSON.stringify(v));return true}catch(e){return false}}
-function activeId(){try{return localStorage.getItem(ACTIVE_STORAGE)||''}catch(e){return ''}}
-function activeProject(){const id=activeId();return readProjects().find(p=>p.id===id)||null}
+const readProjects=()=>store.list();
+const activeId=()=>store.activeId();
+const activeProject=()=>store.active();
 function bimLabel(v){return ({none:'BIM 미사용/미정',revit:'Revit 협업',delivery:'BIM 납품 프로젝트',coordination:'BIM 코디네이션',other:'기타 BIM'})[v]||'BIM 미사용/미정'}
 
 const HOW_RULES=[
@@ -114,8 +112,12 @@ function enhanceProjectCards(){
     const wrap=document.createElement('label');wrap.className='cc232-bim-setting';wrap.innerHTML=`<span>BIM 운용</span><select aria-label="${esc(p.name)} BIM 운용 설정"><option value="none">미사용 / 잘 모르겠음</option><option value="revit">Revit 협업</option><option value="coordination">BIM 코디네이션</option><option value="delivery">BIM 납품 프로젝트</option><option value="other">기타 BIM</option></select>`;
     const select=wrap.querySelector('select');select.value=p.bimMode||'none';
     select.addEventListener('change',()=>{
-      const items=readProjects();const next=items.map(x=>x.id===id?Object.assign({},x,{bimMode:select.value,updatedAt:Date.now()}):x);writeProjects(next);
-      if(id===activeId())window.CC_ACTIVE_PROJECT=Object.assign({},next.find(x=>x.id===id));
+      const result=store.save(id,{bimMode:select.value});
+      let status=card.querySelector('.cc232-save-status');
+      if(!status){status=document.createElement('span');status.className='cc232-save-status';status.setAttribute('role','status');wrap.append(status)}
+      status.textContent=result.ok?'':store.message(result);
+      if(!result.ok){select.value=store.get(id)?.bimMode||p.bimMode||'none';return}
+      if(id===activeId())window.CC_ACTIVE_PROJECT={...result.project};
       refreshActiveBimTag();
     });
     const use=card.querySelector('.cc230-use');if(use)card.insertBefore(wrap,use);else card.appendChild(wrap);
@@ -127,7 +129,7 @@ function refreshActiveBimTag(){
   const bar=$('cc230HomeProject');if(bar&&!bar.hidden){const s=document.createElement('span');s.className='cc232-active-bim';s.textContent=' · '+bimLabel(p.bimMode);bar.querySelector('div')?.appendChild(s)}
   const search=$('cc230SearchProject');if(search&&!search.hidden){const s=document.createElement('span');s.className='cc232-active-bim';s.textContent=' · '+bimLabel(p.bimMode);search.appendChild(s)}
 }
-function scheduleProjectEnhance(){setTimeout(()=>{enhanceProjectCards();refreshActiveBimTag()},80)}
+function refreshProjects(){enhanceProjectCards();refreshActiveBimTag()}
 
 function installStyle(){
   if($('cc232Style'))return;const s=document.createElement('style');s.id='cc232Style';s.textContent=`
@@ -141,13 +143,13 @@ function install(){
   installStyle();addBimExamples();
   document.addEventListener('click',e=>{
     if(e.target.closest('#analyze'))setTimeout(addHow,170);
-    if(e.target.closest('[data-view="projects"],#cc230Save,[data-use],[data-edit],[data-delete],#cc230New,#cc230EmptyNew'))scheduleProjectEnhance();
     if(e.target.closest('.master-levels button'))setTimeout(addHow,120);
   });
   document.addEventListener('click',intercept,true);document.addEventListener('keydown',intercept,true);
   window.addEventListener('resize',()=>setTimeout(restoreHowDesktop,50),{passive:true});
   if($('contextResult')?.innerHTML.trim())setTimeout(addHow,100);
-  scheduleProjectEnhance();refreshActiveBimTag();
+  document.addEventListener('cc:projects-rendered',refreshProjects);
+  refreshProjects();
   
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();

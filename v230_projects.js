@@ -1,20 +1,16 @@
 (()=>{
 'use strict';
 const VERSION='2.1.30';
-const STORAGE='cc_projects_v1';
-const ACTIVE='cc_active_project_v1';
+const store=window.CC_PROJECT_STORE;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-let editingId=null;
+let editingId=null,editingOriginal;
+const editorExtensions=new Map();
 
-function readProjects(){
-  try{const v=JSON.parse(localStorage.getItem(STORAGE)||'[]');return Array.isArray(v)?v:[]}catch(e){return []}
-}
-function writeProjects(items){try{localStorage.setItem(STORAGE,JSON.stringify(items));return true}catch(e){return false}}
-function activeId(){try{return localStorage.getItem(ACTIVE)||''}catch(e){return ''}}
-function setActiveId(id){try{id?localStorage.setItem(ACTIVE,id):localStorage.removeItem(ACTIVE)}catch(e){}}
-function uid(){return (crypto&&crypto.randomUUID)?crypto.randomUUID():'p_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)}
-function activeProject(){const id=activeId();return readProjects().find(p=>p.id===id)||null}
+const readProjects=()=>store.list();
+const activeId=()=>store.activeId();
+const activeProject=()=>store.active();
+function notice(result){const node=$('cc230Status');if(node){node.hidden=result.ok;node.textContent=result.ok?'':store.message(result)}}
 function typeLabel(id){const o=[...($('project')?.options||[])].find(x=>x.value===id);return o?o.textContent.trim():id||'유형 미정'}
 function metaText(p){return [p.location&&`위치 ${p.location}`,p.scale&&`규모 ${p.scale}`,p.memo].filter(Boolean).join(' · ')}
 
@@ -25,6 +21,7 @@ function injectView(){
   s.innerHTML=`<div class="cc230-page">
     <div class="cc230-head"><div><div class="kicker">MY PROJECTS · LOCAL ONLY</div><h2>내 프로젝트</h2><p>프로젝트를 저장해두면 유형·단계·규모 정보를 다시 입력하지 않고 바로 전환할 수 있어요.</p></div><button id="cc230New" class="primary">+ 새 프로젝트</button></div>
     <div class="cc230-local"><b>기밀정보 입력 금지</b><span>이 브라우저의 localStorage에 평문으로 저장됩니다. 고객 개인정보·계약정보·비공개 도면 링크는 입력하지 마세요.</span></div>
+    <p id="cc230Status" role="alert" hidden></p>
     <div id="cc230Editor" class="cc230-editor" hidden></div>
     <div id="cc230List" class="cc230-list"></div>
   </div>`;
@@ -43,6 +40,7 @@ function cloneOptions(source,selected){
 }
 function openEditor(p=null){
   editingId=p?.id||null;
+  editingOriginal=JSON.stringify(p);
   const box=$('cc230Editor');if(!box)return;
   const type=p?.typeId||$('project')?.value||'';
   const phase=p?.phase||$('phase')?.value||'잘 모르겠습니다';
@@ -59,24 +57,27 @@ function openEditor(p=null){
     <div class="cc230-editor-actions"><span id="cc230SaveMsg"></span><button type="button" id="cc230Save" class="primary">${p?'수정 저장':'프로젝트 저장'}</button></div>`;
   $('cc230Cancel').onclick=closeEditor;
   $('cc230Save').onclick=saveEditor;
+  editorExtensions.forEach(extension=>extension.render(p));
   setTimeout(()=>$('cc230Name')?.focus(),0);
 }
 function closeEditor(){const b=$('cc230Editor');if(b){b.hidden=true;b.innerHTML=''}editingId=null}
 function saveEditor(){
   const name=$('cc230Name')?.value.trim();const msg=$('cc230SaveMsg');
   if(!name){if(msg)msg.textContent='프로젝트명을 입력해주세요.';$('cc230Name')?.focus();return}
-  const items=readProjects();
-  const old=items.find(x=>x.id===editingId);
-  const p={...old,id:editingId||uid(),name,typeId:$('cc230Type')?.value||'',phase:$('cc230Phase')?.value||'잘 모르겠습니다',location:$('cc230Location')?.value.trim()||'',scale:$('cc230Scale')?.value.trim()||'',memo:$('cc230Memo')?.value.trim()||'',createdAt:old?.createdAt||Date.now(),updatedAt:Date.now()};
-  const next=old?items.map(x=>x.id===p.id?p:x):[p,...items];
-  if(!writeProjects(next)){if(msg)msg.textContent='브라우저 저장소를 사용할 수 없습니다.';return}
-  if(!activeId())setActiveId(p.id);
+  const fields={name,typeId:$('cc230Type')?.value||'',phase:$('cc230Phase')?.value||'잘 모르겠습니다',location:$('cc230Location')?.value.trim()||'',scale:$('cc230Scale')?.value.trim()||'',memo:$('cc230Memo')?.value.trim()||''};
+  editorExtensions.forEach(extension=>Object.assign(fields,extension.collect()));
+  const result=store.save(editingId,fields,editingOriginal);
+  if(!result.ok){if(msg)msg.textContent=store.message(result);return}
+  notice({ok:true});
+  const p=result.project;
+  if(!activeProject())notice(store.activate(p.id));
   if(activeId()===p.id)applyProject(p);
   closeEditor();renderList();renderActiveUI();
 }
 function activate(id,goHome=true){
   const p=readProjects().find(x=>x.id===id);if(!p)return;
-  setActiveId(id);applyProject(p);renderList();renderActiveUI();
+  const result=store.activate(id);notice(result);if(!result.ok)return;
+  applyProject(p);renderList();renderActiveUI();
   if(goHome&&typeof showView==='function')showView('home');
 }
 function applyProject(p){
@@ -88,12 +89,15 @@ function applyProject(p){
 function removeProject(id){
   const p=readProjects().find(x=>x.id===id);if(!p)return;
   if(!confirm(`“${p.name}” 프로젝트를 이 브라우저에서 삭제할까요?`))return;
-  const next=readProjects().filter(x=>x.id!==id);writeProjects(next);
-  if(activeId()===id){setActiveId(next[0]?.id||'');if(next[0])applyProject(next[0]);else window.CC_ACTIVE_PROJECT=null}
+  const result=store.remove(id);notice(result);if(!result.ok)return;
+  const next=readProjects();
+  if(activeId()===id){const selected=store.activate(next[0]?.id||'');notice(selected);if(selected.ok&&next[0])applyProject(next[0]);else window.CC_ACTIVE_PROJECT=null}
   renderList();renderActiveUI();
 }
 function renderList(){
   const root=$('cc230List');if(!root)return;
+  const state=store.read();
+  if(!state.ok){notice(state);root.replaceChildren();return}
   const items=readProjects();const active=activeId();
   if(!items.length){root.innerHTML=`<div class="cc230-empty"><b>아직 등록된 프로젝트가 없어요.</b><span>자주 하는 프로젝트부터 하나 등록해두면 홈 화면이 그 프로젝트 기준으로 바로 채워집니다.</span><button id="cc230EmptyNew">+ 첫 프로젝트 등록</button></div>`;$('cc230EmptyNew').onclick=()=>openEditor();return}
   root.innerHTML=`<div class="cc230-list-head"><b>저장된 프로젝트 <span>${items.length}</span></b><small>최근 수정 순</small></div>${items.slice().sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)).map(p=>`<article class="cc230-card ${p.id===active?'active':''}" data-pid="${esc(p.id)}">
@@ -124,6 +128,7 @@ function renderActiveUI(){
   const p=activeProject();const home=ensureHomeBar();const search=ensureSearchBar();
   if(home){home.hidden=!p;home.innerHTML=p?`<div><small>CURRENT PROJECT</small><b>${esc(p.name)}</b><span>${esc(typeLabel(p.typeId))} · ${esc(p.phase||'단계 미정')}</span></div><button data-view="projects">프로젝트 전환</button>`:''}
   if(search){search.hidden=!p;search.innerHTML=p?`<small>현재 프로젝트</small><b>${esc(p.name)}</b><span>${esc(typeLabel(p.typeId))} · ${esc(p.phase||'단계 미정')}${p.location?' · '+esc(p.location):''}</span>`:''}
+  document.dispatchEvent(new CustomEvent('cc:projects-rendered'));
 }
 function renderContextProject(){
   const p=activeProject(),root=$('contextResult');if(!p||!root)return;
@@ -143,7 +148,16 @@ function install(){
   const p=activeProject();if(p)applyProject(p);
   renderList();renderActiveUI();
   $('analyze')?.addEventListener('click',()=>setTimeout(renderContextProject,140));
+  window.addEventListener('storage',event=>{
+    if(event.key!==null&&!['cc_projects_v1','cc_active_project_v1'].includes(event.key))return;
+    const current=activeProject();if(current)applyProject(current);else window.CC_ACTIVE_PROJECT=null;
+    renderList();renderActiveUI();
+  });
   
 }
+window.CC_PROJECTS_UI=Object.freeze({registerEditorExtension(id,extension){
+  if(editorExtensions.has(id))throw new Error('Duplicate project editor extension: '+id);
+  editorExtensions.set(id,extension);
+}});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

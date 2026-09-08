@@ -1,8 +1,7 @@
 (()=>{
 'use strict';
 const VERSION='2.1.50';
-const STORAGE='cc_projects_v1';
-const ACTIVE='cc_active_project_v1';
+const store=window.CC_PROJECT_STORE;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const BUSINESS={
@@ -35,11 +34,9 @@ const TYPE_HINT={
   logistics:'건축허가 또는 물류단지계획·개발실시계획',fab:'건축허가·공장설립승인·산업단지계획',
   knowledge:'건축허가·공장설립승인',hazard:'건축허가 또는 관계 특별법 승인',mixed:'구성 용도별 인허가와 전체 사업 승인경로'
 };
-let editingId=null,uiScheduled=false;
-function readProjects(){try{const v=JSON.parse(localStorage.getItem(STORAGE)||'[]');return Array.isArray(v)?v:[]}catch(e){return []}}
-function writeProjects(v){try{localStorage.setItem(STORAGE,JSON.stringify(v));return true}catch(e){return false}}
-function activeId(){try{return localStorage.getItem(ACTIVE)||''}catch(e){return ''}}
-function activeProject(){const id=activeId();return readProjects().find(x=>x.id===id)||null}
+const readProjects=()=>store.list();
+const activeId=()=>store.activeId();
+const activeProject=()=>store.active();
 function level(){try{return typeof viewLevel==='function'?viewLevel():Number(localStorage.getItem('pc_master_preview_level')||localStorage.getItem('pc_progress_level')||localStorage.getItem('pc_level')||1)}catch(e){return 1}}
 function options(data,value){return Object.entries(data).map(([k,v])=>'<option value="'+esc(k)+'" '+(k===(value||'unknown')?'selected':'')+'>'+esc(v)+'</option>').join('')}
 function taskKind(task){if(/심의/.test(task))return'review';if(/인허가|허가자료/.test(task))return'permit';if(/변경업무|변경허가|변경신고|경미한 변경/.test(task))return'change';return'other'}
@@ -53,7 +50,7 @@ function exceptionText(code,kind,phase){
 }
 function judgement(p,task,phase){
   if(!p)return null;
-  const kind=taskKind(task),route=p.approvalRoute||'unknown',business=p.businessMode||'unknown',exception=p.routeException||'unknown';
+  const kind=taskKind(task),route=Object.hasOwn(ROUTES,p.approvalRoute)?p.approvalRoute:'unknown',business=Object.hasOwn(BUSINESS,p.businessMode)?p.businessMode:'unknown',exception=Object.hasOwn(EXCEPTIONS,p.routeException)?p.routeException:'unknown';
   const guide=ROUTE_GUIDE[route]||ROUTE_GUIDE.unknown,known=route!=='unknown';
   const title=known?ROUTES[route]+' 기준으로 먼저 보세요':'원 승인경로가 아직 입력되지 않았어요';
   let summary=known?(kind==='change'?guide.change:guide.focus):'시설유형만으로 정하지 말고 '+routeCandidate(p)+' 중 실제 승인서를 확인해야 합니다.';
@@ -64,23 +61,19 @@ function judgement(p,task,phase){
   return {kind,route,business,exception,known,title,summary,exceptionSummary,verdict,
     checks:['기존 승인서 문서명·근거법·승인기관','현재 절차가 최초·변경·보완 중 무엇인지','관할기관 최신 운영기준과 PM 확인']};
 }
-function enhanceEditor(){
+function enhanceEditor(p=null){
   const editor=$('cc230Editor'),form=editor?.querySelector('.cc230-form');if(!editor||editor.hidden||!form||$('cc250Business'))return;
-  const p=editingId?readProjects().find(x=>x.id===editingId):null;
   const wrap=document.createElement('div');wrap.className='cc250-route-fields';
   wrap.innerHTML='<label><span>사업방식 <small>선택</small></span><select id="cc250Business">'+options(BUSINESS,p?.businessMode)+'</select></label><label><span>원 승인경로 <em>중요</em></span><select id="cc250Route">'+options(ROUTES,p?.approvalRoute)+'</select></label><label><span>현재 예외절차 <small>선택</small></span><select id="cc250Exception">'+options(EXCEPTIONS,p?.routeException)+'</select></label><p>모르면 추정하지 말고 ‘잘 모르겠습니다’로 두세요. 실제 승인서 확인 전에는 경로가 확정되지 않습니다.</p>';
   const memo=[...form.querySelectorAll('label')].find(x=>/메모/.test(x.textContent));memo?form.insertBefore(wrap,memo):form.appendChild(wrap);
 }
-function persistExtra(s,attempt=0){
-  const items=readProjects();let target=s.id?items.find(x=>x.id===s.id):null;
-  if(!target)target=items.filter(x=>x.name===s.name).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0))[0];
-  if(!target){if(attempt<2)setTimeout(()=>persistExtra(s,attempt+1),100);return}
-  const next=items.map(x=>x.id===target.id?Object.assign({},x,{businessMode:s.businessMode,approvalRoute:s.approvalRoute,routeException:s.routeException}):x);
-  if(!writeProjects(next))return;
-  if(activeId()===target.id)window.CC_ACTIVE_PROJECT=Object.assign({},next.find(x=>x.id===target.id));
-  document.dispatchEvent(new CustomEvent('cc:project-profile-updated',{detail:{id:target.id}}));scheduleUI();
+function collectFields(){
+  const fields={};
+  for(const [id,key] of [['cc250Business','businessMode'],['cc250Route','approvalRoute'],['cc250Exception','routeException']]){
+    if($(id))fields[key]=$(id).value;
+  }
+  return fields;
 }
-function scheduleUI(){if(uiScheduled)return;uiScheduled=true;setTimeout(()=>{uiScheduled=false;enhanceEditor();enhanceProjectUI()},30)}
 function enhanceProjectUI(){
   const map=new Map(readProjects().map(x=>[x.id,x]));
   document.querySelectorAll('.cc230-card').forEach(card=>{const p=map.get(card.dataset.pid),tags=card.querySelector('.cc230-tags');if(!p||!tags)return;const sig=[p.approvalRoute,p.routeException].join('|');if(card.dataset.cc250Sig===sig)return;card.dataset.cc250Sig=sig;tags.querySelectorAll('.cc250-tag').forEach(x=>x.remove());if(p.approvalRoute&&p.approvalRoute!=='unknown')tags.insertAdjacentHTML('beforeend','<span class="cc250-tag">'+esc(ROUTES[p.approvalRoute]||p.approvalRoute)+'</span>');if(p.routeException&&!['unknown','none'].includes(p.routeException))tags.insertAdjacentHTML('beforeend','<span class="cc250-tag exception">'+esc(EXCEPTIONS[p.routeException]||p.routeException)+'</span>')});
@@ -133,17 +126,13 @@ function style(){
 }
 function install(){
   style();
+  window.CC_PROJECTS_UI.registerEditorExtension('approval-route',{render:enhanceEditor,collect:collectFields});
   document.addEventListener('click',e=>{
-    const edit=e.target.closest('.cc230-card [data-edit]');if(edit)editingId=edit.closest('.cc230-card')?.dataset.pid||null;
-    if(e.target.closest('#cc230New,#cc230EmptyNew'))editingId=null;
-    if(e.target.closest('#cc230Save')){const name=$('cc230Name')?.value.trim()||'';if(name){const snap={id:editingId,name,businessMode:$('cc250Business')?.value||'unknown',approvalRoute:$('cc250Route')?.value||'unknown',routeException:$('cc250Exception')?.value||'unknown'};setTimeout(()=>persistExtra(snap),60)}}
     if(e.target.closest('#analyze'))setTimeout(enhanceContext,140);
     if(e.target.closest('.master-levels button'))setTimeout(enhanceContext,140);
-    scheduleUI();
   },true);
-  document.addEventListener('cc:project-profile-updated',()=>setTimeout(enhanceContext,80));
-  new MutationObserver(scheduleUI).observe(document.body,{childList:true,subtree:true});
-  scheduleUI();if($('contextResult')?.innerHTML.trim())setTimeout(enhanceContext,160);
+  document.addEventListener('cc:projects-rendered',enhanceProjectUI);
+  enhanceProjectUI();if($('contextResult')?.innerHTML.trim())setTimeout(enhanceContext,160);
   window.CC_PROJECT_ROUTE_JUDGEMENT={version:VERSION,fields:['businessMode','approvalRoute','routeException'],business:BUSINESS,routes:ROUTES,exceptions:EXCEPTIONS,judgement};
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();

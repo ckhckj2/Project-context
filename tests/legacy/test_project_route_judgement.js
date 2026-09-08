@@ -7,6 +7,8 @@ const window={};
 const document={readyState:'loading',addEventListener(){}};
 vm.runInNewContext(source,{window,document,localStorage:{getItem(){return null}}});
 const t=window.__routeTest;
+const unknown=t.judgement({approvalRoute:'invalid-route',businessMode:'invalid',routeException:'invalid'},'변경업무 검토','중간설계');
+if(unknown.known||unknown.route!=='unknown'||unknown.verdict!=='판단 보류')throw new Error('invalid stored enums must remain undecided');
 function ok(value,message){if(!value)throw new Error(message)}
 ok(Object.keys(t.BUSINESS).length===7,'business options');
 ok(Object.keys(t.ROUTES).length===9,'route options');
