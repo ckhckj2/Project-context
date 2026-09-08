@@ -64,4 +64,25 @@ assert.match(source,/claimed\.click\(\)/,'legacy specific-task router bridge');
 assert.match(source,/상사가 시킨 일을/,'legacy employee-copy repair');
 assert.doesNotMatch(source,/localStorage\.(?:setItem|removeItem|clear)/,'routing pass must not mutate project storage');
 
+// Exercise the private scheduler with timer ID 0 and repeated mutation bursts.
+const pending=[];
+let repairs=0;
+const schedulingSandbox={
+  ...sandbox,window:{},
+  document:{...sandbox.document,getElementById(){repairs++;return null;}},
+  setTimeout(callback,delay){pending.push({callback,delay});return 0;}
+};
+vm.createContext(schedulingSandbox);
+vm.runInContext(source.replace(/\}\)\(\);\s*$/, 'window.__scheduleRepair=scheduleRepair;})();'),schedulingSandbox);
+const schedule=schedulingSandbox.window.__scheduleRepair;
+for(let i=0;i<100;i++)schedule();
+assert.equal(pending.length,1,'a mutation burst schedules only one repair');
+assert.equal(pending[0].delay,120,'preserve the existing repair delay');
+pending.shift().callback();
+assert.equal(repairs,1);
+schedule();schedule();
+assert.equal(pending.length,1,'a later burst can schedule another repair');
+pending.shift().callback();
+assert.equal(repairs,2);
+
 console.log('v2.1.53 search reliability checks passed');

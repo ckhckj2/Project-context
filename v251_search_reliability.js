@@ -195,6 +195,16 @@ function repairLegacy(){
   }
 }
 
+// Batch result mutations without postponing repair during continuous updates.
+let repairTimer=null;
+function scheduleRepair(){
+  if(repairTimer!==null)return;
+  repairTimer=setTimeout(()=>{
+    repairTimer=null;
+    repairLegacy();
+  },120);
+}
+
 function installStyle(){
   if($('cc253Style'))return;
   const style=document.createElement('style');style.id='cc253Style';style.textContent=`
@@ -224,7 +234,7 @@ function install(){
   claimControls();
   window.addEventListener('click',intercept,true);
   window.addEventListener('keydown',intercept,true);
-  const result=$('searchResult');if(result)new MutationObserver(()=>setTimeout(repairLegacy,120)).observe(result,{childList:true,subtree:true});
+  const result=$('searchResult');if(result)new MutationObserver(scheduleRepair).observe(result,{childList:true,subtree:true});
   
   
   
