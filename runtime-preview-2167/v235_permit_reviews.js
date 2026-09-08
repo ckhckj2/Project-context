@@ -69,7 +69,7 @@ function renderReview(key){
     <details class="cc235-practice"><summary>${lv>=3?'LV.3 실무 준비자료 · 담당 · 완료 후 보기':'LV.3 실무 내용 🔒'}</summary>${lv>=3?`<div class="cc235-practice-grid"><div><small>준비자료</small>${d.materials.map(x=>`<p>• ${esc(x)}</p>`).join('')}</div><div><small>누구와 확인?</small><p>${esc(d.who)}</p><small>심의·평가 후</small><p>${esc(d.after)}</p></div></div>`:`<div class="cc235-lock"><b>LV.3 · 책임부터 열립니다.</b><span>승급하면 준비자료, 협력업체 역할, 심의 후 반영·추적 방법까지 볼 수 있어요.</span></div>`}</details>
     <div class="cc235-sources"><small>공식 근거 시작점</small>${lawLink(d.law)}<span>정확한 대상·도서·접수시기는 시행령·시행규칙·관할기관 조례/안내의 최신본을 함께 확인하세요.</span></div>
   </article>`;
-  cleanupForeignAdjustments();
+  
 }
 
 function reviewButtons(){
@@ -83,7 +83,7 @@ function renderOverview(){
     <div class="cc235-pick"><small>하나씩 확인해보기</small><div>${reviewButtons()}</div></div>
     <div class="cc235-caution"><b>세움터는?</b><span>건축행정의 중요한 접점이지만 모든 심의·평가가 세움터 하나로 처리되는 것은 아닙니다. 심의·평가별 접수기관과 시스템을 따로 확인하세요.</span></div>
   </article>`;
-  wireGo();cleanupForeignAdjustments();
+  wireGo();
 }
 function renderPermit(){
   const out=$('searchResult');if(!out)return;const lv=level();
@@ -91,10 +91,9 @@ function renderPermit(){
     <div class="cc235-flow"><div><i>1</i><b>원 승인·허가 경로 확인</b><span>건축허가/신고, 사업계획승인, 정비사업, 공항·물류 등 특별법 사업</span></div><div><i>2</i><b>현재 단계 확인</b><span>심의 → 허가·승인 → 착공 → 사용승인·사용검사 → 변경</span></div><div><i>3</i><b>심의·평가 후보 확인</b><span>대상 여부와 선후행·병행 관계를 일정에 올리기</span></div><div><i>4</i><b>자료를 담당별로 쪼개기</b><span>건축 기본자료 / 협력업체 / 행정자료 / 추가 요구자료</span></div><div><i>5</i><b>제출·보완·반영 추적</b><span>제출본 기준일 통일 → 보완 → 설계반영 → 다음 절차 연결</span></div></div>
     <div class="cc235-practice-grid ${lv<3?'locked':''}"><div><small>${lv>=3?'LV.3 · 실제 시작 체크':'LV.3 · LOCKED'}</small>${lv>=3?'<p>• 기존 허가/승인 문서와 최신 회의록 찾기</p><p>• 관할기관 제출 안내의 최신본 확인</p><p>• 심의·평가·협의 담당과 마감일을 한 표로 정리</p><p>• 건축/구조/기계/전기/소방/토목 등 자료 담당자를 붙이기</p>':'<p>책임 레벨부터 제출자료 분해·보완관리까지 열립니다.</p>'}</div><div><small>세움터 사용</small><p>건축허가·신고·건축물대장 등 건축행정 업무에서 중요하지만, 프로젝트의 원 승인경로와 해당 업무가 세움터 처리 대상인지 먼저 확인하세요.</p><small>완료 기준</small><p>제출목록과 실제 파일이 1:1로 대응하고, 심의·평가 조건과 보완사항이 다음 도면/절차까지 추적되면 됩니다.</p></div></div>
     <div class="cc235-pick"><small>주요 심의·평가부터 확인</small><div>${reviewButtons()}</div></div>
-  </article>`;wireGo();cleanupForeignAdjustments();
+  </article>`;wireGo();
 }
 
-function cleanupForeignAdjustments(){setTimeout(()=>{$('searchResult')?.querySelectorAll('.cc233-bim-search,.cc234-bim-search').forEach(x=>x.remove())},420)}
 function runQuery(q){const t=topic(q);if(!t)return false;if($('searchInput'))$('searchInput').value=q;if(t.kind==='overview')renderOverview();else if(t.kind==='permit')renderPermit();else renderReview(t.key);return true}
 function wireGo(){document.querySelectorAll('[data-cc235-go]').forEach(b=>{if(b.dataset.wired)return;b.dataset.wired='1';b.addEventListener('click',()=>runQuery(b.dataset.cc235Go||''))})}
 

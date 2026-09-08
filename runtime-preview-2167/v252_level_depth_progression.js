@@ -197,7 +197,6 @@ function installStyle(){
   document.head.append(style);
 }
 
-let timer=null;
 
 function install(){
   installStyle();

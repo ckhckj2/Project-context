@@ -196,7 +196,6 @@ function installStyle(){
   document.head.append(style);
 }
 
-let decorateTimer=null;
 
 function install(){
   installStyle();installDrawerController();

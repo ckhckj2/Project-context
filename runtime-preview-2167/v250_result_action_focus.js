@@ -294,8 +294,6 @@ function installStyle(){
   document.head.append(style);
 }
 
-let resultTimer=null;
-let contextTimer=null;
 
 function install(){
   installStyle();

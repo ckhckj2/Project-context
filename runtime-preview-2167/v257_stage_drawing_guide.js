@@ -169,7 +169,6 @@ function enhance(){
   
 }
 
-let timer=null;
 
 function installStyle(){
   if($('cc264DrawingStyle'))return;

@@ -113,7 +113,7 @@ function enhanceContext(){
   let anchor=gate||root.querySelector('.cc230-context-project')||root.querySelector('.stage-banner');if(!anchor)return;
   if(gate){
     const copy=gate.querySelector('.cc247-fit-copy');if(copy)copy.insertAdjacentHTML('beforeend','<div class="cc250-inline"><b>'+esc(j.title)+'</b><span>'+esc(j.summary)+'</span></div>');
-    const actual=gate.querySelector('[data-fit="actual"]');if(actual){actual.textContent=j.exception==='change'?'변경·보완 절차로 보기':j.known?'이 프로젝트 절차로 보기':'현재 절차를 확인했어요';actual.addEventListener('click',()=>setTimeout(()=>applyRouteHow(root,j,phase),20),{once:true})}
+    const actual=gate.querySelector('[data-fit="actual"]');if(actual){actual.textContent=j.exception==='change'?'변경·보완 절차로 보기':j.known?'이 프로젝트 절차로 보기':'현재 절차를 확인했어요';actual.addEventListener('click',()=>{applyRouteHow(root,j,phase);window.CC_RUNTIME.refreshContextPresentation()},{once:true})}
     if(gate.classList.contains('mismatch')&&((j.exception==='change'&&admin)||(j.exception==='pre_review'&&j.kind==='review'))){gate.classList.remove('mismatch');gate.classList.add('conditional');const sm=gate.querySelector('small');if(sm)sm.textContent='예외 절차 확인 · '+phase;const t=gate.querySelector('.cc247-title');if(t)t.textContent='저장된 예외절차 때문에 실제 업무일 수 있어요'}
   }else if(admin||hasException){const box=projectRouteBox(j,p,phase);anchor.insertAdjacentElement('afterend',box);anchor=box;box.querySelector('[data-cc250-edit]')?.addEventListener('click',openActiveEditor)}
   if(routeRelevant)addJudgement(root,anchor,j,p,phase);

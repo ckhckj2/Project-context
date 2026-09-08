@@ -4,7 +4,7 @@ const VERSION='2.1.34';
 const store=window.CC_PROJECT_STORE;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-let pendingQuery='';
+
 
 const activeProject=()=>store.active();
 function hasBim(p){return !!(p&&p.bimMode&&p.bimMode!=='none')}
@@ -26,7 +26,7 @@ function modeInfo(mode){if(mode==='revit')return['중앙/클라우드 협업 · 
 function renderAdjustment(q){
  const p=activeProject(),root=$('searchResult');if(!root)return;
  root.querySelectorAll('.cc233-bim-search,.cc234-bim-search').forEach(x=>x.remove());
- if(!hasBim(p)||!q||isExplicitBim(q)||!isWorkQuery(q)||root.querySelector('.cc232-bim-card'))return;
+ if(!hasBim(p)||!q||isExplicitBim(q)||!isWorkQuery(q)||root.querySelector('.cc232-bim-card,.cc235-review-card,.cc235-overview,.cc235-permit'))return;
  const card=root.querySelector('.result-card')||root.firstElementChild;if(!card)return;
  const [title,checks]=EXTRA[taskKey(q)]||EXTRA.general;const [focus,where,who]=modeInfo(p.bimMode);
  const box=document.createElement('div');box.className='cc234-bim-search';
