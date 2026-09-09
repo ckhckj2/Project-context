@@ -11,6 +11,8 @@ function inspect(file){
   domReady:count(/DOMContentLoaded/g),styleCreation:count(/createElement\(['"]style['"]\)/g),
   timeoutSites:count(/\bsetTimeout\s*\(/g),intervalSites:count(/\bsetInterval\s*\(/g),observerSites:count(/new MutationObserver\s*\(/g),
   cloneSites:count(/\.cloneNode\s*\(/g),importantTokens:count(/!important/g),
+  dynamicScriptSites:count(/createElement\(['"]script['"]\)/g),
+  assignedAssetUrls:[...s.matchAll(/\.(?:src|href)\s*=\s*['"]([^'"]+)['"]/g)].map(m=>m[1]),
   registrations:[...s.matchAll(/\.register(Search|Context|Result)\(['"]([^'"]+)['"]/g)].map(m=>({kind:m[1],id:m[2]})),
   storageAccessSites:count(/\blocalStorage\.(?:getItem|setItem|removeItem)\s*\(/g)};
 }

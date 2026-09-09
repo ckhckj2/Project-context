@@ -81,6 +81,9 @@ why → tools → how → public-use → facility-use → public-flow → focus 
 | A08 | CSS 12개 + style 생성 모듈 36개, 전역 규칙·중복 class·!important 누적 | 적용 우선순위 추적 어려움; 라디오 충돌과 같은 범위 누출 위험 | 10-4 |
 | A09 | v232/235/246/248의 레벨 직접 localStorage 읽기 fallback | 공통 저장 실패 대응·미리보기 정책을 우회할 가능성. 정상 로드에서는 viewLevel 우선 | 10-2 |
 | A10 | UI 버전 2.1.71, data-ui-version 2.1.67, 모듈 내부 과거 VERSION 및 서로 다른 cache query | 릴리스 추적 혼란. 다른 cache query만으로 오류라고 단정하지 않음 | 10-3/4 |
+| A11 | v237.loadUnifiedSearchTypography가 v238을 ?v=2138로 동적 삽입; index에서도 ?v=2165로 직접 로드 | 같은 모듈이 두 경로에서 실행됨. data-cc238 검사로는 HTML의 script를 찾지 못함 | 10-3 |
+
+A11 때문에 직접 script 태그 58개를 전체 요청·실행 횟수로 해석하면 안 된다. v238 내부의 style 존재 검사가 중복 CSS 생성을 방지하는지와 별개로 중복 로드 경로는 제거 대상이다.
 
 A03은 현재 버튼이 반드시 두 번 토글된다는 뜻이 아니다. v255 capture 제어기가 뒤 핸들러를 차단한다. 이 우회 구조 자체를 없애는 것이 목표다.
 A05의 반복은 전부 삭제 대상이 아니다. 단계/프로젝트 보충의 역할을 보존하면서 동일 입력으로 결과 데이터를 먼저 완성해야 한다.
@@ -95,7 +98,7 @@ A05의 반복은 전부 삭제 대상이 아니다. 단계/프로젝트 보충�
 | core | 5초 후 confetti 제거 | 정상적인 연출 수명 관리, 일괄 삭제 대상 아님 |
 | v230/v247 | 편집기·단계 필드 focus 예약 | mount 이후 focus로 이전 |
 | v248 | 프로젝트 화면 연 후 80ms 뒤 편집 버튼 재클릭 | openEditor(id) 같은 직접 진입점으로 교체 |
-| v237 | 맥락 복귀 후 스크롤 예약 | 렌더 완료 경계로 이동, 사용자 이동 동작 보존 |
+| v237 | 맥락에서 검색 이동 후 80ms 뒤 복귀 버튼 표시 동기화 | view 전환에서 출발 화면과 복귀 표시를 함께 갱신 |
 
 ## 유지할 구조와 보안 경계
 
@@ -215,4 +218,3 @@ CSP는 script-src self, connect-src none 등을 사용한다. style-src unsafe-i
 - quiz.css
 
 미등록 공통 모듈을 불필요한 파일로 해석하면 안 된다. 상세 지표와 SHA는 audit-runtime.cjs 출력으로 추적한다.
-
