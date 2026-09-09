@@ -3,7 +3,6 @@
 const VERSION='2.1.16';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const legacyRunSearch=window.runSearch;
 
 const ASK=/(누구|물어|문의|담당자|어디에\s*(?:물어|문의)|확인받|뭐라고\s*물어|질의)/i;
 const ACTION=/(하래|해달래|해줘|하라고|보래|봐줘|확인|검토|조사|찾아|정리|작성|만들|수정|반영|뽑아|잡아|짜|모델링|렌더링)/i;
@@ -39,22 +38,13 @@ function runExpanded(){
   const q=input.value.trim();
   if(!q)return;
   const hit=resolve(q);
-  if(!hit){if(typeof legacyRunSearch==='function')legacyRunSearch();return;}
+  if(!hit)return;
   out.innerHTML=hit.ambiguous?renderChoices(hit):(ASK.test(q)?renderAsk(hit):renderCard(hit));
   out.querySelectorAll('[data-cc216-query]').forEach(btn=>btn.onclick=()=>{input.value=btn.dataset.cc216Query;runExpanded();input.scrollIntoView({behavior:'smooth',block:'center'});});
 }
-function cloneInput(id,handler){const old=$(id);if(!old)return null;const fresh=old.cloneNode(true);old.replaceWith(fresh);fresh.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();handler();}});return fresh;}
-function openFromHome(){const h=$('homeSearch');if(!h)return;const q=h.value.trim();if(!q)return;if(typeof showView==='function')showView('search');const s=$('searchInput');if(s)s.value=q;runExpanded();}
+
 function install(){
-  
-  const s=cloneInput('searchInput',runExpanded);
-  const h=cloneInput('homeSearch',openFromHome);
-  const go=$('searchGo');if(go)go.onclick=runExpanded;
-  const hgo=$('homeSearchBtn');if(hgo)hgo.onclick=openFromHome;
-  document.querySelectorAll('[data-example]').forEach(btn=>btn.onclick=()=>{if(typeof showView==='function')showView('search');const input=$('searchInput');if(input)input.value=btn.dataset.example||btn.textContent.trim();runExpanded();});
-  if(s)s.placeholder='예: 보고자료 만들래 / 도면 수정해 / 배치 검토해 / CG 뽑아';
-  if(h)h.placeholder='예) 책임님께 보고자료 작성을 요청받았어요. 뭐부터 할까요?';
-  window.runSearch=runExpanded;
+  window.CC_RUNTIME.registerSearch('expanded',resolve,()=>runExpanded());
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

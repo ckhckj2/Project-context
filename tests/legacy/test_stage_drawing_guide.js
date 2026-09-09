@@ -37,6 +37,6 @@ assert(source.includes('font-size:12px;line-height:1.5'),'drawing list text must
 assert(!/locked|disabled\s*=/.test(source),'drawing guide must not lock information by level');
 assert(!source.includes('translateY('),'drawing guide buttons must not use geometry motion');
 assert(source.includes("if(!root||!root.innerHTML.trim())return;"),'empty results must not start a polling loop');
-assert(source.includes("if(event.target.closest('#analyze,.master-levels button'))schedule(420);\n  },true);"),'context generation must be observed in capture phase');
+assert(source.includes("registerContext('drawings',enhance)"),'context generation must be observed in capture phase');
 
 console.log('v2.1.65 stage drawing guide checks passed');

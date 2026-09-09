@@ -37,7 +37,7 @@ const guide={dataset:{cc257SelectedStage:'middle'},querySelector:()=>body};
 guide.closest=()=>guide;
 const result={innerHTML:'',addEventListener(type,callback){if(type==='click')clickHandler=callback}};
 const elements={contextResult:result,cc264DrawingStyle:{},miniLevel:{textContent:'LV.MAX · 건축 마스터'},phase:{value:'중간설계'},project:{selectedOptions:[{textContent:'공동주택'}]}};
-const sandbox={window:{},document:{readyState:'loading',activeElement:null,getElementById:id=>elements[id],addEventListener(type,callback){if(type==='DOMContentLoaded')install=callback}},setTimeout:()=>1,clearTimeout(){},MutationObserver:class{observe(){}}};
+const sandbox={window:{CC_RUNTIME:{registerContext(){}}},document:{readyState:'loading',activeElement:null,getElementById:id=>elements[id],addEventListener(type,callback){if(type==='DOMContentLoaded')install=callback}},setTimeout:()=>1,clearTimeout(){},MutationObserver:class{observe(){}}};
 vm.createContext(sandbox);
 vm.runInContext(read('v257_stage_drawing_guide.js'),sandbox);
 install();

@@ -152,7 +152,6 @@ function renderGuide(guide,stageKey,phase,project){
 function enhance(){
   const root=$('contextResult');
   if(!root||!root.innerHTML.trim())return;
-  if(root.classList.contains('cc256-building')){schedule(90);return;}
   const map=root.querySelector('.map');
   const actions=map?.querySelector(':scope>.actions');
   if(!map||!actions)return;
@@ -170,11 +169,6 @@ function enhance(){
   
 }
 
-let timer=null;
-function schedule(delay=80){
-  if(timer!==null)return;
-  timer=setTimeout(()=>{timer=null;enhance()},delay);
-}
 
 function installStyle(){
   if($('cc264DrawingStyle'))return;
@@ -227,14 +221,10 @@ function installStyle(){
   document.head.append(style);
 }
 
-
-
 function install(){
   installStyle();
   const root=$('contextResult');
-  if(root)new MutationObserver(records=>{
-    if(records.some(record=>!record.target.closest?.('.cc257-drawing-guide')))schedule();
-  }).observe(root,{childList:true,subtree:true});
+  window.CC_RUNTIME.registerContext('drawings',enhance);
   root?.addEventListener('click',event=>{
     const tab=event.target.closest('button[data-cc257-stage]');
     if(tab){
@@ -246,11 +236,7 @@ function install(){
       return;
     }
   });
-  document.addEventListener('click',event=>{
-    if(event.target.closest('#analyze,.master-levels button'))schedule(420);
-  },true);
-  if(root?.innerHTML.trim())schedule(240);
-  
+
 }
 
 window.CC_STAGE_DRAWING_GUIDE={

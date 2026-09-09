@@ -128,10 +128,7 @@ function installStyle(){
 }
 function install(){
   installStyle();
-  
-  compact();
-  const root=$('searchResult');
-  if(root)new MutationObserver(()=>compact()).observe(root,{childList:true,subtree:true});
+  window.CC_RUNTIME.registerResult('compact',compact);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

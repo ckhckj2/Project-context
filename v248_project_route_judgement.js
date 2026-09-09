@@ -86,8 +86,8 @@ function contextSteps(j){
   return [j.title,j.exceptionSummary,'최신 기준자료와 다음 결정사항 연결'];
 }
 function applyRouteHow(root,j,phase){
-  const how=root.querySelector('[data-pane="how"]'),why=root.querySelector('[data-pane="why"]');
-  if(how){const title=how.querySelector('.cc232-how-head b');if(title)title.textContent=(j.known?ROUTES[j.route]:'승인경로 미확인')+' · 프로젝트 기준 수행';const note=how.querySelector('.cc232-how-head span');if(note)note.textContent='저장된 값은 출발점이며 실제 승인서·승인기관·최신 운영기준으로 다시 확인하세요.';const top=how.querySelector('.cc232-how-steps');if(top)top.innerHTML=contextSteps(j).map((x,i)=>'<div><small>0'+(i+1)+'</small><b>'+esc(x)+'</b></div>').join('')}
+  const why=root.querySelector('[data-pane="why"]');
+  window.CC_CONTEXT_VIEW.setHow(root,{title:(j.known?ROUTES[j.route]:'승인경로 미확인')+' · 프로젝트 기준 수행',note:'저장된 값은 출발점이며 실제 승인서·승인기관·최신 운영기준으로 다시 확인하세요.',steps:contextSteps(j)});
   if(why&&!why.querySelector('.cc250-why-route'))why.insertAdjacentHTML('beforeend','<div class="cc250-why-route"><b>'+esc(j.verdict)+'</b><span>'+esc(j.summary)+'</span></div>');
 }
 function projectRouteBox(j,p,phase){
@@ -113,7 +113,7 @@ function enhanceContext(){
   let anchor=gate||root.querySelector('.cc230-context-project')||root.querySelector('.stage-banner');if(!anchor)return;
   if(gate){
     const copy=gate.querySelector('.cc247-fit-copy');if(copy)copy.insertAdjacentHTML('beforeend','<div class="cc250-inline"><b>'+esc(j.title)+'</b><span>'+esc(j.summary)+'</span></div>');
-    const actual=gate.querySelector('[data-fit="actual"]');if(actual){actual.textContent=j.exception==='change'?'변경·보완 절차로 보기':j.known?'이 프로젝트 절차로 보기':'현재 절차를 확인했어요';actual.addEventListener('click',()=>setTimeout(()=>applyRouteHow(root,j,phase),20),{once:true})}
+    const actual=gate.querySelector('[data-fit="actual"]');if(actual){actual.textContent=j.exception==='change'?'변경·보완 절차로 보기':j.known?'이 프로젝트 절차로 보기':'현재 절차를 확인했어요';actual.addEventListener('click',()=>{applyRouteHow(root,j,phase);window.CC_RUNTIME.refreshContextPresentation()},{once:true})}
     if(gate.classList.contains('mismatch')&&((j.exception==='change'&&admin)||(j.exception==='pre_review'&&j.kind==='review'))){gate.classList.remove('mismatch');gate.classList.add('conditional');const sm=gate.querySelector('small');if(sm)sm.textContent='예외 절차 확인 · '+phase;const t=gate.querySelector('.cc247-title');if(t)t.textContent='저장된 예외절차 때문에 실제 업무일 수 있어요'}
   }else if(admin||hasException){const box=projectRouteBox(j,p,phase);anchor.insertAdjacentElement('afterend',box);anchor=box;box.querySelector('[data-cc250-edit]')?.addEventListener('click',openActiveEditor)}
   if(routeRelevant)addJudgement(root,anchor,j,p,phase);
@@ -127,12 +127,9 @@ function style(){
 function install(){
   style();
   window.CC_PROJECTS_UI.registerEditorExtension('approval-route',{render:enhanceEditor,collect:collectFields});
-  document.addEventListener('click',e=>{
-    if(e.target.closest('#analyze'))setTimeout(enhanceContext,140);
-    if(e.target.closest('.master-levels button'))setTimeout(enhanceContext,140);
-  },true);
+  window.CC_RUNTIME.registerContext('project-route',enhanceContext);
   document.addEventListener('cc:projects-rendered',enhanceProjectUI);
-  enhanceProjectUI();if($('contextResult')?.innerHTML.trim())setTimeout(enhanceContext,160);
+  enhanceProjectUI();
   window.CC_PROJECT_ROUTE_JUDGEMENT={version:VERSION,fields:['businessMode','approvalRoute','routeException'],business:BUSINESS,routes:ROUTES,exceptions:EXCEPTIONS,judgement};
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();

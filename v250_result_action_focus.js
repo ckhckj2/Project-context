@@ -30,7 +30,7 @@ const RULES=[
 ];
 
 function taskRule(task){return RULES.find(rule=>rule.re.test(task||''))||DEFAULT_RULE}
-function currentLevel(){const match=clean($('miniLevel')?.textContent).match(/LV\.(\d)/);return match?Number(match[1]):1}
+function currentLevel(){if(typeof viewLevel==='function')return viewLevel();const text=clean($('miniLevel')?.textContent);if(/LV\.MAX/.test(text))return 5;const match=text.match(/LV\.(\d)/);return match?Number(match[1]):1}
 
 function textParts(element){
   if(!element)return null;
@@ -294,31 +294,12 @@ function installStyle(){
   document.head.append(style);
 }
 
-let resultTimer=null;
-let contextTimer=null;
-function scheduleResult(){clearTimeout(resultTimer);resultTimer=setTimeout(prepareResult,45)}
-function scheduleContext(delay=40){clearTimeout(contextTimer);contextTimer=setTimeout(patchContext,delay)}
 
 function install(){
   installStyle();
-  const result=$('searchResult');
-  const context=$('contextResult');
-  if(result)new MutationObserver(scheduleResult).observe(result,{childList:true,subtree:true});
-  if(context)new MutationObserver(()=>scheduleContext(40)).observe(context,{childList:true,subtree:true});
-  document.addEventListener('click',event=>{
-    if(event.target.closest('#searchGo,#homeSearchBtn,[data-example]'))scheduleResult();
-    if(event.target.closest('#analyze,.master-levels button'))scheduleContext(190);
-  });
-  document.addEventListener('keydown',event=>{
-    if(event.key==='Enter'&&(event.target===$('searchInput')||event.target===$('homeSearch')))scheduleResult();
-  });
-  if(result?.children.length)scheduleResult();
-  if(context?.innerHTML.trim())scheduleContext(190);
-  
-  
-  
+  window.CC_RUNTIME.registerContext('focus',patchContext);
+  window.CC_RUNTIME.registerResult('focus',prepareResult);
 }
-
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
 else install();
 })();

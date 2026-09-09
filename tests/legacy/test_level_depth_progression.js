@@ -30,7 +30,7 @@ assert.match(source,/if\(current!==button\)actions\.insertBefore\(button,current
 assert.doesNotMatch(source,/actions\.append\(button\)/,'stable action order must not create a mutation loop');
 assert.match(source,/cc256-building/,'atomic loading state');
 assert.match(source,/cc256-ready/,'single completed reveal');
-assert.match(source,/aria-busy/,'loading state accessibility');
+assert.match(fs.readFileSync('app-runtime.js','utf8'),/aria-busy/,'loading state accessibility');
 assert.match(source,/prefers-reduced-motion/,'motion accessibility');
 assert.match(source,/removeAttribute\('aria-disabled'\)/,'aria lock removal');
 assert.match(source,/@media\(max-width:760px\)/,'responsive guard');

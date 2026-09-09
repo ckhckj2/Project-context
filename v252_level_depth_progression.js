@@ -131,12 +131,11 @@ function normalizeCopy(root,level){
 
 function patchContext(){
   const root=$('contextResult');
-  if(!root||!root.innerHTML.trim()){if(root?.classList.contains('cc256-building'))schedule(40);return}
-  if(revealAt&&Date.now()<revealAt){schedule(Math.max(20,revealAt-Date.now()));return}
+  if(!root||!root.innerHTML.trim())return;
   const map=root.querySelector('.map');
   const brief=map?.querySelector(':scope>.cc252-context-brief');
   const actions=map?.querySelector(':scope>.actions');
-  if(!map||!brief||!actions){if(root.classList.contains('cc256-building'))schedule(40);return}
+  if(!map||!brief||!actions)return;
   const level=currentLevel();
   const key=[level,clean($('task')?.value),clean($('phase')?.value),clean(root.querySelector('.stage-banner')?.textContent)].join('|');
   unlockInformationAreas(root);
@@ -150,47 +149,6 @@ function patchContext(){
     brief.after(next);
   }
   root.dataset.cc254Depth=String(level);
-  const contextLevel=Number((root.dataset.cc252Key||'').split('|')[2]);
-  const howButton=actions.querySelector('[data-drawer="how"]');
-  const howPane=map.querySelector('[data-pane="how"]');
-  const howReady=level>=3
-    ? !!(howButton&&howPane&&!howPane.querySelector('.cc232-how-lock'))
-    : !!(howButton?.dataset.cc252Unlocked&&howPane?.querySelector('.cc252-pane-head'));
-  if(root.classList.contains('cc256-building')&&(!howReady||contextLevel!==level)){
-    schedule(40);
-    return;
-  }
-  finishAtomic(root);
-}
-
-let revealAt=0;
-let failsafeTimer=null;
-function beginAtomic(){
-  const root=$('contextResult');
-  revealAt=Date.now()+260;
-  if(!root)return;
-  root.classList.remove('cc256-ready');
-  root.classList.add('cc256-building');
-  root.setAttribute('aria-busy','true');
-  delete root.dataset.cc246Phase;
-  delete root.dataset.cc252Key;
-  delete root.dataset.cc254Depth;
-  clearTimeout(failsafeTimer);
-  failsafeTimer=setTimeout(()=>{
-    if(root.classList.contains('cc256-building')){
-      patchContext();
-      setTimeout(()=>finishAtomic(root),80);
-    }
-  },850);
-}
-
-function finishAtomic(root){
-  if(!root?.classList.contains('cc256-building'))return;
-  clearTimeout(failsafeTimer);
-  root.classList.remove('cc256-building');
-  root.classList.add('cc256-ready');
-  root.setAttribute('aria-busy','false');
-  setTimeout(()=>root.classList.remove('cc256-ready'),220);
 }
 
 function installStyle(){
@@ -239,22 +197,11 @@ function installStyle(){
   document.head.append(style);
 }
 
-let timer=null;
-function schedule(delay=40){clearTimeout(timer);timer=setTimeout(patchContext,delay)}
 
 function install(){
   installStyle();
-  const context=$('contextResult');
-  if(context)new MutationObserver(()=>schedule(40)).observe(context,{childList:true,subtree:true});
-  document.addEventListener('click',event=>{
-    if(event.target.closest('#analyze,.master-levels button')){beginAtomic();schedule(270)}
-  },true);
-  if(context?.innerHTML.trim())schedule(230);
-  
-  
-  
+  window.CC_RUNTIME.registerContext('depth',patchContext);
 }
-
 window.CC_LEVEL_DEPTH={version:VERSION,depths:DEPTHS.map(item=>({...item})),openAreas:[...OPEN_AREAS]};
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});

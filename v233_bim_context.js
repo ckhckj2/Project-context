@@ -58,19 +58,6 @@ function patchHow(){
   if(detail)detail.insertAdjacentElement('beforebegin',box);else pane.appendChild(box);
 }
 
-function currentQuery(){return ($('searchInput')?.value||$('homeSearch')?.value||'').trim()}
-function patchSearch(){
-  const p=activeProject();const root=$('searchResult');if(!root)return;
-  root.querySelectorAll('.cc233-bim-search').forEach(x=>x.remove());
-  const q=currentQuery();
-  if(!hasBim(p)||!q||isExplicitBim(q)||!isWorkQuery(q))return;
-  if(root.querySelector('.cc232-bim-card'))return;
-  const card=root.querySelector('.result-card')||root.firstElementChild;if(!card)return;
-  const wrap=document.createElement('div');wrap.className='cc233-bim-search';wrap.appendChild(buildBox(p,q,true));card.appendChild(wrap);
-}
-
-function scheduleHow(){setTimeout(patchHow,240)}
-function scheduleSearch(){setTimeout(patchSearch,180)}
 function installStyle(){
   if($('cc233Style'))return;const s=document.createElement('style');s.id='cc233Style';s.textContent=`
   .cc233-bim-adjust{margin:10px 0 0;border:1px solid #dce5f5;border-radius:13px;background:#f8fbff;overflow:hidden}.cc233-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:12px 13px;background:#eef4ff}.cc233-head small{display:block;font-size:8px;font-weight:950;letter-spacing:.07em;color:#4f67e8}.cc233-head b{display:block;margin-top:3px;font-size:11px;color:#274668}.cc233-head>span{font-size:9px;line-height:1.45;color:#657892;text-align:right}.cc233-checks{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;padding:10px}.cc233-checks>div{display:grid;grid-template-columns:20px 1fr;gap:7px;align-items:start;padding:8px;border-radius:9px;background:#fff}.cc233-checks i{display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#eef2ff;color:#5369e8;font-size:8px;font-style:normal;font-weight:950}.cc233-checks p,.cc233-meta p{margin:1px 0 0;font-size:9px;line-height:1.5;color:#405570}.cc233-meta{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:0 10px 10px}.cc233-meta>div{padding:8px 9px;border-radius:9px;background:#f1f5fa}.cc233-meta small{font-size:8px;font-weight:950;color:#6b7a8f}.cc233-bim-search{margin-top:10px}.cc233-bim-adjust.compact{margin:0}.cc233-bim-adjust.compact .cc233-checks{grid-template-columns:repeat(2,1fr)}
@@ -79,16 +66,7 @@ function installStyle(){
 }
 function install(){
   installStyle();
-  document.addEventListener('click',e=>{
-    if(e.target.closest('#analyze,[data-drawer="how"],.master-levels button'))scheduleHow();
-    if(e.target.closest('#searchGo,#homeSearchBtn,[data-example],[data-cc229-example],[data-cc219-tool],[data-ask-context]'))scheduleSearch();
-    if(e.target.closest('[data-use],.cc232-bim-setting select,[data-view="projects"]')){setTimeout(()=>{patchHow();patchSearch()},180)}
-  });
-  $('searchInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')scheduleSearch()});
-  $('homeSearch')?.addEventListener('keydown',e=>{if(e.key==='Enter')scheduleSearch()});
-  if($('contextResult')?.innerHTML.trim())scheduleHow();
-  if($('searchResult')?.innerHTML.trim())scheduleSearch();
-  
+  window.CC_RUNTIME.registerContext('bim',patchHow);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

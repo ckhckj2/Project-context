@@ -176,26 +176,7 @@ function renderQuery(q){
   if(kind==='special')return renderChooser(true);
   return renderGuide(kind);
 }
-function queryFromEvent(e){
-  const t=e.target;
-  if(e.type==='keydown'&&e.key==='Enter'&&(t.id==='searchInput'||t.id==='homeSearch'))return t.value||'';
-  if(e.type==='click'){
-    if(t.closest('#searchGo'))return $('searchInput')?.value||'';
-    if(t.closest('#homeSearchBtn'))return $('homeSearch')?.value||'';
-    const ex=t.closest('[data-example]');if(ex)return ex.dataset.example||'';
-  }
-  return '';
-}
-function intercept(e){
-  const q=queryFromEvent(e);
-  if(!q||!classify(q))return;
-  e.preventDefault();e.stopImmediatePropagation();
-  if(e.target?.id==='homeSearch'||e.target?.closest?.('#homeSearchBtn')||e.target?.closest?.('[data-example]')){
-    if(typeof window.showView==='function')window.showView('search');
-    if($('searchInput'))$('searchInput').value=q;
-  }
-  renderQuery(q);
-}
+
 function installStyle(){
   if($('#cc243Style'))return;
   const s=document.createElement('style');s.id='cc243Style';s.textContent=`
@@ -207,11 +188,7 @@ function installStyle(){
 }
 function install(){
   installStyle();
-  
-  const previous=window.runSearch;
-  window.runSearch=function(){const q=$('searchInput')?.value.trim()||'';if(!renderQuery(q)&&typeof previous==='function')return previous();};
-  window.addEventListener('click',intercept,true);
-  window.addEventListener('keydown',intercept,true);
+  window.CC_RUNTIME.registerSearch('change',classify,(_,q)=>renderQuery(q));
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

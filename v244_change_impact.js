@@ -126,8 +126,8 @@ function installStyle(){
   `;document.head.appendChild(s);
 }
 function install(){
-  installStyle();attach();
-  const root=$('searchResult');if(root)new MutationObserver(attach).observe(root,{childList:true,subtree:true});
+  installStyle();
+  window.CC_RUNTIME.registerResult('change-impact',attach);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

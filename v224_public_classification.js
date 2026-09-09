@@ -78,8 +78,7 @@ function installStyle(){
 function install(){
   addData();addSelectOptions();installStyle();
   
-  const analyze=document.getElementById('analyze');
-  if(analyze)analyze.addEventListener('click',()=>setTimeout(renderLegalUse,80));
+  window.CC_RUNTIME.registerContext('public-use',renderLegalUse);
   if(document.getElementById('contextResult')?.innerHTML.trim())renderLegalUse();
 }
 addData();

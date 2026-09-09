@@ -73,12 +73,6 @@ function installCopy(){
 
 function polishSearchResult(){replaceText($('searchResult'));}
 
-document.addEventListener('click',e=>{
-  if(e.target.closest('#view-search, #view-home'))setTimeout(polishSearchResult,0);
-},true);
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&(e.target===$('searchInput')||e.target===$('homeSearch')))setTimeout(polishSearchResult,0);
-},true);
-
+  window.CC_RUNTIME.registerResult('copy',polishSearchResult);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installCopy,{once:true});else installCopy();
 })();

@@ -1,0 +1,20 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+function node(){return {textContent:'old',children:[],append(...items){this.children.push(...items)},appendChild(item){this.children.push(item)},replaceChildren(fragment){this.children=fragment.children}}}
+const native=node(),summary=node(),title=node(),basicTitle=node(),meta=[node(),node(),node()],basic=[node(),node(),node()];
+const how={querySelectorAll(s){return ({'.cc232-how-head b, .cc252-pane-head b':[title,basicTitle],'.cc232-how-steps, .cc252-how-sequence':[native,summary],'.cc252-how-meta > div p':meta})[s]||[]}};
+const why={querySelector:()=>null,querySelectorAll:s=>s==='.cc252-pane-grid > div p'?basic:[]};
+const root={querySelector:s=>s.includes('how')?how:why};
+const ctx={window:{},document:{createElement:node,createDocumentFragment:node}};
+vm.runInNewContext(fs.readFileSync('context-view.js','utf8'),ctx);
+const view=ctx.window.CC_CONTEXT_VIEW;
+view.setHow(root,{title:'중간설계',steps:['분야별 영향 검토','<img src=x onerror=alert(1)>'],done:'회신 반영 완료'});
+assert.equal(title.textContent,basicTitle.textContent);
+assert.deepEqual(native.children.map(x=>x.children[1].textContent),summary.children.map(x=>x.children[1].textContent));
+assert.equal(summary.children[1].children[1].textContent,'<img src=x onerror=alert(1)>');
+assert.equal(summary.children[1].children[1].children.length,0,'content must remain text');
+assert.equal(meta[2].textContent,'회신 반영 완료');
+view.setHow(root,{steps:['선행 준비']});
+assert.equal(summary.children.length,1);assert.equal(title.textContent,'중간설계');
+view.setWhy(root,{why:'대상 확인',material:'관할 안내',done:'경로 확인'});
+assert.deepEqual(basic.map(x=>x.textContent),['대상 확인','관할 안내','경로 확인']);

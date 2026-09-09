@@ -90,7 +90,7 @@ function updateProjectProgress(){
 let timer;
 function refresh(delay=30){
   clearTimeout(timer);
-  timer=setTimeout(()=>{decorateContext();decorateSearch();updateQuiz();updateProjectProgress()},delay);
+  timer=setTimeout(()=>{updateQuiz();updateProjectProgress()},delay);
 }
 
 function installStyle(){
@@ -143,21 +143,16 @@ function installStyle(){
   document.head.append(style);
 }
 
-
-
 function install(){
   installStyle();
-  ['contextResult','searchResult','quizArea','cc230Editor'].forEach(id=>{
-    const root=$(id);if(root)new MutationObserver(()=>refresh()).observe(root,{childList:true,subtree:true,characterData:true});
-  });
-  document.addEventListener('click',event=>{
-    if(event.target.closest('#analyze,#searchGo,#homeSearchBtn,[data-example],[data-drawer],#startQuiz,#qSubmit,#cc230New,#cc230Save'))refresh(80);
-  });
+  window.CC_RUNTIME.registerContext('feedback',decorateContext);
+  window.CC_RUNTIME.registerResult('feedback',decorateSearch);
+  ['quizArea','cc230Editor'].forEach(id=>{const root=$(id);if(root)new MutationObserver(()=>refresh()).observe(root,{childList:true,subtree:true,characterData:true});});
+  document.addEventListener('cc:projects-rendered',updateProjectProgress);
   document.addEventListener('input',event=>{if(event.target.closest('#cc230Editor'))updateProjectProgress()});
-  document.addEventListener('change',event=>{if(event.target.closest('#phase,#task,#cc230Editor'))refresh()});
-  refresh(0);setTimeout(()=>refresh(0),700);
+  document.addEventListener('change',event=>{if(event.target.closest('#cc230Editor'))updateProjectProgress()});
+  refresh(0);
 }
-
 window.CC_INTERACTION_FEEDBACK={version:VERSION,refresh,decorateContext,decorateSearch};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

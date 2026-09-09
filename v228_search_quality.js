@@ -1,7 +1,6 @@
 (()=>{
 'use strict';
 const VERSION='2.1.28';
-const previousRunSearch=window.runSearch;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const ASK=/(누구|문의|물어|담당자|질의|확인받|뭐라고\s*말)/i;
@@ -71,16 +70,7 @@ function renderCommon(q){
   const r=matchRule(q);if(!r)return false;
   renderCard(r);return true;
 }
-function runQuality(){
-  const q=$('searchInput')?.value.trim()||'';
-  if(renderCommon(q))return;
-  if(typeof previousRunSearch==='function')previousRunSearch();
-}
-function routeHome(q){
-  if(typeof showView==='function')showView('search');
-  const input=$('searchInput');if(input)input.value=q;
-  renderCommon(q);
-}
+
 function installStyle(){
   if(document.getElementById('cc228Style'))return;
   const s=document.createElement('style');s.id='cc228Style';s.textContent=`
@@ -94,18 +84,7 @@ function installStyle(){
 }
 function install(){
   installStyle();
-  window.runSearch=runQuality;
-  document.addEventListener('click',e=>{
-    const ex=e.target.closest('[data-example]');
-    if(ex){const q=ex.dataset.example||'';if(isCommon(q)&&!ASK.test(q)){e.preventDefault();e.stopImmediatePropagation();routeHome(q);return;}}
-    if(e.target.closest('#searchGo')){const q=$('searchInput')?.value.trim()||'';if(isCommon(q)&&!ASK.test(q)){e.preventDefault();e.stopImmediatePropagation();renderCommon(q);return;}}
-    if(e.target.closest('#homeSearchBtn')){const q=$('homeSearch')?.value.trim()||'';if(isCommon(q)&&!ASK.test(q)){e.preventDefault();e.stopImmediatePropagation();routeHome(q);return;}}
-  },true);
-  document.addEventListener('keydown',e=>{
-    if(e.key!=='Enter')return;
-    if(e.target?.id==='searchInput'){const q=e.target.value.trim();if(isCommon(q)&&!ASK.test(q)){e.preventDefault();e.stopImmediatePropagation();renderCommon(q);}}
-    if(e.target?.id==='homeSearch'){const q=e.target.value.trim();if(isCommon(q)&&!ASK.test(q)){e.preventDefault();e.stopImmediatePropagation();routeHome(q);}}
-  },true);
+  window.CC_RUNTIME.registerSearch('common',q=>isCommon(q),(_,q)=>renderCommon(q));
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

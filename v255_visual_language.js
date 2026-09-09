@@ -196,30 +196,12 @@ function installStyle(){
   document.head.append(style);
 }
 
-let decorateTimer=null;
-function scheduleDecorate(delay=55){
-  if(decorateTimer)return;
-  decorateTimer=setTimeout(()=>{decorateTimer=null;decorate()},delay);
-}
-
-
 
 function install(){
-  installStyle();
-  installDrawerController();
-  const context=$('contextResult');
-  const result=$('searchResult');
-  if(context)new MutationObserver(()=>scheduleDecorate()).observe(context,{childList:true,subtree:true});
-  if(result)new MutationObserver(()=>scheduleDecorate()).observe(result,{childList:true,subtree:true});
-  document.addEventListener('click',event=>{
-    if(event.target.closest('#analyze,.master-levels button,#searchGo,#homeSearchBtn,[data-example]'))scheduleDecorate(250);
-  });
-  decorate();
-  
-  setTimeout(decorate,700);
-  
+  installStyle();installDrawerController();
+  window.CC_RUNTIME.registerContext('visual',decorate);
+  window.CC_RUNTIME.registerResult('visual',decorate);
 }
-
 window.CC_VISUAL_LANGUAGE={version:VERSION,classify,toggleDrawer,decorate};
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});

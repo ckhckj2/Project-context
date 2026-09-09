@@ -3,7 +3,6 @@
 const VERSION='2.1.23';
 const byId=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const previousRunSearch=window.runSearch;
 const ASK=/(누구|어디에\s*(?:물어|문의)|물어보|문의|담당자|확인받|질의|뭐라고\s*말|어떻게\s*물어)/i;
 
 const RULES={
@@ -129,22 +128,16 @@ function renderIfAsk(){
   if(type==='ambiguous')renderAmbiguous(q);else renderRoute(type,q);
   return true;
 }
-function runSearch(){if(renderIfAsk())return;if(typeof previousRunSearch==='function')previousRunSearch();}
+
 function installExamples(){
   const box=document.querySelector('#view-search .examples');
   if(!box||box.querySelector('[data-cc223]'))return;
   const items=[['구조 변경은 누구에게 물어봐?','구조 문의'],['지구단위 해석은 누구에게 문의해?','행정 문의'],['발주처 결정이 필요한데 어떻게 물어봐?','발주처 문의']];
-  items.forEach(([q,label])=>{const b=document.createElement('button');b.dataset.cc223='1';b.textContent=label;b.addEventListener('click',()=>{byId('searchInput').value=q;renderIfAsk();});box.appendChild(b);});
+  items.forEach(([q,label])=>{const b=document.createElement('button');b.dataset.cc223='1';b.dataset.searchQuery=q;b.textContent=label;b.addEventListener('click',()=>{byId('searchInput').value=q;renderIfAsk();});box.appendChild(b);});
 }
 function install(){
-  
   installExamples();
-  window.runSearch=runSearch;
-  const go=byId('searchGo');if(go)go.addEventListener('click',e=>{if(ASK.test(byId('searchInput')?.value||'')){e.preventDefault();e.stopImmediatePropagation();renderIfAsk();}},true);
-  const input=byId('searchInput');if(input)input.addEventListener('keydown',e=>{if(e.key==='Enter'&&ASK.test(input.value)){e.preventDefault();e.stopImmediatePropagation();renderIfAsk();}},true);
-  const homeGo=byId('homeSearchBtn');if(homeGo)homeGo.addEventListener('click',e=>{const q=byId('homeSearch')?.value||'';if(ASK.test(q)){e.preventDefault();e.stopImmediatePropagation();if(typeof window.showView==='function')window.showView('search');byId('searchInput').value=q;renderIfAsk();}},true);
-  const homeInput=byId('homeSearch');if(homeInput)homeInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&ASK.test(homeInput.value)){e.preventDefault();e.stopImmediatePropagation();if(typeof window.showView==='function')window.showView('search');byId('searchInput').value=homeInput.value;renderIfAsk();}},true);
-  document.addEventListener('click',e=>{const b=e.target.closest('[data-example]');const q=b?.dataset.example||'';if(q&&ASK.test(q))setTimeout(()=>{const si=byId('searchInput');if(si)si.value=q;renderIfAsk();},25);if(e.target.closest('[data-ask-context]'))setTimeout(renderIfAsk,35);});
+  window.CC_RUNTIME.registerSearch('ask',q=>ASK.test(q),()=>renderIfAsk());
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

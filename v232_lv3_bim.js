@@ -5,7 +5,6 @@ const store=window.CC_PROJECT_STORE;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const MOBILE=()=>window.matchMedia('(max-width:700px)').matches;
-const prevRunSearch=window.runSearch;
 
 function level(){try{return typeof viewLevel==='function'?viewLevel():Number(localStorage.getItem('pc_level')||1)}catch(e){return 1}}
 const readProjects=()=>store.list();
@@ -87,21 +86,10 @@ function renderBim(t){
     <details class="cc232-bim-detail"><summary>주의사항${t.links?' · 공식 자료':''}</summary><p>${esc(t.caution)}</p>${t.links?`<div class="cc232-links">${t.links.map(([n,u])=>`<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(n)} ↗</a>`).join('')}</div>`:''}</details>
   </div>`;
 }
-function runSearch(){const q=$('searchInput')?.value.trim()||'';const t=bimTopic(q);if(t){renderBim(t);return}if(typeof prevRunSearch==='function')prevRunSearch()}
-function intercept(e){
-  const target=e.target;let q='';
-  if(e.type==='click'&&target.closest('#searchGo'))q=$('searchInput')?.value||'';
-  else if(e.type==='click'&&target.closest('#homeSearchBtn'))q=$('homeSearch')?.value||'';
-  else if(e.type==='keydown'&&e.key==='Enter'&&(target.id==='searchInput'||target.id==='homeSearch'))q=target.value||'';
-  else return;
-  const t=bimTopic(q);if(!t)return;
-  e.preventDefault();e.stopImmediatePropagation();
-  if(target.id==='homeSearch'||target.closest('#homeSearchBtn')){if(typeof showView==='function')showView('search');if($('searchInput'))$('searchInput').value=q}
-  renderBim(t);
-}
+
 function addBimExamples(){
   const box=document.querySelector('#view-search .examples');if(!box||box.querySelector('[data-cc232-bim]'))return;
-  [['BIM이 뭐야?','BIM이 뭐예요?'],['Revit 중앙파일 작업은 어떻게 해?','Revit 협업'],['Workset이 뭐야?','Workset'],['BEP가 뭐야?','BEP']].forEach(([q,label])=>{const b=document.createElement('button');b.type='button';b.dataset.cc232Bim='1';b.textContent=label;b.addEventListener('click',()=>{if($('searchInput'))$('searchInput').value=q;const t=bimTopic(q);if(t)renderBim(t)});box.appendChild(b)});
+  [['BIM이 뭐야?','BIM이 뭐예요?'],['Revit 중앙파일 작업은 어떻게 해?','Revit 협업'],['Workset이 뭐야?','Workset'],['BEP가 뭐야?','BEP']].forEach(([q,label])=>{const b=document.createElement('button');b.type='button';b.dataset.cc232Bim='1';b.dataset.searchQuery=q;b.textContent=label;b.addEventListener('click',()=>{if($('searchInput'))$('searchInput').value=q;const t=bimTopic(q);if(t)renderBim(t)});box.appendChild(b)});
 }
 
 function enhanceProjectCards(){
@@ -139,18 +127,11 @@ function installStyle(){
   `;document.head.appendChild(s)
 }
 function install(){
-  window.runSearch=runSearch;
   installStyle();addBimExamples();
-  document.addEventListener('click',e=>{
-    if(e.target.closest('#analyze'))setTimeout(addHow,170);
-    if(e.target.closest('.master-levels button'))setTimeout(addHow,120);
-  });
-  document.addEventListener('click',intercept,true);document.addEventListener('keydown',intercept,true);
-  window.addEventListener('resize',()=>setTimeout(restoreHowDesktop,50),{passive:true});
-  if($('contextResult')?.innerHTML.trim())setTimeout(addHow,100);
+  window.CC_RUNTIME.registerSearch('bim',bimTopic,renderBim);
+  window.CC_RUNTIME.registerContext('how',addHow);
   document.addEventListener('cc:projects-rendered',refreshProjects);
   refreshProjects();
-  
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

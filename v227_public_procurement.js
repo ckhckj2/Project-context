@@ -1,7 +1,6 @@
 (()=>{
 'use strict';
 const VERSION='2.1.27';
-const previousRunSearch=window.runSearch;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const PUBLIC_RE=/(공공건축|건축기획|사전검토|공공건축심의|설계공모|제안공모|입찰|과업지시서|과업내용서|나라장터|조달청|g2b|발주방식|공공\s*발주)/i;
@@ -78,19 +77,7 @@ function bindMore(root){
     detail.classList.toggle('open',open);btn.setAttribute('aria-expanded',String(open));btn.querySelector('span').textContent=open?'▴':'▾';
   }));
 }
-function runPublicSearch(){
-  const q=$('searchInput')?.value.trim()||'';
-  if(!q)return;
-  if(PUBLIC_RE.test(q)){renderSearch(q);return;}
-  if(typeof previousRunSearch==='function')previousRunSearch();
-}
-function routeHome(){
-  const q=$('homeSearch')?.value.trim()||'';
-  if(!PUBLIC_RE.test(q))return;
-  if(typeof showView==='function')showView('search');
-  const input=$('searchInput');if(input)input.value=q;
-  renderSearch(q);
-}
+
 function addExample(){
   const examples=document.querySelector('#view-search .examples');
   if(!examples||examples.querySelector('[data-cc227]'))return;
@@ -124,14 +111,8 @@ function style(){
 }
 function install(){
   style();addExample();
-  const analyze=$('analyze');if(analyze)analyze.addEventListener('click',()=>setTimeout(contextHint,180));
-  const go=$('searchGo');if(go)go.addEventListener('click',()=>{const q=$('searchInput')?.value||'';if(PUBLIC_RE.test(q))setTimeout(()=>renderSearch(q),40);});
-  const input=$('searchInput');if(input)input.addEventListener('keydown',e=>{if(e.key==='Enter'&&PUBLIC_RE.test(input.value)){e.preventDefault();setTimeout(()=>renderSearch(input.value),40);}});
-  const homeGo=$('homeSearchBtn');if(homeGo)homeGo.addEventListener('click',()=>{if(PUBLIC_RE.test($('homeSearch')?.value||''))setTimeout(routeHome,50);});
-  const home=$('homeSearch');if(home)home.addEventListener('keydown',e=>{if(e.key==='Enter'&&PUBLIC_RE.test(home.value)){e.preventDefault();setTimeout(routeHome,50);}});
-  document.addEventListener('click',e=>{const ex=e.target.closest('[data-example]');if(ex&&PUBLIC_RE.test(ex.dataset.example||''))setTimeout(()=>renderSearch(ex.dataset.example),80);});
-  window.runSearch=runPublicSearch;
-  if($('contextResult')?.innerHTML.trim())contextHint();
+  window.CC_RUNTIME.registerContext('public-flow',contextHint);
+  window.CC_RUNTIME.registerSearch('public',q=>PUBLIC_RE.test(q),(_,q)=>renderSearch(q));
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

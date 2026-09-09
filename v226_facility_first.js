@@ -119,7 +119,7 @@ function installStyle(){
 function install(){
   configureData();rebuildSelect();installStyle();
   
-  const analyze=document.getElementById('analyze');if(analyze)analyze.addEventListener('click',()=>setTimeout(renderLegal,140));
+  window.CC_RUNTIME.registerContext('facility-use',renderLegal);
   if(document.getElementById('contextResult')?.innerHTML.trim())renderLegal();
 }
 configureData();

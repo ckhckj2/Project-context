@@ -1,7 +1,6 @@
 (()=>{
 'use strict';
 const VERSION='2.1.40';
-const previousRunSearch=window.runSearch;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const ASK=/(누구|물어|문의|담당자|질의|뭐라고\s*(?:말|물어)|확인받)/i;
@@ -26,12 +25,9 @@ function render(d){
   const out=$('searchResult');if(!out)return;
   out.innerHTML=`<div class="result-card cc240-specific"><div class="label">WORK GUIDE · 척척</div><h3>${esc(d.title)}</h3><p>${esc(d.meaning)}</p><div class="result-grid"><div class="result-cell"><small>01 · 먼저</small><p>${esc(d.first)}</p></div><div class="result-cell"><small>02 · 어디서</small><p>${esc(d.where)}</p></div><div class="result-cell"><small>03 · 누구와</small><p>${esc(d.who)}</p></div></div><div class="cc21-note"><b>척척 포인트</b><span>${esc(d.note)}</span></div></div>`;
 }
-function run(){
-  const q=$('searchInput')?.value.trim()||'';
-  const d=match(q);
-  if(d){render(d);return;}
-  if(typeof previousRunSearch==='function')previousRunSearch();
+
+function install(){
+  window.CC_RUNTIME.registerSearch('specific',match,render);
 }
-function install(){window.runSearch=run;}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

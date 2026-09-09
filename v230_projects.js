@@ -147,7 +147,7 @@ function install(){
   $('cc230New')?.addEventListener('click',()=>openEditor());
   const p=activeProject();if(p)applyProject(p);
   renderList();renderActiveUI();
-  $('analyze')?.addEventListener('click',()=>setTimeout(renderContextProject,140));
+  window.CC_RUNTIME.registerContext('project-label',renderContextProject);
   window.addEventListener('storage',event=>{
     if(event.key!==null&&!['cc_projects_v1','cc_active_project_v1'].includes(event.key))return;
     const current=activeProject();if(current)applyProject(current);else window.CC_ACTIVE_PROJECT=null;

@@ -3,7 +3,6 @@
 const VERSION='2.1.29';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[m]));
-const previousRunSearch=window.runSearch;
 const CUE=/(뭐야|뭔데|무엇|뜻|정의|뭐하는|어떤\s*(?:프로그램|사이트|기관|시스템|문서)|설명|처음|다운|설치|어디서\s*(?:받|다운)|홈페이지|공식\s*사이트|왜\s*써)/i;
 
 const TERMS=[
@@ -54,32 +53,18 @@ function render(term){
   <details class="cc229-more"><summary>조금 더 알아보기</summary><div class="cc229-caution"><b>주의</b><span>${esc(term.caution||'프로젝트 조건에 따라 실제 적용 방식은 달라질 수 있습니다.')}</span></div>${term.related?.length?`<div class="cc229-related"><small>같이 보면 좋은 용어</small>${term.related.map(([label,q])=>`<button type="button" data-cc229-go="${esc(q)}">${esc(label)}</button>`).join('')}</div>`:''}</details></div>`;
   out.querySelectorAll('[data-cc229-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.cc229Go)));
 }
-function runGlossarySearch(){
-  const q=$('searchInput')?.value.trim()||'';
-  const term=findTerm(q);
-  if(term){render(term);return;}
-  if(typeof previousRunSearch==='function')previousRunSearch();
-}
-function intercept(e){
-  const target=e.target;
-  if(e.type==='click'&&target.closest('#searchGo')){
-    const term=findTerm($('searchInput')?.value||'');if(term){e.preventDefault();e.stopImmediatePropagation();render(term);return;}
-  }
-  if(e.type==='click'&&target.closest('#homeSearchBtn')){
-    const q=$('homeSearch')?.value||'';const term=findTerm(q);if(term){e.preventDefault();e.stopImmediatePropagation();if(typeof showView==='function')showView('search');if($('searchInput'))$('searchInput').value=q;render(term);return;}
-  }
-  if(e.type==='keydown'&&e.key==='Enter'&&(target.id==='searchInput'||target.id==='homeSearch')){
-    const q=target.value||'';const term=findTerm(q);if(term){e.preventDefault();e.stopImmediatePropagation();if(target.id==='homeSearch'&&typeof showView==='function')showView('search');if($('searchInput'))$('searchInput').value=q;render(term);}
-  }
-}
+
 function installExamples(){
   const box=document.querySelector('#view-search .examples');if(!box||box.querySelector('[data-cc229-example]'))return;
-  [['세움터가 뭐야?','세움터가 뭐예요?'],['QGIS가 뭐고 어디서 다운받아?','QGIS가 뭐예요?'],['조달청은 뭐하는 곳이야?','조달청이 뭐예요?']].forEach(([q,label])=>{const b=document.createElement('button');b.type='button';b.dataset.cc229Example='1';b.textContent=label;b.addEventListener('click',()=>{if($('searchInput'))$('searchInput').value=q;const t=findTerm(q);if(t)render(t)});box.appendChild(b)});
+  [['세움터가 뭐야?','세움터가 뭐예요?'],['QGIS가 뭐고 어디서 다운받아?','QGIS가 뭐예요?'],['조달청은 뭐하는 곳이야?','조달청이 뭐예요?']].forEach(([q,label])=>{const b=document.createElement('button');b.type='button';b.dataset.cc229Example='1';b.dataset.searchQuery=q;b.textContent=label;b.addEventListener('click',()=>{if($('searchInput'))$('searchInput').value=q;const t=findTerm(q);if(t)render(t)});box.appendChild(b)});
   const termCard=[...document.querySelectorAll('.cc-help-card')].find(x=>/용어 찾기/.test(x.textContent));if(termCard)termCard.dataset.example='QGIS가 뭐고 어떤 프로그램이고 어디서 다운받아요?';
 }
 function installStyle(){
   if(document.getElementById('cc229Style'))return;const s=document.createElement('style');s.id='cc229Style';s.textContent=`.cc229-term{padding:20px}.cc229-head small{font-size:10px;font-weight:950;color:#5069ff;letter-spacing:.08em}.cc229-head h3{margin:5px 0 3px;font-size:25px;line-height:1.2;color:#10264b}.cc229-head span{font-size:11px;font-weight:850;color:#72809a}.cc229-summary{margin-top:14px;padding:15px 16px;border-radius:14px;background:#f2f6ff;font-size:15px;font-weight:900;line-height:1.55;color:#17355d}.cc229-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.cc229-grid>div{padding:13px 14px;border:1px solid #e3e9f5;border-radius:13px;background:#fff}.cc229-grid small,.cc229-related small{display:block;margin-bottom:5px;font-size:9px;font-weight:950;color:#748199;letter-spacing:.04em}.cc229-grid p{margin:0;font-size:12px;line-height:1.62;color:#344a69}.cc229-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}.cc229-actions a,.cc229-actions button,.cc229-related button{border:1px solid #dbe4f3;border-radius:999px;background:#fff;padding:9px 12px;font-size:10px;font-weight:900;color:#31527c;text-decoration:none;cursor:pointer}.cc229-actions a:first-child{background:#edf3ff;border-color:#cad9ff;color:#315ae8}.cc229-more{margin-top:10px;border-top:1px solid #edf0f6;padding-top:9px}.cc229-more summary{cursor:pointer;font-size:10px;font-weight:900;color:#65758d}.cc229-caution{display:grid;grid-template-columns:auto 1fr;gap:7px;margin-top:10px;padding:11px 12px;border-radius:11px;background:#fff8e8;font-size:11px;line-height:1.55;color:#66502a}.cc229-caution b{color:#a26a00}.cc229-related{margin-top:10px}.cc229-related button{margin:0 5px 5px 0;padding:7px 10px}.cc229-term a:focus-visible,.cc229-term button:focus-visible{outline:2px solid #5069ff;outline-offset:2px}@media(max-width:700px){.cc229-term{padding:16px}.cc229-head h3{font-size:22px}.cc229-summary{font-size:14px}.cc229-grid{grid-template-columns:1fr}.cc229-grid p{font-size:12px}.cc229-actions a,.cc229-actions button{width:100%;text-align:center}}`;document.head.appendChild(s);
 }
-function install(){window.runSearch=runGlossarySearch;document.addEventListener('click',intercept,true);document.addEventListener('keydown',intercept,true);installExamples();installStyle();}
+function install(){
+  installExamples();installStyle();
+  window.CC_RUNTIME.registerSearch('glossary',q=>/(?:무엇|뭐)부터|언제|어떻게|업무|요청|검토|작성|흐름|확인/.test(q)&&!/(?:뭐야|뭔지|정의|뜻)/.test(q)?null:findTerm(q),render);
+}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

@@ -73,12 +73,7 @@ function install(){
     style.textContent='.cc218-where{margin-top:12px;padding-top:12px;border-top:1px solid #E1E7F4}.cc218-where-head{display:flex;align-items:baseline;gap:8px;margin-bottom:9px}.cc218-where-head small{font-size:8.5px;font-weight:950;letter-spacing:.12em;color:#6C79A4}.cc218-where-head b{font-size:12.5px;color:#33436F}.cc218-project-note{display:flex;gap:7px;align-items:flex-start;margin-top:10px;padding:10px 12px;border-radius:11px;background:#F2F7FF;border:1px solid #E0E9FA;color:#5B6883;font-size:10.2px;line-height:1.55}.cc218-project-note b{flex:0 0 auto;color:#315EBA}.cc218-project-note span{min-width:0}@media(max-width:700px){.cc218-project-note{display:block}.cc218-project-note b{display:block;margin-bottom:4px}}';
     document.head.appendChild(style);
   }
-  const analyze=byId('analyze');
-  if(analyze&&!analyze.dataset.cc218){
-    analyze.dataset.cc218='1';
-    analyze.addEventListener('click',()=>setTimeout(enhanceContext,0));
-  }
-  if(byId('view-context')?.classList.contains('active'))enhanceContext();
+  window.CC_RUNTIME.registerContext('why',enhanceContext);
 }
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();

@@ -25,7 +25,7 @@ for(const kind of ['now','material','source','people','steps','caution','done','
 assert(src.includes('<svg viewBox="0 0 24 24"'),'icons must be code-native SVG pictograms');
 assert(src.includes('data-ask-context'), 'WHO must receive its own pictogram');
 assert(src.includes('@media(prefers-reduced-motion:reduce)'), 'motion must respect accessibility preferences');
-assert(src.includes('if(decorateTimer)return'),'dynamic icon updates must not be starved by legacy mutation storms');
+assert(src.includes("registerContext('visual',decorate)"),'dynamic icon updates must not be starved by legacy mutation storms');
 assert(!src.includes('markVersion'),'release labels are owned by index.html');
 assert(!/localStorage\.(?:setItem|removeItem|clear)/.test(src),'visual patch must not mutate saved project data');
 

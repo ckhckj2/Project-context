@@ -19,8 +19,8 @@ assert(src.includes("index?'right':'left'")&&src.includes('.cc258-compare-right'
 assert(src.includes('.cc258-vs'),'comparison must display a dedicated VS marker');
 assert(src.includes('-webkit-line-clamp:2'),'standard summaries must expose fewer lines');
 assert(src.includes("root.classList.remove('cc252-detail-open')"),'a new query must reset the previous detail-open state');
-assert(src.includes('MutationObserver'),'dynamic context and search content must be repatched');
-assert(src.includes('if(contextTimer)return'),'context updates must be throttled so legacy mutation storms cannot starve the patch');
+assert(src.includes("registerResult('hierarchy',arrangeSearchResult)"),'dynamic context and search content must be repatched');
+assert(src.includes("registerContext('hierarchy',arrangeContext)"),'context updates must be throttled so legacy mutation storms cannot starve the patch');
 assert(src.includes('@media(max-width:900px)'),'tablet layout must be handled');
 assert(src.includes('@media(max-width:620px)'),'mobile comparison layout must be handled');
 assert(src.includes('@media(prefers-reduced-motion:reduce)'),'reduced-motion preference must be respected');

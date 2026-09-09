@@ -110,7 +110,7 @@ function captureNavigation(e){
 function install(){
   installStyle();ensureBack();loadUnifiedSearchTypography();
   window.addEventListener('click',captureNavigation,true);
-  document.addEventListener('click',()=>setTimeout(syncBack,90));
+  window.CC_RUNTIME.registerResult('navigation',syncBack);
   
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();

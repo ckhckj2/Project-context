@@ -45,7 +45,6 @@ function compactDepthGuide(guide){
 function arrangeContext(){
   const root=$('contextResult');
   if(!root||!root.innerHTML.trim())return;
-  if(root.classList.contains('cc256-building')){scheduleContext(140);return}
   const map=root.querySelector('.map');
   const brief=map?.querySelector(':scope>.cc252-context-brief');
   const actions=map?.querySelector(':scope>.actions.cc252-actions');
@@ -193,39 +192,12 @@ function installStyle(){
   document.head.append(style);
 }
 
-let contextTimer=null;
-let resultTimer=null;
-function scheduleContext(delay=55){
-  if(contextTimer)return;
-  contextTimer=setTimeout(()=>{contextTimer=null;arrangeContext()},delay);
-}
-function scheduleResult(delay=55){
-  if(resultTimer)return;
-  resultTimer=setTimeout(()=>{resultTimer=null;arrangeSearchResult()},delay);
-}
-
-
 
 function install(){
   installStyle();
-  const context=$('contextResult');
-  const result=$('searchResult');
-  if(context)new MutationObserver(()=>scheduleContext()).observe(context,{childList:true,subtree:true});
-  if(result)new MutationObserver(()=>scheduleResult()).observe(result,{childList:true,subtree:true});
-  document.addEventListener('click',event=>{
-    if(event.target.closest('#analyze,.master-levels button'))scheduleContext(1050);
-    if(event.target.closest('#searchGo,#homeSearchBtn,[data-example]'))scheduleResult(100);
-  });
-  document.addEventListener('keydown',event=>{
-    if(event.key==='Enter'&&(event.target===$('searchInput')||event.target===$('homeSearch')))scheduleResult(100);
-  });
-  if(context?.innerHTML.trim())scheduleContext(260);
-  if(result?.children.length)scheduleResult(100);
-  
-  
-  
+  window.CC_RUNTIME.registerContext('hierarchy',arrangeContext);
+  window.CC_RUNTIME.registerResult('hierarchy',arrangeSearchResult);
 }
-
 window.CC_INFORMATION_HIERARCHY={version:VERSION,arrangeContext,arrangeSearchResult};
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});

@@ -36,7 +36,6 @@ const REVIEWS={
 function topic(q){
   const s=String(q||'').trim();
   if(!s||COMPARE.test(s))return null;
-  if(/심의\s*(종류|뭐|무엇|어떤)|어떤\s*심의|심의.*확인|심의.*대상.*한번|주요\s*심의/i.test(s))return {kind:'overview'};
   if(/건축\s*심의|건축위원회/i.test(s))return {kind:'review',key:'building'};
   if(/경관\s*심의|경관위원회/i.test(s))return {kind:'review',key:'landscape'};
   if(/소방\s*심의|성능위주설계|성능\s*위주/i.test(s))return {kind:'review',key:'fire'};
@@ -46,6 +45,7 @@ function topic(q){
   if(/소규모\s*환경\s*영향|환경\s*영향\s*평가|환경영향평가/i.test(s))return {kind:'review',key:'environment'};
   if(/\bBF\b|비에프|장애물\s*없는\s*생활환경/i.test(s))return {kind:'review',key:'bf'};
   if(/\bZEB\b|제로\s*에너지|제로에너지/i.test(s))return {kind:'review',key:'zeb'};
+  if(/심의\s*(종류|뭐|무엇|어떤)|어떤\s*심의|심의.*확인|심의.*대상.*한번|주요\s*심의/i.test(s))return {kind:'overview'};
   if(/인허가\s*(실무|업무|절차|패키지|뭐부터|무엇부터|시작)|심의\s*업무.*뭐부터/i.test(s))return {kind:'permit'};
   return null;
 }
@@ -69,7 +69,7 @@ function renderReview(key){
     <details class="cc235-practice"><summary>${lv>=3?'LV.3 실무 준비자료 · 담당 · 완료 후 보기':'LV.3 실무 내용 🔒'}</summary>${lv>=3?`<div class="cc235-practice-grid"><div><small>준비자료</small>${d.materials.map(x=>`<p>• ${esc(x)}</p>`).join('')}</div><div><small>누구와 확인?</small><p>${esc(d.who)}</p><small>심의·평가 후</small><p>${esc(d.after)}</p></div></div>`:`<div class="cc235-lock"><b>LV.3 · 책임부터 열립니다.</b><span>승급하면 준비자료, 협력업체 역할, 심의 후 반영·추적 방법까지 볼 수 있어요.</span></div>`}</details>
     <div class="cc235-sources"><small>공식 근거 시작점</small>${lawLink(d.law)}<span>정확한 대상·도서·접수시기는 시행령·시행규칙·관할기관 조례/안내의 최신본을 함께 확인하세요.</span></div>
   </article>`;
-  cleanupForeignAdjustments();
+  
 }
 
 function reviewButtons(){
@@ -83,7 +83,7 @@ function renderOverview(){
     <div class="cc235-pick"><small>하나씩 확인해보기</small><div>${reviewButtons()}</div></div>
     <div class="cc235-caution"><b>세움터는?</b><span>건축행정의 중요한 접점이지만 모든 심의·평가가 세움터 하나로 처리되는 것은 아닙니다. 심의·평가별 접수기관과 시스템을 따로 확인하세요.</span></div>
   </article>`;
-  wireGo();cleanupForeignAdjustments();
+  wireGo();
 }
 function renderPermit(){
   const out=$('searchResult');if(!out)return;const lv=level();
@@ -91,14 +91,11 @@ function renderPermit(){
     <div class="cc235-flow"><div><i>1</i><b>원 승인·허가 경로 확인</b><span>건축허가/신고, 사업계획승인, 정비사업, 공항·물류 등 특별법 사업</span></div><div><i>2</i><b>현재 단계 확인</b><span>심의 → 허가·승인 → 착공 → 사용승인·사용검사 → 변경</span></div><div><i>3</i><b>심의·평가 후보 확인</b><span>대상 여부와 선후행·병행 관계를 일정에 올리기</span></div><div><i>4</i><b>자료를 담당별로 쪼개기</b><span>건축 기본자료 / 협력업체 / 행정자료 / 추가 요구자료</span></div><div><i>5</i><b>제출·보완·반영 추적</b><span>제출본 기준일 통일 → 보완 → 설계반영 → 다음 절차 연결</span></div></div>
     <div class="cc235-practice-grid ${lv<3?'locked':''}"><div><small>${lv>=3?'LV.3 · 실제 시작 체크':'LV.3 · LOCKED'}</small>${lv>=3?'<p>• 기존 허가/승인 문서와 최신 회의록 찾기</p><p>• 관할기관 제출 안내의 최신본 확인</p><p>• 심의·평가·협의 담당과 마감일을 한 표로 정리</p><p>• 건축/구조/기계/전기/소방/토목 등 자료 담당자를 붙이기</p>':'<p>책임 레벨부터 제출자료 분해·보완관리까지 열립니다.</p>'}</div><div><small>세움터 사용</small><p>건축허가·신고·건축물대장 등 건축행정 업무에서 중요하지만, 프로젝트의 원 승인경로와 해당 업무가 세움터 처리 대상인지 먼저 확인하세요.</p><small>완료 기준</small><p>제출목록과 실제 파일이 1:1로 대응하고, 심의·평가 조건과 보완사항이 다음 도면/절차까지 추적되면 됩니다.</p></div></div>
     <div class="cc235-pick"><small>주요 심의·평가부터 확인</small><div>${reviewButtons()}</div></div>
-  </article>`;wireGo();cleanupForeignAdjustments();
+  </article>`;wireGo();
 }
 
-function cleanupForeignAdjustments(){setTimeout(()=>{$('searchResult')?.querySelectorAll('.cc233-bim-search,.cc234-bim-search').forEach(x=>x.remove())},420)}
 function runQuery(q){const t=topic(q);if(!t)return false;if($('searchInput'))$('searchInput').value=q;if(t.kind==='overview')renderOverview();else if(t.kind==='permit')renderPermit();else renderReview(t.key);return true}
 function wireGo(){document.querySelectorAll('[data-cc235-go]').forEach(b=>{if(b.dataset.wired)return;b.dataset.wired='1';b.addEventListener('click',()=>runQuery(b.dataset.cc235Go||''))})}
-function queryFromEvent(e){const t=e.target;if(e.type==='keydown'&&e.key==='Enter'&&(t.id==='searchInput'||t.id==='homeSearch'))return t.value||'';if(e.type==='click'){if(t.closest('#searchGo'))return $('searchInput')?.value||'';if(t.closest('#homeSearchBtn'))return $('homeSearch')?.value||'';const ex=t.closest('[data-example]');if(ex)return ex.dataset.example||'';}return''}
-function intercept(e){const q=queryFromEvent(e);if(!q||!topic(q))return;e.preventDefault();e.stopImmediatePropagation();if(e.target.id==='homeSearch'||e.target.closest('#homeSearchBtn')){if(typeof showView==='function')showView('search')}runQuery(q)}
 
 function patchHow(){
   const root=$('contextResult');if(!root)return;root.querySelector('.cc235-how')?.remove();if(level()<3)return;
@@ -107,11 +104,15 @@ function patchHow(){
   const box=document.createElement('div');box.className='cc235-how';box.innerHTML=`<small>PERMIT PRACTICE</small><b>이 업무에서는 원 승인경로 → 심의·평가 → 제출단계 순으로 연결하세요.</b><div><span>1</span>기존 승인/허가 문서에서 법적 경로 확인</div><div><span>2</span>현재 단계와 선행 심의·평가 후보 확인</div><div><span>3</span>관할기관 최신 제출안내로 자료목록 확정</div><button type="button" data-cc235-open>인허가 실무 패키지에서 자세히 보기 →</button>`;pane.appendChild(box);box.querySelector('[data-cc235-open]').onclick=()=>{if(typeof showView==='function')showView('search');runQuery('인허가 실무 패키지')};
 }
 
-function addExamples(){const box=document.querySelector('#view-search .examples');if(!box||box.querySelector('[data-cc235-example]'))return;[['건축심의 대상이야?','건축심의'],['경관심의는 언제 해?','경관심의'],['소방심의는 어떤 절차야?','소방 관련'],['인허가 실무 패키지','인허가 실무']].forEach(([q,n])=>{const b=document.createElement('button');b.type='button';b.dataset.cc235Example='1';b.textContent=n;b.onclick=()=>runQuery(q);box.appendChild(b)})}
+function addExamples(){const box=document.querySelector('#view-search .examples');if(!box||box.querySelector('[data-cc235-example]'))return;[['건축심의 대상이야?','건축심의'],['경관심의는 언제 해?','경관심의'],['소방심의는 어떤 절차야?','소방 관련'],['인허가 실무 패키지','인허가 실무']].forEach(([q,n])=>{const b=document.createElement('button');b.type='button';b.dataset.cc235Example='1';b.dataset.searchQuery=q;b.textContent=n;b.onclick=()=>runQuery(q);box.appendChild(b)})}
 function installStyle(){if($('cc235Style'))return;const s=document.createElement('style');s.id='cc235Style';s.textContent=`
 .cc235-review-card,.cc235-overview{padding:20px}.cc235-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.cc235-top h3,.cc235-overview h3{margin:4px 0 6px;font-size:22px;color:#17355d}.cc235-top p,.cc235-overview>p{margin:0;font-size:12px;line-height:1.65;color:#465c77}.cc235-top>span{padding:6px 9px;border-radius:999px;background:#edf3ff;color:#5067e5;font-size:9px;font-weight:900;white-space:nowrap}.cc235-project{display:flex;gap:8px;align-items:baseline;margin-top:12px;padding:9px 11px;border-radius:10px;background:#f6f8fc}.cc235-project b{font-size:9px;color:#40597c}.cc235-project span{font-size:9px;color:#7a8799}.cc235-core{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.cc235-core>div,.cc235-practice-grid>div{padding:12px;border:1px solid #e2e8f2;border-radius:12px;background:#fff}.cc235-core small,.cc235-practice-grid small,.cc235-pick>small,.cc235-sources>small{font-size:8px;font-weight:950;color:#62738b;letter-spacing:.04em}.cc235-core p,.cc235-practice-grid p{margin:5px 0 0;font-size:10px;line-height:1.6;color:#405570}.cc235-caution{display:flex;gap:8px;margin-top:9px;padding:10px 11px;border-radius:11px;background:#fff8e9}.cc235-caution b{font-size:9px;color:#9a6b18;white-space:nowrap}.cc235-caution span{font-size:9px;line-height:1.55;color:#735f3f}.cc235-practice{margin-top:10px;border:1px solid #e2e8f2;border-radius:12px;background:#fbfcfe;padding:0 12px 11px}.cc235-practice summary{padding:11px 0;cursor:pointer;font-size:10px;font-weight:900;color:#4f637e}.cc235-practice-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:8px}.cc235-practice-grid.locked{grid-template-columns:1fr 1fr}.cc235-lock{padding:12px;border-radius:10px;background:#f5f7fa}.cc235-lock b,.cc235-lock span{display:block}.cc235-lock b{font-size:10px;color:#40516a}.cc235-lock span{margin-top:4px;font-size:9px;color:#7d8999}.cc235-sources{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid #edf0f4}.cc235-sources a{padding:6px 8px;border:1px solid #dfe6ef;border-radius:999px;text-decoration:none;color:#4f66df;font-size:8px;font-weight:900}.cc235-sources span{font-size:8px;color:#8994a3}.cc235-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:13px}.cc235-flow>div{padding:10px;border:1px solid #e2e8f2;border-radius:11px;background:#fff}.cc235-flow i{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#eef2ff;color:#5369e8;font-size:8px;font-style:normal;font-weight:950}.cc235-flow b,.cc235-flow span{display:block}.cc235-flow b{margin-top:6px;font-size:10px;color:#314b6e}.cc235-flow span{margin-top:3px;font-size:8px;line-height:1.45;color:#7a8798}.cc235-pick{margin-top:12px}.cc235-pick>div{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.cc235-pick button{border:1px solid #dce4ef;border-radius:999px;background:#fff;padding:7px 10px;color:#4c62d9;font-size:9px;font-weight:900;cursor:pointer}.cc235-how{margin-top:10px;padding:12px;border:1px solid #cfdcf7;border-radius:12px;background:#f6f9ff}.cc235-how>small{display:block;font-size:8px;font-weight:950;color:#5369e8}.cc235-how>b{display:block;margin:4px 0 8px;font-size:10px;color:#314b70}.cc235-how>div{display:grid;grid-template-columns:20px 1fr;gap:7px;align-items:center;margin-top:5px;font-size:9px;color:#50647f}.cc235-how>div span{display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#fff;color:#5268e6;font-size:8px;font-weight:950}.cc235-how button{margin-top:9px;border:0;background:transparent;color:#5067df;font-size:9px;font-weight:900;cursor:pointer;padding:0}
 @media(max-width:700px){.cc235-review-card,.cc235-overview{padding:16px}.cc235-top{display:grid}.cc235-top>span{justify-self:start}.cc235-core,.cc235-practice-grid,.cc235-practice-grid.locked,.cc235-flow{grid-template-columns:1fr}.cc235-project{display:grid;gap:3px}.cc235-caution{align-items:flex-start}.cc235-flow{gap:6px}}
 `;document.head.appendChild(s)}
-function install(){installStyle();addExamples();window.addEventListener('click',intercept,true);window.addEventListener('keydown',intercept,true);document.addEventListener('click',e=>{if(e.target.closest('#analyze,.master-levels button,[data-drawer="how"]'))setTimeout(patchHow,260)});if($('contextResult')?.innerHTML.trim())setTimeout(patchHow,120);}
+function install(){
+  installStyle();addExamples();
+  window.CC_RUNTIME.registerSearch('reviews',topic,(_,q)=>runQuery(q));
+  window.CC_RUNTIME.registerContext('reviews',patchHow);
+}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();

@@ -101,56 +101,10 @@ function renderComparison(route){
 }
 
 let lastQuery='';
-let routeToken=0;
+
 function renderRoute(route){
   if(route.type==='comparison')renderComparison(route);
   else if(route.type==='definition')renderDefinition(route);
-}
-
-function finalRoute(query,fromHome=false){
-  const route=routeQuery(query);
-  lastQuery=route.query;
-  if(route.type==='legacy')return false;
-  if(fromHome){
-    if(typeof window.showView==='function')window.showView('search');
-    else document.querySelector('[data-view="search"]')?.click();
-    if($('searchInput'))$('searchInput').value=route.query;
-  }
-  const token=++routeToken;
-  setTimeout(()=>{if(token===routeToken)renderRoute(route)},25);
-  return true;
-}
-
-function queryFromEvent(event){
-  const target=event.target;
-  if(event.type==='keydown'&&event.key==='Enter'&&(target===$('searchInput')||target===$('homeSearch')))return {query:target.value||'',home:target===$('homeSearch')};
-  if(event.type==='click'){
-    if(target.closest?.('#searchGo,#cc253SearchGo'))return {query:$('searchInput')?.value||'',home:false};
-    if(target.closest?.('#homeSearchBtn,#cc253HomeSearchBtn'))return {query:$('homeSearch')?.value||'',home:true};
-    const example=target.closest?.('[data-example],[data-cc245-query],[data-cc253-query]');
-    if(example)return {query:example.dataset.example||example.dataset.cc245Query||example.dataset.cc253Query||'',home:!!example.closest('#view-home')};
-  }
-  return null;
-}
-
-function intercept(event){
-  const input=queryFromEvent(event);if(!input)return;
-  const route=routeQuery(input.query);
-  lastQuery=route.query;
-  if(route.type==='legacy'){
-    const claimed=event.type==='click'&&event.target.closest?.('#cc253SearchGo,#cc253HomeSearchBtn');
-    if(claimed){
-      event.preventDefault();event.stopImmediatePropagation();
-      const claimedId=claimed.id;
-      claimed.id=claimedId==='cc253SearchGo'?'searchGo':'homeSearchBtn';
-      claimed.click();
-      setTimeout(()=>{claimed.id=claimedId},0);
-    }
-    setTimeout(repairLegacy,160);
-    return;
-  }
-  event.preventDefault();event.stopImmediatePropagation();
-  finalRoute(input.query,input.home);
 }
 
 function replaceEmployeePhrases(root){
@@ -195,16 +149,6 @@ function repairLegacy(){
   }
 }
 
-// Batch result mutations without postponing repair during continuous updates.
-let repairTimer=null;
-function scheduleRepair(){
-  if(repairTimer!==null)return;
-  repairTimer=setTimeout(()=>{
-    repairTimer=null;
-    repairLegacy();
-  },120);
-}
-
 function installStyle(){
   if($('cc253Style'))return;
   const style=document.createElement('style');style.id='cc253Style';style.textContent=`
@@ -212,35 +156,12 @@ function installStyle(){
   `;document.head.append(style);
 }
 
-function claimControls(){
-  const searchGo=$('searchGo');
-  if(searchGo){searchGo.id='cc253SearchGo';searchGo.addEventListener('click',intercept,true)}
-  const homeGo=$('homeSearchBtn');
-  if(homeGo){homeGo.id='cc253HomeSearchBtn';homeGo.addEventListener('click',intercept,true)}
-  document.querySelectorAll('[data-example],[data-cc245-query]').forEach(node=>{
-    const query=node.dataset.example||node.dataset.cc245Query||'';
-    if(routeQuery(query).type==='legacy')return;
-    node.dataset.cc253Query=query;
-    node.removeAttribute('data-example');
-    node.removeAttribute('data-cc245-query');
-    node.addEventListener('click',intercept,true);
-  });
-}
-
 function install(){
   installStyle();
-  const previous=window.runSearch;
-  window.runSearch=function(){const query=$('searchInput')?.value||'';return finalRoute(query,false)||(typeof previous==='function'?previous():undefined)};
-  claimControls();
-  window.addEventListener('click',intercept,true);
-  window.addEventListener('keydown',intercept,true);
-  const result=$('searchResult');if(result)new MutationObserver(scheduleRepair).observe(result,{childList:true,subtree:true});
-  
-  
-  
+  window.CC_RUNTIME.registerSearch('definition',q=>{const route=routeQuery(q);return route.type==='definition'&&!/(?:무엇|뭐)부터|어떻게|요청|하래|검토|작성|취합|준비/.test(q)?route:null},renderRoute);
+  window.CC_RUNTIME.registerResult('neutral',()=>{lastQuery=$('searchInput')?.value||'';repairLegacy()});
 }
-
-window.CC_SEARCH_RELIABILITY={version:VERSION,routeQuery,persona,concepts:CONCEPTS.map(item=>item.id)};
+window.CC_SEARCH_RELIABILITY={version:VERSION,routeQuery,renderRoute,persona,concepts:CONCEPTS.map(item=>item.id)};
 
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
 else install();
