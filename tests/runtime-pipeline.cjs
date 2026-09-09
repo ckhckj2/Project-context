@@ -16,6 +16,7 @@ for(const file of scripts){
   if(file==='app-runtime.js')continue;
   let source=fs.readFileSync(file,'utf8');
   assert(!/window\.runSearch\s*=/.test(source),file+': search entry must not be reassigned');
+  if(['judgement-data.js','judgement-engine.js'].includes(file)){vm.runInContext(source,sandbox,{filename:file});continue;}
   if(!source.includes('registerSearch('))continue;
   const registrations=source.split('\n').filter(line=>line.includes('window.CC_RUNTIME.registerSearch(')).map(line=>{
     // v21 retains a compact installer on one line: take only the registration.
@@ -25,6 +26,7 @@ for(const file of scripts){
   source=source.replace(/if\(document\.readyState==='loading'\)[\s\S]*?(?=\}\)\(\);\s*$)/,registrations+'\n');
   vm.runInContext(source,sandbox,{filename:file});
 }
+for(const item of sandbox.window.CC_JUDGEMENT_DATA)assert.equal(runtime.classify(item.title).id,'judgement',item.title);
 const cases=[
  ['변경허가와 변경신고의 차이가 뭐야?','comparison'],
  ['BIM과 Revit의 차이가 뭐야?','concept-comparison'],
@@ -44,11 +46,14 @@ const cases=[
  ['도로 검토를 요청받았어요','common'],
  ['법규검토 업무를 요청받았어요','common'],
  ['모델링 요청받았어요','specific'],
+ ['기숙사로 계획해도 될까요?','judgement'],
+ ['공항 안의 건물은 어떤 승인경로일까요?','judgement'],
+ ['임대사업이면 승인경로가 달라지나요?','judgement'],
  ['알 수 없는 업무','fallback']
 ];
 for(const [q,id] of cases)assert.equal(runtime.classify(q).id,id,q);
 assert.equal(runtime.classify(' ').id,'empty');
-assert.equal(runtime.diagnostics().routes.length,16,'every search provider registered');
+assert.equal(runtime.diagnostics().routes.length,17,'every search provider registered');
 assert.throws(()=>runtime.registerSearch('ask',()=>true,()=>{}),/Duplicate/);
 
 // Composition uses dependencies, not registration/load timing.

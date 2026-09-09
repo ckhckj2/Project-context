@@ -34,7 +34,7 @@ function context(){
 function render(match,query){
  const input=conditions(query),model=engine.evaluate(input),root=$('searchResult');
  root.classList.remove('cc252-result-root','cc252-detail-open');
- root.innerHTML='<article class="result-card cc268-search"><small>JUDGEMENT · 판단과 예외</small><h3>'+esc(model.topic.title)+'</h3>'+body(model)+(model.topics.length>1?'<div class="cc268-related"><h4>함께 확인할 판단</h4>'+model.topics.filter(c=>c.id!==model.topic.id).map(c=>'<button type="button" data-search-query="'+esc(c.title)+'">'+esc(c.title)+'</button>').join(''):'')+'</article>';
+ root.innerHTML='<article class="result-card cc268-search"><small>JUDGEMENT · 판단과 예외</small><h3>'+esc(model.topic.summary)+'</h3>'+body(model)+(model.topics.length>1?'<div class="cc268-related"><h4>함께 확인할 판단</h4>'+model.topics.filter(c=>c.id!==model.topic.id).map(c=>'<button type="button" data-search-query="'+esc(c.title)+'">'+esc(c.title)+'</button>').join(''):'')+'</article>';
 }
 function install(){
  window.CC_RUNTIME.registerSearch('judgement',engine.match,render);

@@ -95,12 +95,6 @@ function projectRouteBox(j,p,phase){
   box.innerHTML='<div><small>PROJECT ROUTE · '+esc(phase)+'</small><b>'+esc(j.title)+'</b><p>'+esc(j.summary)+'</p></div><div class="cc250-route-tags"><span>'+esc(BUSINESS[j.business]||j.business)+'</span><span>'+esc(ROUTES[j.route]||j.route)+'</span><span>'+esc(EXCEPTIONS[j.exception]||j.exception)+'</span></div>'+(!j.known?'<button type="button" data-cc250-edit>프로젝트에서 경로 입력</button>':'');
   return box;
 }
-function addJudgement(root,anchor,j,p,phase){
-  if(level()<4)return;
-  const d=document.createElement('details');d.className='cc250-judgement';
-  d.innerHTML='<summary><span>LV.4 · JUDGEMENT</span><b>'+esc(j.verdict)+'</b><em>판단 근거 보기</em></summary><div class="cc250-judge-grid"><div><small>저장된 조건</small><p>'+esc([BUSINESS[j.business],ROUTES[j.route],EXCEPTIONS[j.exception],phase].join(' · '))+'</p></div><div><small>현재 판단</small><p>'+esc(j.summary+' '+j.exceptionSummary)+'</p></div><div><small>확정 전 확인</small><p>'+esc(j.checks.join(' → '))+'</p></div></div><p class="cc250-judge-note">척척의 판단은 경로 후보를 좁히는 가설입니다. 법적 절차의 최종 판단은 실제 승인문서와 관할기관 기준으로 확인하세요.</p>';
-  anchor.insertAdjacentElement('afterend',d);
-}
 function openActiveEditor(){
   if(typeof showView==='function')showView('projects');
   setTimeout(()=>{const id=activeId(),card=[...document.querySelectorAll('.cc230-card')].find(x=>x.dataset.pid===id);card?.querySelector('[data-edit]')?.click()},80);
@@ -116,7 +110,7 @@ function enhanceContext(){
     const actual=gate.querySelector('[data-fit="actual"]');if(actual){actual.textContent=j.exception==='change'?'변경·보완 절차로 보기':j.known?'이 프로젝트 절차로 보기':'현재 절차를 확인했어요';actual.addEventListener('click',()=>{applyRouteHow(root,j,phase);window.CC_RUNTIME.refreshContextPresentation()},{once:true})}
     if(gate.classList.contains('mismatch')&&((j.exception==='change'&&admin)||(j.exception==='pre_review'&&j.kind==='review'))){gate.classList.remove('mismatch');gate.classList.add('conditional');const sm=gate.querySelector('small');if(sm)sm.textContent='예외 절차 확인 · '+phase;const t=gate.querySelector('.cc247-title');if(t)t.textContent='저장된 예외절차 때문에 실제 업무일 수 있어요'}
   }else if(admin||hasException){const box=projectRouteBox(j,p,phase);anchor.insertAdjacentElement('afterend',box);anchor=box;box.querySelector('[data-cc250-edit]')?.addEventListener('click',openActiveEditor)}
-  if(routeRelevant)addJudgement(root,anchor,j,p,phase);
+  // Detailed judgement is owned by judgement-ui.js for all project types.
 }
 function style(){
   if($('cc250Style'))return;const s=document.createElement('style');s.id='cc250Style';s.textContent=`

@@ -1,0 +1,46 @@
+'use strict';
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const ctx={window:{}};vm.createContext(ctx);
+for(const file of ['judgement-data.js','judgement-engine.js'])vm.runInContext(fs.readFileSync(file,'utf8'),ctx);
+const e=ctx.window.CC_JUDGEMENT,data=ctx.window.CC_JUDGEMENT_DATA;
+assert.equal(data.length,11);
+for(const c of data){
+ assert(e.match(c.title),'case title searchable: '+c.title);
+ const m=e.evaluate({query:c.title,level:4});assert.equal(m.topic.id,c.id);
+ assert.equal(m.level,4);assert.equal(m.state,'추가 조건 확인');
+ assert(c.branches.length>=3);assert(c.checks.length>=3);
+}
+assert.equal(e.match('기숙사는 누구에게 문의해?'),null);
+assert.equal(e.match('기숙사와 오피스텔 차이가 뭐야?'),null);
+assert.equal(e.match('기숙사가 뭐야?'),null);
+assert.equal(e.evaluate({typeId:'airport',approvalRoute:'unknown'}).topic.id,'airport');
+assert.equal(e.evaluate({typeId:'multi',approvalRoute:'maintenance'}).topic.id,'maintenance','business route precedes broad facility');
+assert.equal(e.evaluate({typeId:'multi',approvalRoute:'multiple'}).state,'추가 조건 확인');
+assert.equal(e.evaluate({query:'기숙사로 계획해도 될까요?',approvalRoute:'airport'}).topic.id,'dorm','explicit question precedes saved route');
+assert.equal(e.evaluate({level:5}).level,4,'master receives full judgement');
+assert.notEqual(e.evaluate({phase:'계획설계'}).stage,e.evaluate({phase:'중간설계'}).stage);
+assert.notEqual(e.evaluate({phase:'중간설계'}).stage,e.evaluate({phase:'실시설계'}).stage);
+assert(e.evaluate({approvalRoute:'housing'}).evidence.includes('대체하지'));
+const original={typeId:'fab',approvalRoute:'industry',level:4};const before=JSON.stringify(original);e.evaluate(original);assert.equal(JSON.stringify(original),before,'no project mutations');
+console.log('PASS: 11 judgement cases, missing evidence, route precedence, phase and master depth');
+// Exercise the renderer's actual level branches and escaping, without adding a production test API.
+ctx.document={readyState:'loading',addEventListener(){},getElementById(){return null}};
+vm.runInContext(fs.readFileSync('judgement-ui.js','utf8').replace("if(document.readyState==='loading')","window.__judgementTest={body,conditions};\nif(document.readyState==='loading')"),ctx);
+const render=ctx.window.__judgementTest.body;
+const low=render(e.evaluate({query:data[0].title,level:1}));
+const high=render(e.evaluate({query:data[0].title,level:4}));
+assert(!low.includes('<table>'));assert(high.includes('<table>'));
+assert(!low.includes(data[0].risk));assert(render(e.evaluate({query:data[0].title,level:2})).includes(data[0].risk));
+assert(!render(e.evaluate({level:2})).includes('현재 단계에서 결정할 범위'));
+assert(render(e.evaluate({level:3})).includes('현재 단계에서 결정할 범위'));
+const dirty=e.evaluate({level:4});dirty.evidence='<img src=x onerror=alert(1)>';assert(!render(dirty).includes('<img'));
+assert(high.includes('/행정규칙/'),'administrative building standards use correct link family');
+console.log('PASS: actual renderer level branches, text escaping and official links');
+const searchInput={value:''},searchOutput={children:[{}]},log=[];
+const fresh={window:{},document:{readyState:'loading',getElementById:id=>id==='searchInput'?searchInput:id==='searchResult'?searchOutput:null,addEventListener(){}}};
+vm.runInNewContext(fs.readFileSync('app-runtime.js','utf8'),fresh);
+const runtime=fresh.window.CC_RUNTIME;
+runtime.registerSearch('fallback',q=>q,(_,q)=>log.push(q));
+runtime.refreshSearchForLevel();assert.equal(log.length,0);
+runtime.search('기숙사 판단');searchInput.value='아직 보내지 않은 질문';runtime.refreshSearchForLevel();
+assert.deepEqual(log,['기숙사 판단','기숙사 판단']);assert.equal(searchInput.value,'아직 보내지 않은 질문');

@@ -2,15 +2,16 @@
 'use strict';
 
 // This is the only owner of search dispatch and context composition order.
-const SEARCH_ORDER=['comparison','concept-comparison','ask','definition','permit-workflow','change',
+const SEARCH_ORDER=['comparison','concept-comparison','ask','definition','judgement','permit-workflow','change',
   'glossary','public','reviews','bim','precedent','specific','common','tools','expanded','fallback'];
 const CONTEXT_ORDER=['why','tools','how','public-use','facility-use','public-flow',
-  'focus','phase','phase-fit','project-route','project-label','bim','reviews','depth','hierarchy','drawings','visual','feedback'];
+  'focus','phase','phase-fit','project-route','project-label','bim','reviews','depth','hierarchy','drawings','judgement','visual','feedback'];
 const RESULT_ORDER=['copy','neutral','change-impact','bim','compact','focus','hierarchy','visual','feedback','navigation'];
 const routes=new Map(),contextSteps=new Map(),resultSteps=new Map();
 const $=id=>document.getElementById(id);
 let resultObserver=null;
 let composing=false;
+let lastQuery=null;
 const stats={searches:0,contexts:0,results:0};
 
 function register(registry,order,id,value){
@@ -49,11 +50,18 @@ function search(query){
   resultObserver?.disconnect();
   try{
     routes.get(route.id).render(route.data,route.query);
+    lastQuery=route.query;
     stats.searches++;
     runSteps(resultSteps,RESULT_ORDER);
     stats.results++;
   }finally{observeResult();}
   return true;
+}
+function refreshSearchForLevel(){
+  if(!lastQuery)return;
+  const input=$('searchInput'),draft=input?.value;
+  search(lastQuery);
+  if(input)input.value=draft;
 }
 function renderContext(){
   const root=$('contextResult');
@@ -65,7 +73,7 @@ function renderContext(){
 }
 function refreshContextPresentation(){
   // A phase-fit choice changes content without re-creating the choice itself.
-  for(const id of ['depth','hierarchy','drawings','visual','feedback'])contextSteps.get(id)?.();
+  for(const id of ['depth','hierarchy','drawings','judgement','visual','feedback'])contextSteps.get(id)?.();
 }
 function go(query){
   if(!String(query??'').trim())return;
@@ -100,7 +108,7 @@ window.CC_RUNTIME=Object.freeze({
   registerSearch:(id,match,render)=>register(routes,SEARCH_ORDER,id,{match,render}),
   registerContext:(id,step)=>register(contextSteps,CONTEXT_ORDER,id,step),
   registerResult:(id,step)=>register(resultSteps,RESULT_ORDER,id,step),
-  classify,search,go,renderContext,refreshContextPresentation,refreshResult,
+  classify,search,go,refreshSearchForLevel,renderContext,refreshContextPresentation,refreshResult,
   diagnostics:()=>({routes:SEARCH_ORDER.filter(id=>routes.has(id)),context:CONTEXT_ORDER.filter(id=>contextSteps.has(id)),results:RESULT_ORDER.filter(id=>resultSteps.has(id)),...stats})
 });
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
