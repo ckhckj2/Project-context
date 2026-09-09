@@ -1,7 +1,12 @@
 #quizChoices{border:0;padding:0;margin:14px 0;display:grid;gap:10px}
 #quizChoices[hidden],#qInput[hidden],#quizMasterChallenge[hidden],#quizSkip[hidden]{display:none!important}
 .quiz-option{display:flex;align-items:flex-start;gap:12px;padding:15px;border:1px solid #dce5f2;border-radius:11px;background:#fff;cursor:pointer;line-height:1.65;font-size:15px;color:#304967}
-.quiz-option:has(input:checked){border-color:#4575bb;background:#eef4ff}.quiz-option:focus-within{outline:2px solid #4575bb;outline-offset:2px}.quiz-option input{margin-top:5px;flex:0 0 auto;accent-color:#3869b0}
+.quiz-option:has(input:checked){border-color:#4575bb;background:#eef4ff}.quiz-option:focus-within{outline:2px solid #4575bb;outline-offset:2px}
+#quizChoices{min-width:0;grid-template-columns:minmax(0,1fr)}
+#quizChoices .quiz-option{min-width:0;min-height:44px;box-sizing:border-box}
+#quizChoices input[type="radio"]{width:20px;height:20px;min-width:20px;max-width:20px;min-height:20px;max-height:20px;flex:0 0 20px;margin:3px 0 0;padding:0;accent-color:#3869b0}
+#quizChoices .quiz-option>span{flex:1 1 0;min-width:0;word-break:keep-all;overflow-wrap:anywhere}
+#qText{word-break:keep-all;overflow-wrap:anywhere}.qmeta{flex-wrap:wrap;gap:6px 12px}
 #quizSkip,.quiz-return,.quiz-lesson button,.quiz-result button,.quiz-tools button,#qFeedback>button{min-height:44px;margin:10px 8px 0 0;padding:10px 14px;border:1px solid #ccdbee;border-radius:9px;background:#f5f8fc;color:#315e9f;font-size:14px;cursor:pointer}
 #qSubmit:disabled{display:none}#quizBankInfo{font-size:13px!important;line-height:1.7!important}#quizMasterChallenge{margin-left:8px}
 .quiz-lesson,.quiz-tools{margin-top:16px;border-top:1px solid #dce5f2;padding-top:12px}.quiz-lesson summary,.quiz-tools summary{cursor:pointer;min-height:44px;padding:10px 0;font-size:14px;font-weight:700}.quiz-lesson h4{margin:16px 0 6px}.quiz-lesson li,.quiz-lesson p,.quiz-result p,#qFeedback p{line-height:1.75;font-size:14px}.quiz-lesson section+section{margin-top:18px;border-top:1px solid #dde5f0;padding-top:10px}.quiz-tools label{display:grid;gap:8px;font-size:14px}.quiz-tools input{max-width:100%;padding:12px;border:1px solid #d5deeb;border-radius:8px;font-size:15px}
