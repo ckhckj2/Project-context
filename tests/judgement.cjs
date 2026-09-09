@@ -4,6 +4,13 @@ const ctx={window:{}};vm.createContext(ctx);
 for(const file of ['judgement-data.js','judgement-engine.js'])vm.runInContext(fs.readFileSync(file,'utf8'),ctx);
 const e=ctx.window.CC_JUDGEMENT,data=ctx.window.CC_JUDGEMENT_DATA;
 assert.equal(data.length,11);
+const dormContext=e.contextTopics({typeId:'dorm',approvalRoute:'airport'});
+assert.equal(dormContext.primary.id,'dorm','selected facility stays primary even with a different saved route');
+assert.deepEqual(Array.from(dormContext.related,c=>c.id),['rental','housing','mixed']);
+assert(!dormContext.related.some(c=>['airport','fab','logistics'].includes(c.id)));
+for(const c of data){const selection=e.contextTopics({typeId:c.types[0],query:c.title});assert(selection.related.length<=3);assert(!selection.related.some(x=>x.id===selection.primary.id));}
+assert.equal(e.contextTopics({typeId:'airport'}).primary.id,'airport');
+assert.equal(e.contextTopics({typeId:'unknown',task:'보고서 작성'}).primary.id,'design');
 for(const c of data){
  assert(e.match(c.title),'case title searchable: '+c.title);
  const m=e.evaluate({query:c.title,level:4});assert.equal(m.topic.id,c.id);

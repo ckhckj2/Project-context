@@ -18,23 +18,24 @@ function body(model){
 }
 function context(){
  const root=$('contextResult');if(!root?.children.length)return;
- const input=conditions(),model=engine.evaluate(input),old=root.querySelector('.cc268-context');
+ const input=conditions(),selection=engine.contextTopics(input),model=engine.evaluate({...input,query:selection.primary.title}),old=root.querySelector('.cc268-context');
  const sig=JSON.stringify(input)+'|'+(root.querySelector('.cc247-fit-gate')?.dataset.mode||'');
  if(old?.dataset.signature===sig)return;
  const open=old?.open||false;old?.remove();
  const box=document.createElement('details');box.className='cc268-context';box.dataset.signature=sig;box.open=open;
  box.innerHTML='<summary><span>JUDGEMENT · 판단과 예외</span><b>'+esc(model.topic.title)+'</b><em>조건 확인</em></summary><div class="cc268-body"><span class="cc268-status">'+esc(model.state)+'</span>'+(root.querySelector('.cc247-fit-gate')?'<p class="cc268-note">위에서 선택한 선행 준비·실제 절차의 구분을 먼저 확인하세요. 아래는 그 판단에 필요한 조건입니다.</p>':'')+body(model)+'</div>';
- const chooser=document.createElement('label');chooser.className='cc268-chooser';chooser.innerHTML='<span>다른 판단 사례</span><select aria-label="다른 판단 사례">'+window.CC_JUDGEMENT_DATA.map(c=>'<option value="'+esc(c.id)+'" '+(c.id===model.topic.id?'selected':'')+'>'+esc(c.title)+'</option>').join('')+'</select>';
- box.querySelector('.cc268-body').prepend(chooser);
- const detail=document.createElement('div');detail.className='cc268-case-detail';
- const bodyNode=box.querySelector('.cc268-body');while(chooser.nextSibling)detail.appendChild(chooser.nextSibling);bodyNode.appendChild(detail);
- chooser.querySelector('select').addEventListener('change',event=>{const c=window.CC_JUDGEMENT_DATA.find(x=>x.id===event.target.value);if(!c)return;const next=engine.evaluate({...input,query:c.title,topicId:c.id});detail.innerHTML='<span class="cc268-status">'+esc(next.state)+'</span>'+body(next);box.querySelector('summary b').textContent=c.title;});
+ const bodyNode=box.querySelector('.cc268-body');
+ const scope=document.createElement('p');scope.className='cc268-note';scope.textContent='현재 선택한 용도 기준의 검토 가이드입니다. 실제 적용 여부는 사업조건과 승인문서로 확인하세요.';bodyNode.prepend(scope);
+ const buttons=items=>items.map(c=>'<button type="button" data-search-query="'+esc(c.title)+'">'+esc(c.title)+'</button>').join('');
+ if(selection.related.length){const related=document.createElement('section');related.className='cc268-related';related.innerHTML='<h4>함께 검토할 수 있는 사례</h4><p class="cc268-note">관련 조건을 비교하는 학습 사례예요. 현재 프로젝트에 자동 적용되지 않습니다.</p>'+buttons(selection.related);bodyNode.appendChild(related);}
+ const library=document.createElement('details');library.className='cc268-library cc268-related';library.innerHTML='<summary>다른 프로젝트 판단 사례 보기</summary><p class="cc268-note">전체 학습 사례입니다. 선택하면 독립 검색으로 열리며 현재 프로젝트의 용도·승인경로는 바뀌지 않습니다.</p>'+buttons(window.CC_JUDGEMENT_DATA);bodyNode.appendChild(library);
  (root.querySelector('.map')||root).appendChild(box);
 }
 function render(match,query){
  const input=conditions(query),model=engine.evaluate(input),root=$('searchResult');
  root.classList.remove('cc252-result-root','cc252-detail-open');
- root.innerHTML='<article class="result-card cc268-search"><small>JUDGEMENT · 판단과 예외</small><h3>'+esc(model.topic.summary)+'</h3>'+body(model)+(model.topics.length>1?'<div class="cc268-related"><h4>함께 확인할 판단</h4>'+model.topics.filter(c=>c.id!==model.topic.id).map(c=>'<button type="button" data-search-query="'+esc(c.title)+'">'+esc(c.title)+'</button>').join(''):'')+'</article>';
+ root.innerHTML='<article class="result-card cc268-search"><small>JUDGEMENT · 독립 학습 사례 · 현재 프로젝트에 자동 적용되지 않음</small><h3>'+esc(model.topic.summary)+'</h3>'+body(model)+(model.topics.length>1?'<div class="cc268-related"><h4>함께 확인할 판단</h4>'+model.topics.filter(c=>c.id!==model.topic.id).map(c=>'<button type="button" data-search-query="'+esc(c.title)+'">'+esc(c.title)+'</button>').join(''):'')+'</article>';
+ const notice=document.createElement('p');notice.className='cc268-note';notice.textContent='독립 학습 사례 · 현재 프로젝트에 자동 적용되지 않습니다.';root.prepend(notice);
 }
 function install(){
  window.CC_RUNTIME.registerSearch('judgement',engine.match,render);

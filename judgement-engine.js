@@ -24,5 +24,11 @@ function evaluate(input={}){
  const stage=/실시설계|시공/.test(phase)?'최종 도서·발주·시공 반영 전, 변경 권한과 재작업 영향을 확인':/중간설계/.test(phase)?'분야별 기준일·간섭·미회신 항목을 정리한 뒤 조정 결론 확인':'계획 가정과 나중에 확정할 조건을 구분하고 이번 의사결정 범위 확인';
  return {topic:c,topics:found,state:unresolved?'추가 조건 확인':'입력 조건에 따른 검토',evidence:saved?'저장된 승인경로는 사용자 입력이며 승인문서 확인을 대체하지 않습니다.':'원 승인경로가 확인되지 않았습니다. 시설명만으로 절차를 확정하지 않습니다.',stage,phase,task:String(input.task||'판단 검토'),level:Math.min(4,Math.max(1,Number(input.level)||1))};
 }
-window.CC_JUDGEMENT=Object.freeze({topics,match,evaluate});
+const relatedCases={dorm:['rental','housing','mixed'],officetel:['rental','mixed','housing'],rental:['housing','dorm','officetel'],mixed:['housing','officetel','rental'],housing:['rental','mixed','maintenance'],maintenance:['housing','mixed','special'],airport:['special','design'],logistics:['fab','special','design'],fab:['logistics','special','design'],special:['design'],design:[]};
+function contextTopics(input={}){
+ // Facility context owns the first card. Cross-project learning never replaces it.
+ const primary=topics('',input.typeId)[0]||evaluate({...input,query:'',approvalRoute:'unknown'}).topic;
+ return {primary,related:(relatedCases[primary.id]||[]).map(id=>data.find(c=>c.id===id)).filter(Boolean)};
+}
+window.CC_JUDGEMENT=Object.freeze({topics,match,evaluate,contextTopics});
 })();
