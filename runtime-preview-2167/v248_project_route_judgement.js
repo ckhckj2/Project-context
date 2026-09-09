@@ -86,8 +86,8 @@ function contextSteps(j){
   return [j.title,j.exceptionSummary,'최신 기준자료와 다음 결정사항 연결'];
 }
 function applyRouteHow(root,j,phase){
-  const how=root.querySelector('[data-pane="how"]'),why=root.querySelector('[data-pane="why"]');
-  if(how){const title=how.querySelector('.cc232-how-head b');if(title)title.textContent=(j.known?ROUTES[j.route]:'승인경로 미확인')+' · 프로젝트 기준 수행';const note=how.querySelector('.cc232-how-head span');if(note)note.textContent='저장된 값은 출발점이며 실제 승인서·승인기관·최신 운영기준으로 다시 확인하세요.';const top=how.querySelector('.cc232-how-steps');if(top)top.innerHTML=contextSteps(j).map((x,i)=>'<div><small>0'+(i+1)+'</small><b>'+esc(x)+'</b></div>').join('')}
+  const why=root.querySelector('[data-pane="why"]');
+  window.CC_CONTEXT_VIEW.setHow(root,{title:(j.known?ROUTES[j.route]:'승인경로 미확인')+' · 프로젝트 기준 수행',note:'저장된 값은 출발점이며 실제 승인서·승인기관·최신 운영기준으로 다시 확인하세요.',steps:contextSteps(j)});
   if(why&&!why.querySelector('.cc250-why-route'))why.insertAdjacentHTML('beforeend','<div class="cc250-why-route"><b>'+esc(j.verdict)+'</b><span>'+esc(j.summary)+'</span></div>');
 }
 function projectRouteBox(j,p,phase){

@@ -162,30 +162,14 @@ function closeDrawers(root){
   root.querySelectorAll('.drawer.show').forEach(x=>x.classList.remove('show'));
   root.querySelectorAll('[data-drawer]').forEach(x=>{x.classList.remove('cc-drawer-active');x.setAttribute('aria-expanded','false')});
 }
-function stepsHTML(steps){return steps.map((x,i)=>'<div><small>0'+(i+1)+'</small><b>'+esc(x)+'</b></div>').join('')}
 function applyPrep(root,key,phase,mode){
-  const d=PREP[key],why=root.querySelector('[data-pane="why"]'),how=root.querySelector('[data-pane="how"]');
-  if(why){
-    const label=mode==='prep'?'선행 준비':'단계 맞춤';
-    const title=why.querySelector('.why-title');if(title)title.innerHTML='<span class="cc247-mode">'+label+'</span>'+esc(phase)+'에서 먼저 확인할 내용';
-    const first=why.querySelectorAll(':scope > .detail-grid .detail-cell p');
-    [d.why,d.risk,d.done].forEach((x,i)=>{if(first[i])first[i].textContent=x});
-    const where=why.querySelectorAll('.cc218-where .detail-cell p');
-    [d.material,d.source,d.order].forEach((x,i)=>{if(where[i])where[i].textContent=x});
-  }
-  if(how){
-    const title=how.querySelector('.cc232-how-head b');if(title)title.textContent=phase+' · 현재 단계에 맞춘 확인 순서';
-    const note=how.querySelector('.cc232-how-head span');if(note)note.textContent=ADMIN.has(key)?'고정 제출목록보다 적용 절차와 공식 확인처부터 좁히세요.':'업무명보다 지금 이 결과물이 지원할 결정을 먼저 확인하세요.';
-    const top=how.querySelector('.cc232-how-steps');if(top)top.innerHTML=stepsHTML(d.steps);
-  }
+  const d=PREP[key];
+  window.CC_CONTEXT_VIEW.setWhy(root,{title:(mode==='prep'?'선행 준비 · ':'단계 맞춤 · ')+phase+'에서 먼저 확인할 내용',why:d.why,risk:d.risk,done:d.done,material:d.material,source:d.source,order:d.order});
+  window.CC_CONTEXT_VIEW.setHow(root,{title:phase+' · 현재 단계에 맞춘 확인 순서',note:ADMIN.has(key)?'고정 제출목록보다 적용 절차와 공식 확인처부터 좁히세요.':'업무명보다 지금 이 결과물이 지원할 결정을 먼저 확인하세요.',steps:d.steps,material:d.material,done:d.done});
 }
 function applyActual(root,key,phase){
-  const how=root.querySelector('[data-pane="how"]'),why=root.querySelector('[data-pane="why"]');
-  if(how){
-    const title=how.querySelector('.cc232-how-head b');if(title)title.textContent=phase+(ADMIN.has(key)?' · 실제 절차 확인 후 수행':' · 실제 수행 기준 확인');
-    const note=how.querySelector('.cc232-how-head span');if(note)note.textContent=ADMIN.has(key)?'정확한 절차명·승인권자·현재 접수단계를 확인한 경우에만 진행하세요.':'업무 목적·최신 기준자료·검토자를 확인한 뒤 진행하세요.';
-    const top=how.querySelector('.cc232-how-steps');if(top)top.innerHTML=stepsHTML(ACTUAL[key]);
-  }
+  const why=root.querySelector('[data-pane="why"]');
+  window.CC_CONTEXT_VIEW.setHow(root,{title:phase+(ADMIN.has(key)?' · 실제 절차 확인 후 수행':' · 실제 수행 기준 확인'),note:ADMIN.has(key)?'정확한 절차명·승인권자·현재 접수단계를 확인한 경우에만 진행하세요.':'업무 목적·최신 기준자료·검토자를 확인한 뒤 진행하세요.',steps:ACTUAL[key]});
   if(why){
     why.querySelector('.cc247-exception-note')?.remove();
     const n=document.createElement('div');n.className='cc247-exception-note';

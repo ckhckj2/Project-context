@@ -104,22 +104,12 @@ function updateContext(root,phase,task){
   cells[2].textContent=i<PHASE_ORDER.length-1?PHASE_ORDER[i+1]:'준공·사용승인 및 운영 인계';
 }
 function updateWhy(root,task,phase,rule){
-  if(level()<2)return;
-  const pane=root.querySelector('[data-pane="why"]');if(!pane)return;
-  const title=pane.querySelector('.why-title');if(title&&!title.dataset.cc246Base)title.dataset.cc246Base=title.textContent.trim();
-  if(title)title.innerHTML=`<span class="cc246-phase-label">${esc(phase)}</span>${esc(title.dataset.cc246Base||task)}`;
-  const first=pane.querySelectorAll(':scope > .detail-grid .detail-cell p');
-  if(first.length>=3){first[0].textContent=rule.whyText;first[1].textContent=rule.risk;first[2].textContent=rule.doneText;}
-  const where=pane.querySelectorAll('.cc218-where .detail-cell p');
-  if(where.length>=3){where[0].textContent=rule.material;where[1].textContent=rule.source;where[2].textContent=rule.order;}
+  window.CC_CONTEXT_VIEW.setWhy(root,{title:phase+' · '+task+'의 목적과 확인자료',why:rule.whyText,risk:rule.risk,done:rule.doneText,material:rule.material,source:rule.source,order:rule.order});
 }
 function updateHow(root,task,phase,rule){
+  window.CC_CONTEXT_VIEW.setHow(root,{title:rule.how(task),note:rule.note,steps:rule.howSteps,done:rule.doneText,material:rule.material});
   if(level()<3)return;
   const pane=root.querySelector('[data-pane="how"]');if(!pane)return;
-  const title=pane.querySelector('.cc232-how-head b');if(title)title.textContent=rule.how(task);
-  const note=pane.querySelector('.cc232-how-head span');if(note)note.textContent=rule.note;
-  const top=pane.querySelector('.cc232-how-steps');
-  if(top)top.innerHTML=rule.howSteps.map((x,i)=>`<div><small>0${i+1}</small><b>${esc(x)}</b></div>`).join('');
   let phaseBox=pane.querySelector('.cc246-how-phase');
   if(!phaseBox){phaseBox=document.createElement('div');phaseBox.className='cc246-how-phase';const details=pane.querySelector('.cc232-how-detail');if(details)details.insertAdjacentElement('beforebegin',phaseBox);else pane.appendChild(phaseBox);}
   phaseBox.innerHTML=`<small>${esc(phase)} · 완료 기준</small><b>${esc(rule.doneText)}</b>`;
