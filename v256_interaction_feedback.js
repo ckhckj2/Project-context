@@ -62,7 +62,7 @@ function updateQuiz(){
   const feedback=$('qFeedback');
   if(feedback){
     const text=clean(feedback.textContent);
-    const on=Boolean(text),good=/정답|맞았|축하|통과/.test(text)&&!/오답|아니/.test(text);
+    const on=Boolean(text),good=feedback.dataset.quizCorrect!==undefined?feedback.dataset.quizCorrect==='true':/정답|맞았|축하|통과/.test(text)&&!/오답|아니/.test(text);
     if(feedback.classList.contains('cc260-feedback-on')!==on)feedback.classList.toggle('cc260-feedback-on',on);
     if(feedback.classList.contains('cc260-feedback-good')!==good)feedback.classList.toggle('cc260-feedback-good',good);
   }

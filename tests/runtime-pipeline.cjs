@@ -52,6 +52,8 @@ const cases=[
  ['알 수 없는 업무','fallback']
 ];
 for(const [q,id] of cases)assert.equal(runtime.classify(q).id,id,q);
+vm.runInContext(fs.readFileSync('quiz-bank.js','utf8'),sandbox);
+for(const q of sandbox.window.CC_QUIZ_BANK){if(q.learn.kind==='search')assert(!['empty','fallback'].includes(runtime.classify(q.learn.query).id),'quiz lesson must resolve: '+q.id+' '+q.learn.query);}
 assert.equal(runtime.classify(' ').id,'empty');
 assert.equal(runtime.diagnostics().routes.length,17,'every search provider registered');
 assert.throws(()=>runtime.registerSearch('ask',()=>true,()=>{}),/Duplicate/);
