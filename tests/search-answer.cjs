@@ -74,4 +74,14 @@ assert.equal(window.CC_BIM_RULES.context.taskKey('입면 검토'),'facade');
 assert.equal(window.CC_BIM_RULES.search.taskKey('입면 검토'),'facade');
 assert.equal(window.CC_REVIEW_RULES.topic('건축심의').key,'building');
 assert.equal(window.CC_PUBLIC_RULES.intent('공공건축심의'),'review');
+// Shared basic HOW must retain BIM supplementation even before LV3.
+let attached=0;
+const pane={querySelector:()=>null,appendChild(){attached++}};
+sandbox.document.getElementById=id=>id==='contextResult'?{querySelector:()=>pane}:null;
+window.CC_PROJECT_STORE.active=()=>({bimMode:'revit'});
+let contextSource=fs.readFileSync('v233_bim_context.js','utf8');
+contextSource=contextSource.replace("if(document.readyState==='loading')", "window.__testBimContext=patchHow;\nif(document.readyState==='loading')");
+vm.runInContext(contextSource,sandbox);
+for(const level of [1,2,3,4,5]){window.CC_LEVEL_STORE.state=()=>({view:level});window.__testBimContext();}
+assert.equal(attached,5,'BIM basic context must remain available at every level');
 console.log('PASS: '+cases.length+' real producer cases; comparison, level depth, clarification, node ownership, pure supplements');

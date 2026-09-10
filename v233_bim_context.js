@@ -19,7 +19,8 @@ function buildBox(p,text,compact=false){
 
 function patchHow(){
   const p=activeProject();const root=$('contextResult');if(!hasBim(p)||!root)return;
-  const pane=root.querySelector('[data-pane="how"]');if(!pane||window.CC_LEVEL_STORE.state().view<3)return;
+  // Basic HOW is available at every level, including its BIM supplement.
+  const pane=root.querySelector('[data-pane="how"]');if(!pane)return;
   pane.querySelector('.cc233-bim-adjust')?.remove();
   const task=$('task')?.value||'';
   const detail=pane.querySelector('.cc232-how-detail');const box=buildBox(p,task,false);
