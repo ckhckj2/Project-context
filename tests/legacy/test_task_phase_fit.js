@@ -5,6 +5,7 @@ const end=source.lastIndexOf('})();');
 source=source.slice(0,end)+'window.__fitTest={MATRIX,COPY,PREP,ACTUAL,classify};'+source.slice(end);
 const window={};
 const document={readyState:'loading',getElementById(){return null;},querySelectorAll(){return []},addEventListener(){}};
+vm.runInNewContext(fs.readFileSync('work-rules.js','utf8'),{window});
 vm.runInNewContext(source,{window,document,localStorage:{getItem(){return null}},setTimeout});
 const t=window.__fitTest;
 const phases=['사전기획 / 사업검토','기본계획','계획설계','중간설계','실시설계','시공·현장 대응'];

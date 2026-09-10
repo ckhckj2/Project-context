@@ -13,6 +13,7 @@ const document={
   querySelectorAll(){return [];},
   addEventListener(){}
 };
+vm.runInNewContext(fs.readFileSync('work-rules.js','utf8'),{window});
 vm.runInNewContext(source,{window,document,localStorage:{getItem(){return null;}},console,setTimeout});
 
 const {PHASE_ORDER,phaseRule}=window.__phaseTest;

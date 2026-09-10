@@ -4,63 +4,12 @@ const VERSION='2.1.50';
 const store=window.CC_PROJECT_STORE;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const BUSINESS={
-  unknown:'잘 모르겠습니다',general:'일반 민간 건축사업',public:'공공 발주사업',housing:'주택건설사업',
-  maintenance:'정비사업',development:'민간투자·개발사업',special:'특별법·기반시설사업'
-};
-const ROUTES={
-  unknown:'잘 모르겠습니다',building:'건축허가·건축신고',housing:'주택법 사업계획승인',
-  maintenance:'정비사업 사업시행계획인가',airport:'공항시설 시행허가·실시계획',
-  logistics:'물류단지계획·개발실시계획',industry:'산업단지계획·공장설립승인',
-  special:'기타 특별법 승인·인가',multiple:'복수 승인경로·정리 중'
-};
-const EXCEPTIONS={
-  unknown:'잘 모르겠습니다',none:'별도 예외 없음',pre_review:'사전심의·사전협의',
-  partial:'부분허가·우선시공분',fast_track:'패스트트랙·설계/시공 병행',change:'변경·보완·재심의'
-};
-const ROUTE_GUIDE={
-  unknown:{focus:'기존 승인서의 문서명·근거법·승인기관부터 확인하세요.',change:'원 승인경로가 확인되기 전에는 변경허가·변경신고를 단정하지 마세요.'},
-  building:{focus:'건축허가서 또는 건축신고필증과 승인도서를 기준본으로 봅니다.',change:'허가·신고사항 변경, 경미한 변경, 사용승인 일괄신고 가능성을 구분합니다.'},
-  housing:{focus:'건축허가가 아니라 사업계획승인서·승인조건·승인도서를 기준본으로 봅니다.',change:'사업계획 변경승인과 경미한 사항 신고 여부를 원 승인내용과 비교합니다.'},
-  maintenance:{focus:'사업시행계획인가서·인가조건·의제사항과 관리처분 등 현재 사업단계를 확인합니다.',change:'사업시행계획 변경인가/신고와 의제된 개별 인허가의 재협의 범위를 나눕니다.'},
-  airport:{focus:'시행허가·실시계획 승인범위와 고시·승인조건에 해당 건축물이 포함됐는지 확인합니다.',change:'실시계획 변경승인과 경미한 변경, 관계기관 재협의 범위를 먼저 봅니다.'},
-  logistics:{focus:'일반 건축허가인지 물류단지계획·개발실시계획인지 승인문서로 구분합니다.',change:'건축물 변경과 토지이용·기반시설 등 단지계획 변경을 나눠 봅니다.'},
-  industry:{focus:'산업단지계획·입주계약·공장설립승인·건축허가의 승인층을 각각 확인합니다.',change:'이번 변경이 어느 승인층에 닿는지 표시하고 기관별 절차의 선후행을 확인합니다.'},
-  special:{focus:'시설명이 아니라 실제 승인서의 근거법·승인기관·의제 범위를 확인합니다.',change:'원 특별법 승인과 의제된 개별 인허가의 변경절차를 따로 추적합니다.'},
-  multiple:{focus:'복수 승인서의 선후행·의제 관계와 현재 유효한 기준본을 한 표로 정리합니다.',change:'변경항목별로 영향을 받는 승인층과 승인기관을 나눠 확인합니다.'}
-};
-const TYPE_HINT={
-  multi:'건축허가 또는 주택법 사업계획승인',airport:'건축허가 또는 공항시설 시행허가·실시계획',
-  logistics:'건축허가 또는 물류단지계획·개발실시계획',fab:'건축허가·공장설립승인·산업단지계획',
-  knowledge:'건축허가·공장설립승인',hazard:'건축허가 또는 관계 특별법 승인',mixed:'구성 용도별 인허가와 전체 사업 승인경로'
-};
+const {BUSINESS,ROUTES,EXCEPTIONS,ROUTE_GUIDE,TYPE_HINT,taskKind,routeCandidate,exceptionText,judgement,contextSteps}=window.CC_WORK_RULES.route;
 const readProjects=()=>store.list();
 const activeId=()=>store.activeId();
 const activeProject=()=>store.active();
-function level(){try{return typeof viewLevel==='function'?viewLevel():Number(localStorage.getItem('pc_master_preview_level')||localStorage.getItem('pc_progress_level')||localStorage.getItem('pc_level')||1)}catch(e){return 1}}
+function level(){return window.CC_LEVEL_STORE.state().view}
 function options(data,value){return Object.entries(data).map(([k,v])=>'<option value="'+esc(k)+'" '+(k===(value||'unknown')?'selected':'')+'>'+esc(v)+'</option>').join('')}
-function taskKind(task){if(/심의/.test(task))return'review';if(/인허가|허가자료/.test(task))return'permit';if(/변경업무|변경허가|변경신고|경미한 변경/.test(task))return'change';return'other'}
-function routeCandidate(p){return TYPE_HINT[p?.typeId]||'건축허가 또는 별도 사업법상 승인'}
-function exceptionText(code,kind,phase){
-  if(code==='pre_review')return kind==='review'?'사전심의·사전협의라면 초기 단계의 심의자료도 실제 업무일 수 있어요.':'사전협의 결과가 현재 업무의 선행조건인지 확인하세요.';
-  if(code==='partial')return'부분허가·우선시공분이라면 일반적인 단계 순서와 제출도서 범위가 달라질 수 있어요.';
-  if(code==='fast_track')return'설계·인허가·시공이 병행되므로 '+phase+'만으로 업무 시점을 단정하지 마세요.';
-  if(code==='change')return'변경·보완·재심의라면 최초 절차와 다른 시점에 같은 업무명이 다시 나타날 수 있어요.';
-  return code==='none'?'저장된 별도 예외절차는 없습니다.':'예외절차 적용 여부가 아직 입력되지 않았습니다.';
-}
-function judgement(p,task,phase){
-  if(!p)return null;
-  const kind=taskKind(task),route=Object.hasOwn(ROUTES,p.approvalRoute)?p.approvalRoute:'unknown',business=Object.hasOwn(BUSINESS,p.businessMode)?p.businessMode:'unknown',exception=Object.hasOwn(EXCEPTIONS,p.routeException)?p.routeException:'unknown';
-  const guide=ROUTE_GUIDE[route]||ROUTE_GUIDE.unknown,known=route!=='unknown';
-  const title=known?ROUTES[route]+' 기준으로 먼저 보세요':'원 승인경로가 아직 입력되지 않았어요';
-  let summary=known?(kind==='change'?guide.change:guide.focus):'시설유형만으로 정하지 말고 '+routeCandidate(p)+' 중 실제 승인서를 확인해야 합니다.';
-  if(business==='public')summary+=' 공공발주 여부만으로 인허가 경로가 결정되지는 않습니다.';
-  if(business==='special')summary+=' 특별법 사업이라는 명칭보다 실제 승인서와 의제 범위가 기준입니다.';
-  const exceptionSummary=exceptionText(exception,kind,phase);
-  const verdict=!known?'판단 보류':exception==='unknown'?'조건부 판단':exception==='none'?'일반 경로 가정':'예외 경로 가능';
-  return {kind,route,business,exception,known,title,summary,exceptionSummary,verdict,
-    checks:['기존 승인서 문서명·근거법·승인기관','현재 절차가 최초·변경·보완 중 무엇인지','관할기관 최신 운영기준과 PM 확인']};
-}
 function enhanceEditor(p=null){
   const editor=$('cc230Editor'),form=editor?.querySelector('.cc230-form');if(!editor||editor.hidden||!form||$('cc250Business'))return;
   const wrap=document.createElement('div');wrap.className='cc250-route-fields';
@@ -79,12 +28,6 @@ function enhanceProjectUI(){
   document.querySelectorAll('.cc230-card').forEach(card=>{const p=map.get(card.dataset.pid),tags=card.querySelector('.cc230-tags');if(!p||!tags)return;const sig=[p.approvalRoute,p.routeException].join('|');if(card.dataset.cc250Sig===sig)return;card.dataset.cc250Sig=sig;tags.querySelectorAll('.cc250-tag').forEach(x=>x.remove());if(p.approvalRoute&&p.approvalRoute!=='unknown')tags.insertAdjacentHTML('beforeend','<span class="cc250-tag">'+esc(ROUTES[p.approvalRoute]||p.approvalRoute)+'</span>');if(p.routeException&&!['unknown','none'].includes(p.routeException))tags.insertAdjacentHTML('beforeend','<span class="cc250-tag exception">'+esc(EXCEPTIONS[p.routeException]||p.routeException)+'</span>')});
   const p=activeProject();document.querySelectorAll('#cc230HomeProject,#cc230SearchProject').forEach(bar=>{const sig=p?.approvalRoute||'';if(bar.dataset.cc250RouteSig===sig)return;bar.dataset.cc250RouteSig=sig;bar.querySelector('.cc250-bar-route')?.remove();if(p?.approvalRoute&&p.approvalRoute!=='unknown')bar.insertAdjacentHTML('beforeend','<span class="cc250-bar-route">'+esc(ROUTES[p.approvalRoute]||p.approvalRoute)+'</span>')});
 }
-function contextSteps(j){
-  if(j.kind==='change')return [ROUTES[j.route]+' 원 승인서와 유효한 기준도서 고정',ROUTE_GUIDE[j.route].change,'변경항목별 승인층·협의대상·처리시점 확인'];
-  if(j.kind==='permit')return [ROUTES[j.route]+'의 승인권자와 현재 절차 확인',j.exceptionSummary,'관할 공식 제출목록과 분야별 최신본 연결'];
-  if(j.kind==='review')return ['원 승인경로에서 해당 심의의 위치 확인',j.exceptionSummary,'심의조건을 다음 승인·설계도서에 추적 반영'];
-  return [j.title,j.exceptionSummary,'최신 기준자료와 다음 결정사항 연결'];
-}
 function applyRouteHow(root,j,phase){
   const why=root.querySelector('[data-pane="why"]');
   window.CC_CONTEXT_VIEW.setHow(root,{title:(j.known?ROUTES[j.route]:'승인경로 미확인')+' · 프로젝트 기준 수행',note:'저장된 값은 출발점이며 실제 승인서·승인기관·최신 운영기준으로 다시 확인하세요.',steps:contextSteps(j)});
@@ -102,7 +45,7 @@ function openActiveEditor(){
 function enhanceContext(){
   const root=$('contextResult'),p=activeProject();if(!root||!root.innerHTML.trim()||!p)return;
   root.querySelectorAll('.cc250-route-context,.cc250-judgement,.cc250-inline').forEach(x=>x.remove());
-  const task=$('task')?.value||'',phase=$('phase')?.value||p.phase||'단계 미정',j=judgement(p,task,phase),gate=root.querySelector('.cc247-fit-gate');if(!j)return;
+  const task=$('task')?.value||'',phase=$('phase')?.value||p.phase||'단계 미정',j=window.CC_WORK_CONTEXT.resolve().route,gate=root.querySelector('.cc247-fit-gate');if(!j)return;
   const admin=j.kind!=='other',hasException=!['unknown','none'].includes(j.exception),routeRelevant=admin||hasException||/법규|지구단위|협력업체|도면 수정/.test(task);
   let anchor=gate||root.querySelector('.cc230-context-project')||root.querySelector('.stage-banner');if(!anchor)return;
   if(gate){

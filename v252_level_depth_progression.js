@@ -15,8 +15,7 @@ const DEPTHS=[
 const OPEN_AREAS=['context','how','why','who','caution'];
 
 function currentLevel(){
-  const match=clean($('miniLevel')?.textContent).match(/LV\.(\d)/i);
-  return Math.min(4,Math.max(1,match?Number(match[1]):1));
+  return window.CC_LEVEL_STORE.state().depth;
 }
 
 function bindOpenDrawer(button,pane){

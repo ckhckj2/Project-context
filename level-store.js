@@ -30,6 +30,7 @@ function setItem(key,value){
   try{localStorage.setItem(key,text);session.delete(key);return true;}
   catch{session.set(key,text);unavailable=true;showStatus();return false;}
 }
-window.CC_LEVEL_STORE=Object.freeze({getItem,setItem});
+const values=()=>Object.fromEntries([...KEYS].map(key=>[key,getItem(key)]));
+window.CC_LEVEL_STORE=Object.freeze({getItem,setItem,values,state:()=>window.CC_LEVEL_POLICY.resolve(values())});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',showStatus,{once:true});
 })();

@@ -14,6 +14,7 @@ function expose(file,expression,globals={}){
     querySelectorAll(){return []},
     addEventListener(){}
   };
+  vm.runInNewContext(fs.readFileSync('work-rules.js','utf8'),{window});
   vm.runInNewContext(source,{
     window,document,console,
     localStorage:{getItem(){return null}},

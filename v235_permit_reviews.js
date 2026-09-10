@@ -6,7 +6,7 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const COMPARE=/(?:차이|비교|vs\.?|다른\s*점|어떻게\s*달라|뭐가\s*달라|둘\s*중)/i;
 
-function level(){try{return typeof viewLevel==='function'?viewLevel():Number(localStorage.getItem('pc_level')||1)}catch(e){return 1}}
+function level(){return window.CC_LEVEL_STORE.state().view}
 const activeProject=()=>store.active();
 
 const LAW={

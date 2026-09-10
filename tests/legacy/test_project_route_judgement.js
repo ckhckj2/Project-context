@@ -5,6 +5,7 @@ const end=source.lastIndexOf('})();');
 source=source.slice(0,end)+'window.__routeTest={BUSINESS,ROUTES,EXCEPTIONS,ROUTE_GUIDE,TYPE_HINT,taskKind,routeCandidate,exceptionText,judgement};'+source.slice(end);
 const window={};
 const document={readyState:'loading',addEventListener(){}};
+vm.runInNewContext(fs.readFileSync('work-rules.js','utf8'),{window});
 vm.runInNewContext(source,{window,document,localStorage:{getItem(){return null}}});
 const t=window.__routeTest;
 const unknown=t.judgement({approvalRoute:'invalid-route',businessMode:'invalid',routeException:'invalid'},'변경업무 검토','중간설계');

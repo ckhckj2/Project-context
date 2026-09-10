@@ -16,7 +16,7 @@ for(const file of scripts){
   if(file==='app-runtime.js')continue;
   let source=fs.readFileSync(file,'utf8');
   assert(!/window\.runSearch\s*=/.test(source),file+': search entry must not be reassigned');
-  if(['judgement-data.js','judgement-engine.js'].includes(file)){vm.runInContext(source,sandbox,{filename:file});continue;}
+  if(['judgement-data.js','judgement-engine.js','work-rules.js','work-model.js','level-policy.js'].includes(file)){vm.runInContext(source,sandbox,{filename:file});continue;}
   if(!source.includes('registerSearch('))continue;
   const registrations=source.split('\n').filter(line=>line.includes('window.CC_RUNTIME.registerSearch(')).map(line=>{
     // v21 retains a compact installer on one line: take only the registration.
