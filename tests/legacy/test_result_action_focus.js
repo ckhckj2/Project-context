@@ -13,7 +13,7 @@ assert.match(source,/기본 공개 · WHY \/ WHERE/,'LV1 why and material access
 assert.match(source,/기본 공개 · HOW/,'pre-LV3 execution access');
 assert.match(source,/cc252-unified-how/,'single deep HOW sequence');
 assert.match(source,/전체 실행 체크리스트 보기/,'LV3 depth fallback');
-assert.match(source,/replace\(\/\^\\d\+/,'duplicate action-number cleanup');
+assert.doesNotMatch(source,/function (?:textParts|resultActions)\(/,'summary content must not be reconstructed from DOM');
 assert.match(source,/bindDrawer/,'locked drawer override');
 assert.match(source,/cc252Key/,'context mutation loop guard');
 assert.doesNotMatch(source,/localStorage\.(?:setItem|removeItem|clear)/,'UI stage must not mutate project storage');

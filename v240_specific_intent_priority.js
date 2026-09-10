@@ -23,7 +23,7 @@ function match(q){
 }
 function render(d){
   const out=$('searchResult');if(!out)return;
-  out.innerHTML=`<div class="result-card cc240-specific"><div class="label">WORK GUIDE · 척척</div><h3>${esc(d.title)}</h3><p>${esc(d.meaning)}</p><div class="result-grid"><div class="result-cell"><small>01 · 먼저</small><p>${esc(d.first)}</p></div><div class="result-cell"><small>02 · 어디서</small><p>${esc(d.where)}</p></div><div class="result-cell"><small>03 · 누구와</small><p>${esc(d.who)}</p></div></div><div class="cc21-note"><b>척척 포인트</b><span>${esc(d.note)}</span></div></div>`;
+  window.CC_SEARCH_ANSWER.write(out,`<div class="result-card cc240-specific"><div class="label">WORK GUIDE · 척척</div><h3>${esc(d.title)}</h3><p>${esc(d.meaning)}</p><div class="result-grid"><div class="result-cell"><small>01 · 먼저</small><p>${esc(d.first)}</p></div><div class="result-cell"><small>02 · 어디서</small><p>${esc(d.where)}</p></div><div class="result-cell"><small>03 · 누구와</small><p>${esc(d.who)}</p></div></div><div class="cc21-note"><b>척척 포인트</b><span>${esc(d.note)}</span></div></div>`,window.CC_SEARCH_ANSWER.work(d));
 }
 
 function install(){

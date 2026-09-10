@@ -46,11 +46,11 @@ function linkHtml(links){return (links||[]).map(([label,url])=>`<a href="${esc(u
 function go(q){const input=$('searchInput');if(!input)return;if(typeof showView==='function')showView('search');input.value=q;window.runSearch();}
 function render(term){
   const out=$('searchResult');if(!out)return;
-  out.innerHTML=`<div class="result-card cc229-term"><div class="cc229-head"><div><small>LV.1 · 실무 용어</small><h3>${esc(term.name)}</h3><span>${esc(term.kind)}</span></div></div>
+  window.CC_SEARCH_ANSWER.write(out,`<div class="result-card cc229-term"><div class="cc229-head"><div><small>LV.1 · 실무 용어</small><h3>${esc(term.name)}</h3><span>${esc(term.kind)}</span></div></div>
   <div class="cc229-summary">${esc(term.summary)}</div>
   <div class="cc229-grid"><div><small>실무에서는</small><p>${esc(term.work)}</p></div><div><small>처음이면</small><p>${esc(term.start)}</p></div></div>
   ${(term.links?.length||term.action)?`<div class="cc229-actions">${linkHtml(term.links)}${term.action?`<button type="button" data-cc229-go="${esc(term.action[1])}">${esc(term.action[0])} →</button>`:''}</div>`:''}
-  <details class="cc229-more"><summary>조금 더 알아보기</summary><div class="cc229-caution"><b>주의</b><span>${esc(term.caution||'프로젝트 조건에 따라 실제 적용 방식은 달라질 수 있습니다.')}</span></div>${term.related?.length?`<div class="cc229-related"><small>같이 보면 좋은 용어</small>${term.related.map(([label,q])=>`<button type="button" data-cc229-go="${esc(q)}">${esc(label)}</button>`).join('')}</div>`:''}</details></div>`;
+  <details class="cc229-more"><summary>조금 더 알아보기</summary><div class="cc229-caution"><b>주의</b><span>${esc(term.caution||'프로젝트 조건에 따라 실제 적용 방식은 달라질 수 있습니다.')}</span></div>${term.related?.length?`<div class="cc229-related"><small>같이 보면 좋은 용어</small>${term.related.map(([label,q])=>`<button type="button" data-cc229-go="${esc(q)}">${esc(label)}</button>`).join('')}</div>`:''}</details></div>`,window.CC_SEARCH_ANSWER.model(term.name,[['뜻',term.summary],['실무에서는',term.work],['처음이면',term.start]]));
   out.querySelectorAll('[data-cc229-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.cc229Go)));
 }
 

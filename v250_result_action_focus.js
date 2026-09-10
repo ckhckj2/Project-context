@@ -10,62 +10,21 @@ const short=(value,max=120)=>{const text=clean(value);return text.length>max?tex
 const {DEFAULT_RULE,RULES,taskRule}=window.CC_WORK_RULES.task;
 function currentLevel(){return window.CC_LEVEL_STORE.state().view}
 
-function textParts(element){
-  if(!element)return null;
-  const label=clean(element.querySelector('small')?.textContent||element.querySelector('b')?.textContent||'지금 확인').replace(/^\d+\s*[·.\-]?\s*/,'');
-  const body=clean(element.querySelector('p')?.textContent||element.querySelector('span')?.textContent||element.textContent);
-  return body?{label:short(label,28),body:short(body,120)}:null;
-}
-
-function resultActions(card){
-  let items=[];
-  if(card.classList.contains('cc245-card')){
-    items=[
-      {label:'핵심 구분',body:short(card.querySelector('.cc245-head')?.textContent,125)},
-      {label:'먼저 확인',body:short(card.querySelector('.cc245-first')?.textContent?.replace(/^먼저 확인\s*/,''),125)},
-      {label:'주의',body:short(card.querySelector('.cc245-more')?.textContent?.replace(/^주의\s*/,''),125)}
-    ];
-  }else if(card.querySelector('.cc235-flow')){
-    items=[...card.querySelectorAll('.cc235-flow>div')].slice(0,3).map(textParts);
-  }else if(card.querySelector('.cc241-steps')){
-    items=[...card.querySelectorAll('.cc241-steps>div')].slice(0,3).map(textParts);
-  }else if(card.querySelector('.cc243-steps')){
-    items=[...card.querySelectorAll('.cc243-steps>div')].slice(0,3).map(textParts);
-  }else if(card.querySelector('.script-box')){
-    const title=clean(card.querySelector('h3')?.textContent||'');
-    items=[
-      {label:'문의 대상',body:short(title.includes('→')?title.split('→').slice(1).join('→'):title,110)},
-      {label:'확인할 내용',body:short([...card.children].find(x=>x.tagName==='P')?.textContent,110)},
-      {label:'이렇게 질문',body:short(card.querySelector('.script-box')?.textContent?.replace(/^이렇게 물어보세요\s*/,''),125)}
-    ];
-  }else if(card.querySelector('.result-grid .result-cell')){
-    items=[...card.querySelectorAll('.result-grid .result-cell')].slice(0,3).map(textParts);
-  }else if(card.querySelector('.cc232-start')){
-    items=[...card.querySelectorAll('.cc232-start li,.cc232-start>div')].slice(0,3).map(textParts);
-  }
-  items=items.filter(item=>item&&item.body);
-  const intro=short([...card.children].find(x=>x.tagName==='P')?.textContent,115);
-  const fallbacks=[
-    {label:'핵심',body:intro||'질문의 핵심 의미와 적용범위를 먼저 확인하세요.'},
-    {label:'지금 먼저',body:'현재 프로젝트의 목적과 최신 기준자료부터 확인하세요.'},
-    {label:'상세 확인',body:'적용조건·주의사항·완료기준은 상세 답변에서 이어서 확인하세요.'}
-  ];
-  for(const fallback of fallbacks){if(items.length>=3)break;if(!items.some(item=>item.body===fallback.body))items.push(fallback)}
-  return items.slice(0,3);
-}
-
 function prepareResult(){
   const root=$('searchResult');
   if(!root||!root.children.length)return;
   const cards=[...root.querySelectorAll(':scope>.result-card')];
   if(!cards.length)return;
+  const answer=window.CC_SEARCH_ANSWER.read(cards[0]);
+  // Clarification/route selectors remain directly visible; never invent filler.
+  if(!answer?.title||!answer.items.length)return;
   root.classList.add('cc252-result-root');
   cards.forEach(card=>card.classList.add('cc252-source-card'));
   if(root.querySelector(':scope>.cc252-answer'))return;
 
   const first=cards[0];
-  const title=clean(first.querySelector('h3')?.textContent||'질문의 핵심부터 확인하세요');
-  const actions=resultActions(first);
+  const title=answer.title;
+  const actions=answer.items.map(item=>({label:short(item.label,28),body:short(item.body,125)}));
   const summary=document.createElement('section');
   summary.className='cc252-answer';
   summary.innerHTML=`<div class="cc252-answer-head"><small>핵심 답변</small><h3>${esc(title)}</h3></div><div class="cc252-action-grid">${actions.map((item,index)=>`<div><small>0${index+1} · ${esc(item.label)}</small><p>${esc(item.body)}</p></div>`).join('')}</div><button type="button" class="cc252-detail-toggle" aria-expanded="false">상세 답변 보기 <span>↓</span></button>`;

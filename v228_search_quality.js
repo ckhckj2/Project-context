@@ -33,7 +33,7 @@ function selectedContext(){
 function renderCard(d,label='WORK GUIDE'){
   const out=$('searchResult');if(!out)return;
   const ctx=selectedContext();
-  out.innerHTML=`<div class="result-card cc228-card" data-cc221="1"><div class="label">${esc(label)} · 척척</div><h3>${esc(d.title)}</h3>${ctx?`<div class="cc228-context">현재 선택 · ${esc(ctx)}</div>`:''}<div class="cc228-steps"><small>바로 시작</small>${d.steps.map((s,i)=>`<div><em>${i+1}</em><b>${esc(s)}</b></div>`).join('')}</div><div class="cc228-line"><small>어디서 확인</small><b>${esc(d.where)}</b></div><div class="cc228-line done"><small>완료 기준</small><b>${esc(d.done)}</b></div><details class="cc228-detail"><summary>왜 이렇게 하나요? · 주의사항 · 문의처</summary><div><small>WHY</small><p>${esc(d.why)}</p></div><div><small>주의</small><p>${esc(d.caution)}</p></div><div><small>누구에게</small><p>${esc(d.who)}</p></div></details></div>`;
+  window.CC_SEARCH_ANSWER.write(out,`<div class="result-card cc228-card" data-cc221="1"><div class="label">${esc(label)} · 척척</div><h3>${esc(d.title)}</h3>${ctx?`<div class="cc228-context">현재 선택 · ${esc(ctx)}</div>`:''}<div class="cc228-steps"><small>바로 시작</small>${d.steps.map((s,i)=>`<div><em>${i+1}</em><b>${esc(s)}</b></div>`).join('')}</div><div class="cc228-line"><small>어디서 확인</small><b>${esc(d.where)}</b></div><div class="cc228-line done"><small>완료 기준</small><b>${esc(d.done)}</b></div><details class="cc228-detail"><summary>왜 이렇게 하나요? · 주의사항 · 문의처</summary><div><small>WHY</small><p>${esc(d.why)}</p></div><div><small>주의</small><p>${esc(d.caution)}</p></div><div><small>누구에게</small><p>${esc(d.who)}</p></div></details></div>`,window.CC_SEARCH_ANSWER.model(d.title,d.steps.map(s=>['바로 시작',s])));
 }
 function renderChoice(kind){
   const out=$('searchResult');if(!out)return;
@@ -41,7 +41,7 @@ function renderChoice(kind){
   const opts=isQ?
     [['필지·지적 경계','qgis:parcel'],['용도지역·도시계획','qgis:plan'],['주변 현황·시설','qgis:context']]:
     [['접도·건축 가능 여부','road:access'],['현황 도로폭','road:width'],['도시계획도로','road:plan']];
-  out.innerHTML=`<div class="result-card cc228-card cc228-choice" data-cc221="1"><div class="label">CLARIFY · 척척</div><h3>${isQ?'QGIS에서 무엇을 확인하라는 요청인지 먼저 좁혀볼게요':'“도로 검토”가 어떤 의미인지 먼저 좁혀볼게요'}</h3><p>${isQ?'QGIS는 도구라서 어떤 레이어·관계를 보라는지에 따라 작업 순서가 달라집니다.':'접도, 현황 폭, 도시계획도로는 서로 다른 자료와 기준을 봅니다.'}</p><div class="cc228-choices">${opts.map(([t,v])=>`<button data-cc228-choice="${v}">${t}<span>→</span></button>`).join('')}<button data-cc228-choice="clarify:${kind}">잘 모르겠어요<span>→</span></button></div></div>`;
+  window.CC_SEARCH_ANSWER.write(out,`<div class="result-card cc228-card cc228-choice" data-cc221="1"><div class="label">CLARIFY · 척척</div><h3>${isQ?'QGIS에서 무엇을 확인하라는 요청인지 먼저 좁혀볼게요':'“도로 검토”가 어떤 의미인지 먼저 좁혀볼게요'}</h3><p>${isQ?'QGIS는 도구라서 어떤 레이어·관계를 보라는지에 따라 작업 순서가 달라집니다.':'접도, 현황 폭, 도시계획도로는 서로 다른 자료와 기준을 봅니다.'}</p><div class="cc228-choices">${opts.map(([t,v])=>`<button data-cc228-choice="${v}">${t}<span>→</span></button>`).join('')}<button data-cc228-choice="clarify:${kind}">잘 모르겠어요<span>→</span></button></div></div>`);
   out.querySelectorAll('[data-cc228-choice]').forEach(b=>b.addEventListener('click',()=>handleChoice(b.dataset.cc228Choice)));
 }
 function handleChoice(v){

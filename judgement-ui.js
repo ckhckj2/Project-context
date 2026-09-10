@@ -34,7 +34,7 @@ function context(){
 function render(match,query){
  const input=conditions(query),model=engine.evaluate(input),root=$('searchResult');
  root.classList.remove('cc252-result-root','cc252-detail-open');
- root.innerHTML='<article class="result-card cc268-search"><small>JUDGEMENT · 독립 학습 사례 · 현재 프로젝트에 자동 적용되지 않음</small><h3>'+esc(model.topic.summary)+'</h3>'+body(model)+(model.topics.length>1?'<div class="cc268-related"><h4>함께 확인할 판단</h4>'+model.topics.filter(c=>c.id!==model.topic.id).map(c=>'<button type="button" data-search-query="'+esc(c.title)+'">'+esc(c.title)+'</button>').join(''):'')+'</article>';
+ window.CC_SEARCH_ANSWER.write(root,'<article class="result-card cc268-search"><small>JUDGEMENT · 독립 학습 사례 · 현재 프로젝트에 자동 적용되지 않음</small><h3>'+esc(model.topic.summary)+'</h3>'+body(model)+(model.topics.length>1?'<div class="cc268-related"><h4>함께 확인할 판단</h4>'+model.topics.filter(c=>c.id!==model.topic.id).map(c=>'<button type="button" data-search-query="'+esc(c.title)+'">'+esc(c.title)+'</button>').join(''):'')+'</article>',window.CC_SEARCH_ANSWER.model(model.topic.summary,model.topic.checks.slice(0,model.level===1?1:3).map(x=>['확인 조건',x])));
  const notice=document.createElement('p');notice.className='cc268-note';notice.textContent='독립 학습 사례 · 현재 프로젝트에 자동 적용되지 않습니다.';root.prepend(notice);
 }
 function install(){

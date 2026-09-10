@@ -14,7 +14,7 @@ assert(src.includes('const guideAnchor=paneSlot||openPane||actions'),'collapsed 
 assert(src.includes('guide.after(flow)'),'optional project flow must follow the main hierarchy');
 assert(src.includes('repeat(5,minmax(0,1fr))'),'desktop context actions must use one five-item row');
 assert(src.includes('button[data-drawer="how"]'),'HOW must have explicit visual priority');
-assert(src.includes("source.classList.contains('cc245-card')"),'comparison cards must use their semantic source');
+assert(src.includes("answer.comparison&&comparisonPreview(summary,source)"),'comparison preview must use explicit answer data');
 assert(src.includes("index?'right':'left'")&&src.includes('.cc258-compare-right'),'comparison must retain distinct left and right sides');
 assert(src.includes('.cc258-vs'),'comparison must display a dedicated VS marker');
 assert(src.includes('-webkit-line-clamp:2'),'standard summaries must expose fewer lines');

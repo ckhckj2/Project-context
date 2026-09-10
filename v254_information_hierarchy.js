@@ -75,10 +75,9 @@ function arrangeContext(){
 }
 
 function comparisonPreview(summary,source){
-  const head=source.querySelector('.cc245-head');
-  if(!head)return false;
-  const sides=[...head.querySelectorAll(':scope>div')].slice(0,2);
-  if(sides.length!==2)return false;
+  const comparison=window.CC_SEARCH_ANSWER.read(source)?.comparison;
+  if(!comparison)return false;
+  const sides=comparison.sides;
 
   const grid=summary.querySelector('.cc252-action-grid');
   if(!grid)return false;
@@ -86,11 +85,11 @@ function comparisonPreview(summary,source){
   sides.forEach((side,index)=>{
     if(index===1)grid.append(node('span','cc258-vs','VS'));
     const card=node('div',`cc258-compare-side cc258-compare-${index?'right':'left'}`);
-    card.append(node('small','',clean(side.querySelector('small')?.textContent)||`${index?'B':'A'} 항목`));
-    card.append(node('p','',short(side.querySelector('b')?.textContent||side.textContent,100)));
+    card.append(node('small','',side.label||`${index?'B':'A'} 항목`));
+    card.append(node('p','',short(side.body,100)));
     grid.append(card);
   });
-  const firstText=clean(source.querySelector('.cc245-first')?.textContent).replace(/^먼저 확인\s*/, '');
+  const firstText=comparison.first;
   if(firstText){
     const first=node('div','cc258-compare-first');
     first.append(node('small','','먼저 확인'));
@@ -108,7 +107,9 @@ function arrangeSearchResult(){
   const summary=root?.querySelector(':scope>.cc252-answer');
   const source=root?.querySelector(':scope>.cc252-source-card');
   if(!summary||!source)return;
-  const key=[clean(source.querySelector('h3')?.textContent),clean(source.querySelector('.cc245-head')?.textContent)].join('|');
+  const answer=window.CC_SEARCH_ANSWER.read(source);
+  if(!answer)return;
+  const key=JSON.stringify(answer);
   if(root.dataset.cc258SearchKey!==key){
     root.dataset.cc258SearchKey=key;
     root.classList.remove('cc252-detail-open');
@@ -121,7 +122,7 @@ function arrangeSearchResult(){
   }
   if(summary.dataset.cc258Key===key)return;
   summary.dataset.cc258Key=key;
-  if(source.classList.contains('cc245-card')&&comparisonPreview(summary,source))return;
+  if(answer.comparison&&comparisonPreview(summary,source))return;
   summary.classList.remove('cc258-comparison-answer');
   summary.classList.add('cc258-standard-answer');
   summary.dataset.cc258='standard';

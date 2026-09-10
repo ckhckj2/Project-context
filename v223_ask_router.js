@@ -110,7 +110,7 @@ function routeData(type,q,ctx){
 }
 function renderAmbiguous(q){
   const out=byId('searchResult');if(!out)return;
-  out.innerHTML=`<div class="result-card cc223-router cc223-ambiguous" data-cc221="1"><div class="label">WHO / HOW · 척척</div><h3>무엇을 판단받으려는 질문인지 먼저 골라주세요</h3><p>같은 “누구에게 물어봐요?”라도 질문 성격에 따라 첫 문의 대상이 달라져요.</p><div class="cc223-choice-grid"><button data-route-type="internal">사내 판단<small>업무범위 · 설계방향 · 보고</small></button><button data-route-type="technical">기술 판단<small>구조 · 설비 · 소방 · 외장</small></button><button data-route-type="official">행정 해석<small>법규 · 인허가 · 지구단위</small></button><button data-route-type="client">발주처 결정<small>운영 · 예산 · 선택안</small></button></div></div>`;
+  window.CC_SEARCH_ANSWER.write(out,`<div class="result-card cc223-router cc223-ambiguous" data-cc221="1"><div class="label">WHO / HOW · 척척</div><h3>무엇을 판단받으려는 질문인지 먼저 골라주세요</h3><p>같은 “누구에게 물어봐요?”라도 질문 성격에 따라 첫 문의 대상이 달라져요.</p><div class="cc223-choice-grid"><button data-route-type="internal">사내 판단<small>업무범위 · 설계방향 · 보고</small></button><button data-route-type="technical">기술 판단<small>구조 · 설비 · 소방 · 외장</small></button><button data-route-type="official">행정 해석<small>법규 · 인허가 · 지구단위</small></button><button data-route-type="client">발주처 결정<small>운영 · 예산 · 선택안</small></button></div></div>`);
   out.querySelectorAll('[data-route-type]').forEach(btn=>btn.addEventListener('click',()=>renderRoute(btn.dataset.routeType,q)));
 }
 function renderRoute(type,q){
@@ -118,7 +118,7 @@ function renderRoute(type,q){
   const ctx=selectedContext();
   const d=routeData(type,q,ctx);
   const hint=contextHint(ctx);
-  out.innerHTML=`<div class="result-card cc223-router" data-cc221="1"><div class="label">WHO / HOW · 척척</div><h3>${esc(d.first)}</h3>${hint?`<div class="cc223-context">현재 맥락 · ${esc(hint)}</div>`:''}<div class="cc223-core"><div><small>왜 이 순서인가요?</small><p>${esc(d.reason)}</p></div><div><small>질문 전에 3가지만</small><div class="cc223-chips">${d.prep.map(x=>`<span>${esc(x)}</span>`).join('')}</div></div><div class="cc223-script"><small>이렇게 물어보세요</small><p>${esc(d.script)}</p></div></div><details class="cc223-next"><summary>그 다음에는?</summary><p>${esc(d.next)}</p></details></div>`;
+  window.CC_SEARCH_ANSWER.write(out,`<div class="result-card cc223-router" data-cc221="1"><div class="label">WHO / HOW · 척척</div><h3>${esc(d.first)}</h3>${hint?`<div class="cc223-context">현재 맥락 · ${esc(hint)}</div>`:''}<div class="cc223-core"><div><small>왜 이 순서인가요?</small><p>${esc(d.reason)}</p></div><div><small>질문 전에 3가지만</small><div class="cc223-chips">${d.prep.map(x=>`<span>${esc(x)}</span>`).join('')}</div></div><div class="cc223-script"><small>이렇게 물어보세요</small><p>${esc(d.script)}</p></div></div><details class="cc223-next"><summary>그 다음에는?</summary><p>${esc(d.next)}</p></details></div>`,window.CC_SEARCH_ANSWER.model(d.first,[['문의 대상',d.first],['확인할 내용',d.reason],['이렇게 질문',d.script]]));
 }
 function renderIfAsk(){
   const input=byId('searchInput');

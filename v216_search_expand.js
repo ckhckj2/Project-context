@@ -39,7 +39,7 @@ function runExpanded(){
   if(!q)return;
   const hit=resolve(q);
   if(!hit)return;
-  out.innerHTML=hit.ambiguous?renderChoices(hit):(ASK.test(q)?renderAsk(hit):renderCard(hit));
+  window.CC_SEARCH_ANSWER.write(out,hit.ambiguous?renderChoices(hit):(ASK.test(q)?renderAsk(hit):renderCard(hit)),hit.ambiguous?null:window.CC_SEARCH_ANSWER.work(hit));
   out.querySelectorAll('[data-cc216-query]').forEach(btn=>btn.onclick=()=>{input.value=btn.dataset.cc216Query;runExpanded();input.scrollIntoView({behavior:'smooth',block:'center'});});
 }
 
