@@ -92,7 +92,6 @@ function captureNavigation(e){
   const toSearch=target.closest?.('[data-view="search"],[data-ask-context]');
   if(toSearch){
     searchOrigin=contextActive?'context':'';
-    setTimeout(syncBack,80);
     return;
   }
   const toOther=target.closest?.('[data-view="home"],[data-view="quiz"],[data-view="level"],[data-view="projects"]');
@@ -103,6 +102,7 @@ function install(){
   installStyle();ensureBack();
   window.addEventListener('click',captureNavigation,true);
   window.CC_RUNTIME.registerResult('navigation',syncBack);
+  window.CC_RUNTIME.registerView('search-back',syncBack);
   
 }
 window.CC_BOOT.register('v237_answer_readability_nav',install);

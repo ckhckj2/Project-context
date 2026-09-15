@@ -107,7 +107,7 @@ window.CC_RUNTIME=Object.freeze({
   registerSearch:(id,match,render)=>register(routes,SEARCH_ORDER,id,{match,render}),
   registerContext:(id,step)=>register(contextSteps,CONTEXT_ORDER,id,step),
   registerResult:(id,step)=>register(resultSteps,RESULT_ORDER,id,step),
-  registerView:(id,step)=>register(viewSteps,['navigation'],id,step),
+  registerView:(id,step)=>register(viewSteps,['search-back','navigation'],id,step),
   viewChanged:name=>{for(const step of viewSteps.values())step(name)},
   classify,search,go,refreshSearchForLevel,renderContext,refreshContextPresentation,refreshResult,resultWritten,
   diagnostics:()=>({routes:SEARCH_ORDER.filter(id=>routes.has(id)),context:CONTEXT_ORDER.filter(id=>contextSteps.has(id)),results:RESULT_ORDER.filter(id=>resultSteps.has(id)),...stats})
