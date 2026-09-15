@@ -4,14 +4,6 @@ const VERSION='2.1.38';
 const $=id=>document.getElementById(id);
 let searchOrigin='';
 
-function loadUnifiedSearchTypography(){
-  if(document.querySelector('script[data-cc238]'))return;
-  const s=document.createElement('script');
-  s.src='./v238_search_typography_unify.js?v=2138';
-  s.dataset.cc238='1';
-  document.head.appendChild(s);
-}
-
 function installStyle(){
   if($('cc237Style'))return;
   const s=document.createElement('style');
@@ -108,10 +100,10 @@ function captureNavigation(e){
 }
 
 function install(){
-  installStyle();ensureBack();loadUnifiedSearchTypography();
+  installStyle();ensureBack();
   window.addEventListener('click',captureNavigation,true);
   window.CC_RUNTIME.registerResult('navigation',syncBack);
   
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v237_answer_readability_nav',install);
 })();

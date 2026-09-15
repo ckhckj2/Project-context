@@ -163,6 +163,5 @@ function install(){
 }
 window.CC_SEARCH_RELIABILITY={version:VERSION,routeQuery,renderRoute,persona,concepts:CONCEPTS.map(item=>item.id)};
 
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
-else install();
+window.CC_BOOT.register('v251_search_reliability',install);
 })();

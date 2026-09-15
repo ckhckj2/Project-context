@@ -5,10 +5,10 @@ const scripts=[...html.matchAll(/<script src="\.\/(.*?)\?/g)].map(m=>m[1]);
 let input={value:''},output={children:[{}]},busy;
 const handlers={},observers=[];
 const contextRoot={children:[{}],setAttribute(_,value){busy=value}};
-const sandbox={window:{},document:{readyState:'loading',getElementById:id=>({searchInput:input,searchResult:output,contextResult:contextRoot}[id]),addEventListener(type,fn){handlers[type]=fn}},MutationObserver:class{constructor(fn){this.callback=fn;observers.push(this)}observe(root,options){this.options=options;this.connected=true}disconnect(){this.connected=false}},console};
+const sandbox={window:{CC_BOOT:{register(){}}},document:{readyState:'loading',getElementById:id=>({searchInput:input,searchResult:output,contextResult:contextRoot}[id]),addEventListener(type,fn){handlers[type]=fn}},MutationObserver:class{constructor(fn){this.callback=fn;observers.push(this)}observe(root,options){this.options=options;this.connected=true}disconnect(){this.connected=false}},console};
 vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync('app-runtime.js','utf8'),sandbox);
-handlers.DOMContentLoaded();
+
 const runtime=sandbox.window.CC_RUNTIME;
 
 // Exercise actual classifiers without running UI installers or copying their rules.
@@ -23,7 +23,7 @@ for(const file of scripts){
     const start=line.indexOf('window.CC_RUNTIME.registerSearch(');
     return line.slice(start).replace(/;\}\s*$/,';');
   }).join('\n');
-  source=source.replace(/if\(document\.readyState==='loading'\)[\s\S]*?(?=\}\)\(\);\s*$)/,registrations+'\n');
+  source=source.replace(/window\.CC_BOOT\.register\('[^']+',\w+\);/,()=>registrations);
   vm.runInContext(source,sandbox,{filename:file});
 }
 for(const item of sandbox.window.CC_JUDGEMENT_DATA)assert.equal(runtime.classify(item.title).id,'judgement',item.title);
@@ -66,10 +66,10 @@ runtime.registerContext('how',()=>calls.push('how'));
 runtime.renderContext();
 assert.deepEqual(calls,['how','phase','depth']);
 assert.equal(busy,'false');
-runtime.registerResult('visual',()=>{assert.equal(observers[0].connected,false);calls.push('visual')});
+runtime.registerResult('visual',()=>{calls.push('visual')});
 runtime.refreshResult();
-assert.equal(observers[0].connected,true);
-assert.deepEqual(Object.keys(observers[0].options),['childList'],'nested disclosures never cause result rebuilds');
+assert.equal(observers.length,0,'result rendering must not install a DOM observer');
+runtime.resultWritten();assert.equal(calls.filter(x=>x==='visual').length,2,'direct writes explicitly refresh the result');
 calls.length=0;runtime.refreshContextPresentation();
 assert.deepEqual(calls,['depth'],'a phase-fit choice must not recreate base HOW or its gate');
 console.log('PASS: '+cases.length+' real routing cases; deterministic composition, observer isolation, phase-fit preservation');

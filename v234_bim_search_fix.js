@@ -25,5 +25,5 @@ function install(){
   installStyle();
   window.CC_RUNTIME.registerResult('bim',()=>renderAdjustment($('searchInput')?.value||''));
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v234_bim_search_fix',install);
 })();

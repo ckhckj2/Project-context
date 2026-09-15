@@ -3,7 +3,7 @@ const vm=require('node:vm');
 let source=fs.readFileSync('v247_task_phase_fit.js','utf8');
 const end=source.lastIndexOf('})();');
 source=source.slice(0,end)+'window.__fitTest={MATRIX,COPY,PREP,ACTUAL,classify};'+source.slice(end);
-const window={};
+const window={CC_BOOT:{register(){}}};
 const document={readyState:'loading',getElementById(){return null;},querySelectorAll(){return []},addEventListener(){}};
 vm.runInNewContext(fs.readFileSync('work-rules.js','utf8'),{window});
 vm.runInNewContext(source,{window,document,localStorage:{getItem(){return null}},setTimeout});

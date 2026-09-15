@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const ctx={window:{}};vm.createContext(ctx);
+const ctx={window:{CC_BOOT:{register(){}}}};vm.createContext(ctx);
 for(const file of ['judgement-data.js','judgement-engine.js'])vm.runInContext(fs.readFileSync(file,'utf8'),ctx);
 const e=ctx.window.CC_JUDGEMENT,data=ctx.window.CC_JUDGEMENT_DATA;
 assert.equal(data.length,11);
@@ -32,7 +32,7 @@ const original={typeId:'fab',approvalRoute:'industry',level:4};const before=JSON
 console.log('PASS: 11 judgement cases, missing evidence, route precedence, phase and master depth');
 // Exercise the renderer's actual level branches and escaping, without adding a production test API.
 ctx.document={readyState:'loading',addEventListener(){},getElementById(){return null}};
-vm.runInContext(fs.readFileSync('judgement-ui.js','utf8').replace("if(document.readyState==='loading')","window.__judgementTest={body,conditions};\nif(document.readyState==='loading')"),ctx);
+vm.runInContext(fs.readFileSync('judgement-ui.js','utf8').replace("window.CC_BOOT.register(","window.__judgementTest={body,conditions};\nwindow.CC_BOOT.register("),ctx);
 const render=ctx.window.__judgementTest.body;
 const low=render(e.evaluate({query:data[0].title,level:1}));
 const high=render(e.evaluate({query:data[0].title,level:4}));
@@ -44,7 +44,7 @@ const dirty=e.evaluate({level:4});dirty.evidence='<img src=x onerror=alert(1)>';
 assert(high.includes('/행정규칙/'),'administrative building standards use correct link family');
 console.log('PASS: actual renderer level branches, text escaping and official links');
 const searchInput={value:''},searchOutput={children:[{}]},log=[];
-const fresh={window:{},document:{readyState:'loading',getElementById:id=>id==='searchInput'?searchInput:id==='searchResult'?searchOutput:null,addEventListener(){}}};
+const fresh={window:{CC_BOOT:{register(){}}},document:{readyState:'loading',getElementById:id=>id==='searchInput'?searchInput:id==='searchResult'?searchOutput:null,addEventListener(){}}};
 vm.runInNewContext(fs.readFileSync('app-runtime.js','utf8'),fresh);
 const runtime=fresh.window.CC_RUNTIME;
 runtime.registerSearch('fallback',q=>q,(_,q)=>log.push(q));

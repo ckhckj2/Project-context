@@ -190,5 +190,5 @@ function install(){
   installStyle();
   window.CC_RUNTIME.registerSearch('change',classify,(_,q)=>renderQuery(q));
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v243_change_workflow',install);
 })();

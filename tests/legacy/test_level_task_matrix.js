@@ -6,7 +6,7 @@ function expose(file,expression,globals={}){
   let source=fs.readFileSync(file,'utf8');
   const end=source.lastIndexOf('})();');
   source=source.slice(0,end)+`window.__matrixTest=${expression};`+source.slice(end);
-  const window={};
+  const window={CC_BOOT:{register(){}}};
   const document={
     readyState:'loading',
     getElementById(){return null},

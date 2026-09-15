@@ -37,5 +37,5 @@ function install(){
   installStyle();
   window.CC_RUNTIME.registerContext('bim',patchHow);
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v233_bim_context',install);
 })();

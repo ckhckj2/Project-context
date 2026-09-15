@@ -74,5 +74,5 @@ function installCopy(){
 function polishSearchResult(){replaceText($('searchResult'));}
 
   window.CC_RUNTIME.registerResult('copy',polishSearchResult);
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installCopy,{once:true});else installCopy();
+window.CC_BOOT.register('v211_polish',installCopy);
 })();

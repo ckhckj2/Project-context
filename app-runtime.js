@@ -9,7 +9,8 @@ const CONTEXT_ORDER=['why','tools','how','public-use','facility-use','public-flo
 const RESULT_ORDER=['copy','neutral','change-impact','bim','compact','focus','hierarchy','visual','feedback','navigation'];
 const routes=new Map(),contextSteps=new Map(),resultSteps=new Map();
 const $=id=>document.getElementById(id);
-let resultObserver=null;
+const viewSteps=new Map();
+let renderingResult=false,processingResult=false;
 let composing=false;
 let lastQuery=null;
 const stats={searches:0,contexts:0,results:0};
@@ -33,28 +34,27 @@ function classify(query){
   }
   return {id:'empty',query:q};
 }
-function observeResult(){
-  const root=$('searchResult');
-  if(root&&resultObserver)resultObserver.observe(root,{childList:true});
-}
 function refreshResult(){
-  if(!$('searchResult')?.children.length)return;
-  resultObserver?.disconnect();
+  if(renderingResult||processingResult||!$('searchResult')?.children.length)return;
+  processingResult=true;
   try{runSteps(resultSteps,RESULT_ORDER);stats.results++;}
-  finally{observeResult();}
+  finally{processingResult=false;}
+}
+function resultWritten(){
+  if(!renderingResult)lastQuery=$('searchInput')?.value||lastQuery;
+  refreshResult();
 }
 function search(query){
   const route=classify(query??$('searchInput')?.value);
   if(route.id==='empty')return false;
   const input=$('searchInput');if(input)input.value=route.query;
-  resultObserver?.disconnect();
+  renderingResult=true;
   try{
     routes.get(route.id).render(route.data,route.query);
     lastQuery=route.query;
     stats.searches++;
-    runSteps(resultSteps,RESULT_ORDER);
-    stats.results++;
-  }finally{observeResult();}
+  }finally{renderingResult=false;}
+  refreshResult();
   return true;
 }
 function refreshSearchForLevel(){
@@ -101,15 +101,16 @@ function handleSearch(event){
 function install(){
   document.addEventListener('click',handleSearch,true);
   document.addEventListener('keydown',handleSearch,true);
-  resultObserver=new MutationObserver(refreshResult);
-  observeResult();
+
 }
 window.CC_RUNTIME=Object.freeze({
   registerSearch:(id,match,render)=>register(routes,SEARCH_ORDER,id,{match,render}),
   registerContext:(id,step)=>register(contextSteps,CONTEXT_ORDER,id,step),
   registerResult:(id,step)=>register(resultSteps,RESULT_ORDER,id,step),
-  classify,search,go,refreshSearchForLevel,renderContext,refreshContextPresentation,refreshResult,
+  registerView:(id,step)=>register(viewSteps,['navigation'],id,step),
+  viewChanged:name=>{for(const step of viewSteps.values())step(name)},
+  classify,search,go,refreshSearchForLevel,renderContext,refreshContextPresentation,refreshResult,resultWritten,
   diagnostics:()=>({routes:SEARCH_ORDER.filter(id=>routes.has(id)),context:CONTEXT_ORDER.filter(id=>contextSteps.has(id)),results:RESULT_ORDER.filter(id=>resultSteps.has(id)),...stats})
 });
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('app-runtime',install);
 })();

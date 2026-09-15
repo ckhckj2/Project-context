@@ -2,7 +2,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const data=new Map([['pc_level','2'],['cc_projects_v1','keep']]);
 let blocked=false,writes=0;
-const sandbox={window:{},document:{readyState:'loading',body:null,addEventListener(){}},localStorage:{getItem(key){if(blocked)throw Error('denied');return data.get(key)||null},setItem(key,value){if(blocked)throw Error('quota');writes++;data.set(key,value)}}};
+const sandbox={window:{CC_BOOT:{register(){}}},document:{readyState:'loading',body:null,addEventListener(){}},localStorage:{getItem(key){if(blocked)throw Error('denied');return data.get(key)||null},setItem(key,value){if(blocked)throw Error('quota');writes++;data.set(key,value)}}};
 vm.createContext(sandbox);vm.runInContext(fs.readFileSync('level-store.js','utf8'),sandbox);
 const store=sandbox.window.CC_LEVEL_STORE;
 assert.equal(store.getItem('pc_level'),'2');

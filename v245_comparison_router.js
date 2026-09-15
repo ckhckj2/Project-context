@@ -136,5 +136,5 @@ function install(){
   window.CC_RUNTIME.registerSearch('comparison',q=>{const pair=comparison(q);return pair&&pair.key!=='unknown'?pair:null},renderPair);
   window.CC_RUNTIME.registerSearch('concept-comparison',q=>{const route=window.CC_SEARCH_RELIABILITY.routeQuery(q);return route.type==='comparison'?route:comparison(q)},(data,q)=>{if(data.type==='comparison')window.CC_SEARCH_RELIABILITY.renderRoute(data);else renderUnknown()});
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v245_comparison_router',install);
 })();

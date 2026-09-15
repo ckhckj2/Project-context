@@ -32,5 +32,5 @@ function setItem(key,value){
 }
 const values=()=>Object.fromEntries([...KEYS].map(key=>[key,getItem(key)]));
 window.CC_LEVEL_STORE=Object.freeze({getItem,setItem,values,state:()=>window.CC_LEVEL_POLICY.resolve(values())});
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',showStatus,{once:true});
+window.CC_BOOT.register('level-store',showStatus);
 })();

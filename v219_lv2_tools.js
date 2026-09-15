@@ -24,5 +24,5 @@ function install(){
   window.CC_RUNTIME.registerContext('tools',patchContext);
   window.CC_RUNTIME.registerSearch('tools',toolForQuery,renderToolSearch);
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v219_lv2_tools',install);
 })();

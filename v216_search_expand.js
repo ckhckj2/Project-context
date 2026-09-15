@@ -46,5 +46,5 @@ function runExpanded(){
 function install(){
   window.CC_RUNTIME.registerSearch('expanded',resolve,()=>runExpanded());
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v216_search_expand',install);
 })();

@@ -86,5 +86,5 @@ function install(){
   installStyle();
   window.CC_RUNTIME.registerSearch('common',q=>isCommon(q),(_,q)=>renderCommon(q));
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v228_search_quality',install);
 })();

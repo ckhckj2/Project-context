@@ -26,12 +26,7 @@ function syncNavigation(){
 }
 
 function installNavigationFix(){
-  document.addEventListener('click',event=>{
-    if(event.target.closest('[data-view],[data-ask-context],#analyze'))setTimeout(syncNavigation,0);
-  });
-  document.querySelectorAll('.view').forEach(view=>{
-    new MutationObserver(syncNavigation).observe(view,{attributes:true,attributeFilter:['class']});
-  });
+  window.CC_RUNTIME.registerView('navigation',syncNavigation);
   syncNavigation();
 }
 
@@ -146,11 +141,10 @@ function install(){
   installNavigationFix();
   
   
-  setTimeout(syncNavigation,450);
+
 }
 
 window.CC_UI_FOUNDATION={version:VERSION,syncNavigation};
 
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
-else install();
+window.CC_BOOT.register('v253_ui_foundation',install);
 })();

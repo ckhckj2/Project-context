@@ -29,5 +29,5 @@ function render(d){
 function install(){
   window.CC_RUNTIME.registerSearch('specific',match,render);
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v240_specific_intent_priority',install);
 })();

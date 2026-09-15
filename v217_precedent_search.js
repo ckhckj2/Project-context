@@ -52,5 +52,5 @@ function install(){
   if(!document.getElementById(style.id))document.head.appendChild(style);
   window.CC_RUNTIME.registerSearch('precedent',q=>PRECEDENT.test(q),(_,q)=>{const result=render(q);window.CC_SEARCH_ANSWER.write($("searchResult"),result.html,result.answer)});
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v217_precedent_search',install);
 })();

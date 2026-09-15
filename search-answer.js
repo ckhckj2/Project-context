@@ -19,6 +19,7 @@ function write(root,markup,answer=null){
   root.classList.remove('cc252-result-root','cc252-detail-open');
   root.innerHTML=markup;
   if(root.firstElementChild&&answer)answers.set(root.firstElementChild,answer);
+  window.CC_RUNTIME?.resultWritten?.();
 }
 window.CC_SEARCH_ANSWER=Object.freeze({model,work,comparison,write,read:card=>answers.get(card)||null});
 })();

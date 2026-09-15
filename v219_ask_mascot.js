@@ -52,5 +52,5 @@ function install(){
   const fig=card.querySelector('.cc-helper-figure');
   if(fig) fig.remove();
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v219_ask_mascot',install);
 })();

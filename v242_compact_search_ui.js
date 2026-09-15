@@ -130,5 +130,5 @@ function install(){
   installStyle();
   window.CC_RUNTIME.registerResult('compact',compact);
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v242_compact_search_ui',install);
 })();

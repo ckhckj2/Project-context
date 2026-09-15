@@ -69,5 +69,5 @@ function install(){
   enhanceProjectUI();
   window.CC_PROJECT_ROUTE_JUDGEMENT={version:VERSION,fields:['businessMode','approvalRoute','routeException'],business:BUSINESS,routes:ROUTES,exceptions:EXCEPTIONS,judgement};
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v248_project_route_judgement',install);
 })();

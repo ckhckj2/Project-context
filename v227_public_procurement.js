@@ -67,5 +67,5 @@ function install(){
   window.CC_RUNTIME.registerContext('public-flow',contextHint);
   window.CC_RUNTIME.registerSearch('public',q=>PUBLIC_RE.test(q),(_,q)=>renderSearch(q));
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v227_public_procurement',install);
 })();

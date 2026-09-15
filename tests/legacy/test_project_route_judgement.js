@@ -3,7 +3,7 @@ const vm=require('node:vm');
 let source=fs.readFileSync('v248_project_route_judgement.js','utf8');
 const end=source.lastIndexOf('})();');
 source=source.slice(0,end)+'window.__routeTest={BUSINESS,ROUTES,EXCEPTIONS,ROUTE_GUIDE,TYPE_HINT,taskKind,routeCandidate,exceptionText,judgement};'+source.slice(end);
-const window={};
+const window={CC_BOOT:{register(){}}};
 const document={readyState:'loading',addEventListener(){}};
 vm.runInNewContext(fs.readFileSync('work-rules.js','utf8'),{window});
 vm.runInNewContext(source,{window,document,localStorage:{getItem(){return null}}});

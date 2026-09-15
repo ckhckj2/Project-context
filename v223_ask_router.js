@@ -139,5 +139,5 @@ function install(){
   installExamples();
   window.CC_RUNTIME.registerSearch('ask',q=>ASK.test(q),()=>renderIfAsk());
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v223_ask_router',install);
 })();

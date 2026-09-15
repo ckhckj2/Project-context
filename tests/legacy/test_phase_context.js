@@ -6,7 +6,7 @@ let source=fs.readFileSync(path,'utf8');
 const end=source.lastIndexOf('})();');
 source=source.slice(0,end)+"window.__phaseTest={PHASE_ORDER,PHASE_RULES,CHANGE_RULES,phaseRule};"+source.slice(end);
 
-const window={};
+const window={CC_BOOT:{register(){}}};
 const document={
   readyState:'loading',
   getElementById(){return null;},

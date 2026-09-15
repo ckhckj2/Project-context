@@ -61,5 +61,5 @@ function install(){
   if(document.getElementById('contextResult')?.innerHTML.trim())renderLegal();
 }
 configureData();
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v226_facility_first',install);
 })();

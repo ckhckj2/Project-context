@@ -246,6 +246,5 @@ window.CC_STAGE_DRAWING_GUIDE={
   projectExtras
 };
 
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
-else install();
+window.CC_BOOT.register('v257_stage_drawing_guide',install);
 })();

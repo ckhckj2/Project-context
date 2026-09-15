@@ -19,28 +19,9 @@ function currentLevel(){
 }
 
 function bindOpenDrawer(button,pane){
-  if(!button||!pane||button.dataset.cc254Unlocked==='1')return button;
-  const clone=button.cloneNode(true);
-  clone.classList.remove('locked');
-  clone.disabled=false;
-  clone.removeAttribute('disabled');
-  clone.removeAttribute('aria-disabled');
-  clone.dataset.cc254Unlocked='1';
-  button.replaceWith(clone);
-  clone.addEventListener('click',event=>{
-    event.preventDefault();
-    event.stopPropagation();
-    const root=$('contextResult');
-    const open=!pane.classList.contains('show');
-    root?.querySelectorAll('.drawer.show').forEach(item=>{if(item!==pane)item.classList.remove('show')});
-    root?.querySelectorAll('.actions [data-drawer]').forEach(item=>{
-      if(item!==clone){item.classList.remove('cc-drawer-active');item.setAttribute('aria-expanded','false')}
-    });
-    pane.classList.toggle('show',open);
-    clone.classList.toggle('cc-drawer-active',open);
-    clone.setAttribute('aria-expanded',String(open));
-  });
-  return clone;
+  if(!button||!pane)return button;
+  button.dataset.cc254Unlocked='1';
+  return button;
 }
 
 function unlockInformationAreas(root){
@@ -203,6 +184,5 @@ function install(){
 }
 window.CC_LEVEL_DEPTH={version:VERSION,depths:DEPTHS.map(item=>({...item})),openAreas:[...OPEN_AREAS]};
 
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});
-else install();
+window.CC_BOOT.register('v252_level_depth_progression',install);
 })();

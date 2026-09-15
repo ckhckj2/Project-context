@@ -4,7 +4,7 @@ const assert=require('assert');
 
 const source=fs.readFileSync('v251_search_reliability.js','utf8');
 const sandbox={
-  window:{},
+  window:{CC_BOOT:{register(){}}},
   document:{
     readyState:'loading',
     getElementById(){return null},

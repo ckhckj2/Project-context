@@ -77,5 +77,5 @@ function install(){
   installStyle();
   window.CC_RUNTIME.registerSearch('permit-workflow',classify,render);
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v241_permit_workflow',install);
 })();

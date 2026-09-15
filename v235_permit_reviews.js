@@ -75,5 +75,5 @@ function install(){
   window.CC_RUNTIME.registerSearch('reviews',topic,(_,q)=>runQuery(q));
   window.CC_RUNTIME.registerContext('reviews',patchHow);
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v235_permit_reviews',install);
 })();

@@ -58,7 +58,8 @@ function openEditor(p=null){
   $('cc230Cancel').onclick=closeEditor;
   $('cc230Save').onclick=saveEditor;
   editorExtensions.forEach(extension=>extension.render(p));
-  setTimeout(()=>$('cc230Name')?.focus(),0);
+  document.dispatchEvent(new CustomEvent('cc:project-editor-rendered'));
+  $('cc230Name')?.focus();
 }
 function closeEditor(){const b=$('cc230Editor');if(b){b.hidden=true;b.innerHTML=''}editingId=null}
 function saveEditor(){
@@ -159,5 +160,5 @@ window.CC_PROJECTS_UI=Object.freeze({registerEditorExtension(id,extension){
   if(editorExtensions.has(id))throw new Error('Duplicate project editor extension: '+id);
   editorExtensions.set(id,extension);
 }});
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v230_projects',install);
 })();

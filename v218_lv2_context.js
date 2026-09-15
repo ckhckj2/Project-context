@@ -53,10 +53,7 @@ function enhanceContext(){
   const whyButton=root.querySelector('[data-drawer="why"]');
   if(!whyPane||!whyButton)return;
 
-  if(lv<2){
-    whyButton.innerHTML='<small>04 · LOCKED</small>왜·어디서 확인해요? 🔒';
-    return;
-  }
+  if(lv<2)return; // Basic WHY is composed by the common work renderer.
 
   const wd=(typeof whyData==='function')?whyData(task):{title:'이 업무의 목적과 확인처를 함께 잡아보세요',why:'다음 결정에 필요한 정보를 만들기 위한 업무입니다.',risk:'기준자료가 다르면 다시 확인하는 시간이 커집니다.',done:'목적·기준자료·다음 행동이 연결되면 됩니다.'};
   const wh=whereData(task);
@@ -76,5 +73,5 @@ function install(){
   window.CC_RUNTIME.registerContext('why',enhanceContext);
 }
 
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v218_lv2_context',install);
 })();

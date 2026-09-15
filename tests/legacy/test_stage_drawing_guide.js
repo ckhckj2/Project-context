@@ -4,7 +4,7 @@ const assert=require('assert');
 
 const source=fs.readFileSync('v257_stage_drawing_guide.js','utf8');
 const sandbox={
-  window:{},document:{readyState:'loading',addEventListener(){},getElementById(){return null}},
+  window:{CC_BOOT:{register(){}}},document:{readyState:'loading',addEventListener(){},getElementById(){return null}},
   setTimeout(){return 1},clearTimeout(){},MutationObserver:function(){},console
 };
 vm.createContext(sandbox);

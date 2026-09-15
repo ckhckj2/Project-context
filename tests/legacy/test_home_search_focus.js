@@ -14,7 +14,7 @@ assert.match(source,/cc251-flow-fold/,'workflow fold');
 assert.match(source,/cc251-topic-fold/,'popular topics fold');
 assert.match(source,/cc251-quick-examples/,'six quick examples');
 assert.match(source,/nth-child\(n\+7\)/,'quick-example visibility guard');
-assert.match(source,/DOMContentLoaded/,'late-load install guard');
+assert.match(source,/CC_BOOT\.register/,'central startup registration');
 assert(!source.includes('markVersion'),'release labels are owned by index.html');
 assert.match(source,/not\(\[open\]\)>:not\(summary\).*display:none!important/,'closed folds override legacy important displays');
 assert.doesNotMatch(source,/localStorage\.(?:setItem|removeItem|clear)/,'UI pass must not mutate stored project data');

@@ -4,7 +4,7 @@ const assert=require('assert');
 
 const source=fs.readFileSync('v252_level_depth_progression.js','utf8');
 const sandbox={
-  window:{},
+  window:{CC_BOOT:{register(){}}},
   document:{readyState:'loading',getElementById(){return null},addEventListener(){}},
   console,
   setTimeout(){return 0},

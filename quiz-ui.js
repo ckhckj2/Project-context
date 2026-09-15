@@ -33,6 +33,7 @@ function renderQuestion(){
  $('qSubmit').disabled=false;$('qSubmit').textContent='정답 확인';$('quizSkip').hidden=false;
  $('quizProgress').style.width=(state.index/state.total*100)+'%';
  $('qText').focus();
+ window.CC_INTERACTION_FEEDBACK?.refresh();
 }
 function correctText(q){return q.type==='short'?q.answer:q.options.find(x=>x.id===q.answer).text;}
 function learn(question,container){
@@ -58,6 +59,7 @@ function submit(response){
  $('qInput').disabled=true;$('quizChoices').querySelectorAll('input').forEach(input=>{input.disabled=true;});
  $('qScore').textContent=session.view().score+' / '+state.total+' 정답';$('qSubmit').textContent=state.index===state.total-1?'결과 보기 →':'다음 문제 →';$('quizSkip').hidden=true;
  $('quizProgress').style.width=((state.index+1)/state.total*100)+'%';
+ window.CC_INTERACTION_FEEDBACK?.refresh();
 }
 function finish(){
  if(completed)return;completed=true;const result=session.result(),next=engine.promotion(result,actualLevel(),certified());
@@ -67,7 +69,7 @@ function finish(){
  const wrong=result.responses.filter(r=>!r.correct);
  if(wrong.length){const review=node('details',undefined,'quiz-lesson');review.append(node('summary','틀린 문제 복습 · '+wrong.length+'개'));for(const response of wrong){const q=window.CC_QUIZ_BANK.find(x=>x.id===response.id),item=node('section');item.append(node('h4',q.prompt),node('p',q.explanation));learn(q,item);review.append(item);}summary.append(review);}
  summary.append(button(next?'현재 레벨에서 새로 풀기':'다시 도전',()=>start(result.mode==='master'?'master':'level')));
- $('qFeedback').replaceChildren(summary);$('qFeedback').className='feedback show '+(result.passed?'ok':'no');$('qFeedback').dataset.quizCorrect=String(result.passed);$('qText').textContent='이번 도전 결과';$('qInput').hidden=true;$('quizChoices').hidden=true;$('qSubmit').disabled=true;$('quizSkip').hidden=true;overview();if(next===5)showMaster();
+ $('qFeedback').replaceChildren(summary);$('qFeedback').className='feedback show '+(result.passed?'ok':'no');$('qFeedback').dataset.quizCorrect=String(result.passed);$('qText').textContent='이번 도전 결과';$('qInput').hidden=true;$('quizChoices').hidden=true;$('qSubmit').disabled=true;$('quizSkip').hidden=true;overview();window.CC_INTERACTION_FEEDBACK?.refresh();if(next===5)showMaster();
 }
 function unlock(){
  const input=$('quizMasterKey'),status=$('quizMasterKeyStatus');

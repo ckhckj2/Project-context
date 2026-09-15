@@ -4,7 +4,6 @@ const VERSION='2.1.32';
 const store=window.CC_PROJECT_STORE;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const MOBILE=()=>window.matchMedia('(max-width:700px)').matches;
 
 function level(){return window.CC_LEVEL_STORE.state().view}
 const readProjects=()=>store.list();
@@ -15,40 +14,21 @@ function bimLabel(v){return ({none:'BIM 미사용/미정',revit:'Revit 협업',d
 const {HOW_RULES,HOW_DEFAULT,howData}=window.CC_WORK_RULES.how;
 
 function activeBimNote(){const p=activeProject();if(!p||!p.bimMode||p.bimMode==='none')return '';return `${p.name}은 ${bimLabel(p.bimMode)}로 저장되어 있습니다. 모델 작업 전 프로젝트 BIM 기준과 협업방식을 우선 확인하세요.`}
-function restoreHowDesktop(){
-  if(MOBILE())return;
-  const root=$('contextResult');const actions=root?.querySelector('.actions');const pane=root?.querySelector('[data-pane="how"]');
-  if(actions&&pane&&pane.parentElement===actions)actions.insertAdjacentElement('afterend',pane);
-}
 function addHow(){
   const root=$('contextResult');if(!root||!root.innerHTML.trim())return;
   const actions=root.querySelector('.actions');if(!actions)return;
-  root.querySelector('[data-pane="how"]')?.remove();
-  actions.querySelector('[data-drawer="how"]')?.remove();
   actions.classList.add('cc232-actions');
   const lv=level();const task=$('task')?.value||'';const d=howData(task);
-  const btn=document.createElement('button');btn.type='button';btn.dataset.drawer='how';
-  btn.className=lv<3?'locked cc232-how-btn':'cc232-how-btn';
-  btn.innerHTML=lv<3?'<small>05 · LOCKED</small>어떻게 수행해요? 🔒':'<small>05 · HOW</small>어떻게 수행해요?';
-  actions.appendChild(btn);
-  const pane=document.createElement('div');pane.className='drawer cc232-how-pane';pane.dataset.pane='how';
+  const pane=root.querySelector('[data-pane="how"]');if(!pane)return;
   if(lv<3){
-    pane.innerHTML='<div class="cc232-how-lock"><small>LV.3 · 책임</small><b>실행 방법은 LV.3부터 열립니다.</b><span>승급하면 업무별 실행 순서·체크리스트·협업·완료 기준을 볼 수 있어요.</span></div>';
+    pane.innerHTML=''; // Basic HOW is composed by the common work renderer.
   }else{
     const note=activeBimNote();
     pane.innerHTML=`<div class="cc232-how-head"><div><small>LV.3 · HOW</small><b>${esc(d.title)}</b></div><span>실행 순서부터 보고, 필요할 때 체크리스트를 펼치세요.</span></div>
       <div class="cc232-how-steps">${d.steps.slice(0,3).map((x,i)=>`<div><small>0${i+1}</small><b>${esc(x)}</b></div>`).join('')}</div>
       <details class="cc232-how-detail"><summary>전체 실행 체크리스트 보기</summary><div class="cc232-how-all">${d.steps.map((x,i)=>`<div><span>${i+1}</span><p>${esc(x)}</p></div>`).join('')}</div><div class="cc232-how-grid"><div><small>CHECK</small><p>${esc(d.check)}</p></div><div><small>WHO</small><p>${esc(d.collab)}</p></div><div><small>완료 기준</small><p>${esc(d.done)}</p></div></div>${note?`<div class="cc232-bim-note"><b>BIM 프로젝트 메모</b><span>${esc(note)}</span></div>`:''}</details>`;
   }
-  actions.insertAdjacentElement('afterend',pane);
-  btn.addEventListener('click',()=>{
-    if(level()<3){if(typeof showView==='function')showView('quiz');return}
-    const open=!pane.classList.contains('show');
-    root.querySelectorAll('.drawer.show').forEach(p=>{if(p!==pane)p.classList.remove('show')});
-    actions.querySelectorAll('[data-drawer]').forEach(b=>{if(b!==btn){b.classList.remove('cc-drawer-active');b.setAttribute('aria-expanded','false')}});
-    pane.classList.toggle('show',open);btn.classList.toggle('cc-drawer-active',open);btn.setAttribute('aria-expanded',String(open));
-    if(MOBILE()&&open)btn.insertAdjacentElement('afterend',pane);else if(!MOBILE())restoreHowDesktop();
-  });
+
 }
 
 const {BIM_TOPICS,bimTopic}=window.CC_BIM_RULES.topics;
@@ -109,5 +89,5 @@ function install(){
   document.addEventListener('cc:projects-rendered',refreshProjects);
   refreshProjects();
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v232_lv3_bim',install);
 })();

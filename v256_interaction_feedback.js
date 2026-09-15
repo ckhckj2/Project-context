@@ -87,11 +87,7 @@ function updateProjectProgress(){
   meter.innerHTML=`<span><b>등록 정보 ${percent}%</b><small>${complete<3?'필수 정보부터 입력하세요':'필수 정보 입력 완료'}</small></span><i></i>`;
 }
 
-let timer;
-function refresh(delay=30){
-  clearTimeout(timer);
-  timer=setTimeout(()=>{updateQuiz();updateProjectProgress()},delay);
-}
+function refresh(){updateQuiz();updateProjectProgress()}
 
 function installStyle(){
   if($('cc260Style'))return;
@@ -147,12 +143,12 @@ function install(){
   installStyle();
   window.CC_RUNTIME.registerContext('feedback',decorateContext);
   window.CC_RUNTIME.registerResult('feedback',decorateSearch);
-  ['quizArea','cc230Editor'].forEach(id=>{const root=$(id);if(root)new MutationObserver(()=>refresh()).observe(root,{childList:true,subtree:true,characterData:true});});
+  document.addEventListener('cc:project-editor-rendered',updateProjectProgress);
   document.addEventListener('cc:projects-rendered',updateProjectProgress);
   document.addEventListener('input',event=>{if(event.target.closest('#cc230Editor'))updateProjectProgress()});
   document.addEventListener('change',event=>{if(event.target.closest('#cc230Editor'))updateProjectProgress()});
   refresh(0);
 }
 window.CC_INTERACTION_FEEDBACK={version:VERSION,refresh,decorateContext,decorateSearch};
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v256_interaction_feedback',install);
 })();

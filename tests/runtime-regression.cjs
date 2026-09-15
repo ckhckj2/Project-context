@@ -24,7 +24,7 @@ assert(html.includes("connect-src 'none'"),'keep no-network data policy');
 let preservedBadge;
 const releaseBadge={textContent:'v2.1.65'};
 const side={dataset:{},querySelector:selector=>selector==='.version'?releaseBadge:{replaceWith(node){preservedBadge=node}},querySelectorAll:()=>[]};
-const sidebarContext={document:{readyState:'complete',querySelector:selector=>selector==='.side'?side:null,getElementById:()=>null}};
+const sidebarContext={window:{CC_BOOT:{register(id,fn){fn()}}},document:{readyState:'complete',querySelector:selector=>selector==='.side'?side:null,getElementById:()=>null}};
 vm.createContext(sidebarContext);vm.runInContext(read('v212_sidebar.js'),sidebarContext);
 assert.equal(preservedBadge,releaseBadge,'sidebar must preserve the index release badge node');
 
@@ -37,7 +37,7 @@ const guide={dataset:{cc257SelectedStage:'middle'},querySelector:()=>body};
 guide.closest=()=>guide;
 const result={innerHTML:'',addEventListener(type,callback){if(type==='click')clickHandler=callback}};
 const elements={contextResult:result,cc264DrawingStyle:{},miniLevel:{textContent:'LV.MAX · 건축 마스터'},phase:{value:'중간설계'},project:{selectedOptions:[{textContent:'공동주택'}]}};
-const sandbox={window:{CC_RUNTIME:{registerContext(){}}},document:{readyState:'loading',activeElement:null,getElementById:id=>elements[id],addEventListener(type,callback){if(type==='DOMContentLoaded')install=callback}},setTimeout:()=>1,clearTimeout(){},MutationObserver:class{observe(){}}};
+const sandbox={window:{CC_BOOT:{register(id,fn){install=fn}},CC_RUNTIME:{registerContext(){}}},document:{readyState:'loading',activeElement:null,getElementById:id=>elements[id],addEventListener(type,callback){if(type==='DOMContentLoaded')install=callback}},setTimeout:()=>1,clearTimeout(){},MutationObserver:class{observe(){}}};
 vm.createContext(sandbox);
 vm.runInContext(read('v257_stage_drawing_guide.js'),sandbox);
 install();
@@ -58,7 +58,8 @@ assert.equal(writes,2,'reject invalid stage keys');
 
 // Test URL policy at its boundary, including same-tab and middle-click paths.
 const handlers={};
-const securityContext={window:{},URL,location:{href:'https://ckhckj2.github.io/Project-context/'},console:{warn(){}},document:{readyState:'complete',querySelectorAll:()=>[],getElementById:()=>null,querySelector:()=>null,documentElement:{dataset:{}},addEventListener:(type,fn)=>{handlers[type]=fn}}};
+const securityContext={window:{CC_BOOT:{register(){}}},URL,location:{href:'https://ckhckj2.github.io/Project-context/'},console:{warn(){}},document:{readyState:'complete',querySelectorAll:()=>[],getElementById:()=>null,querySelector:()=>null,documentElement:{dataset:{}},addEventListener:(type,fn)=>{handlers[type]=fn}}};
+securityContext.window.CC_BOOT.register=(id,fn)=>fn();
 vm.createContext(securityContext);vm.runInContext(read('v2_security.js'),securityContext);
 const policy=securityContext.window.CC_SECURITY;
 for(const url of ['javascript:alert(1)','data:text/html,hi','http://example.com','https://user:secret@example.com'])assert.equal(policy.safeExternalUrl(url),null);

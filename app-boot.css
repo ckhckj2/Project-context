@@ -1,0 +1,4 @@
+html:not([data-app-state="ready"]) body>:not(#appBootStatus):not(noscript){visibility:hidden!important;pointer-events:none!important}
+#appBootStatus{position:fixed;inset:0;display:grid;place-content:center;gap:12px;text-align:center;background:#fbfcfe;color:#263e60;font:16px/1.6 system-ui,sans-serif;z-index:10000}
+#appBootStatus p{margin:0}#appBootStatus a{color:#315fa8}
+html[data-app-state="ready"] #appBootStatus{display:none}

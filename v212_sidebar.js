@@ -48,5 +48,5 @@ function install(){
   side.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===active&&b.closest('.cc212-main-nav')));
   
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v212_sidebar',install);
 })();

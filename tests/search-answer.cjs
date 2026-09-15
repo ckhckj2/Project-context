@@ -8,7 +8,7 @@ function element(){
  set innerHTML(value){this.html=value;this.firstElementChild={};this.children=[this.firstElementChild]},get innerHTML(){return this.html||''}};
 }
 const output=element(),input=element();
-const window={CC_PROJECT_STORE:{active:()=>null},CC_LEVEL_STORE:{state:()=>({view:1})},
+const window={CC_BOOT:{register(){}},CC_PROJECT_STORE:{active:()=>null},CC_LEVEL_STORE:{state:()=>({view:1})},
  CC_RUNTIME:{registerSearch:(id,match,render)=>routes.set(id,{match,render})}};
 const sandbox={window,document:{readyState:'loading',addEventListener(){},createElement:element,getElementById:id=>({searchResult:output,searchInput:input}[id]||null),querySelector(){return null},querySelectorAll(){return []}},console,viewLevel:()=>1};
 vm.createContext(sandbox);
@@ -30,7 +30,7 @@ for(const file of scripts){
  let source=fs.readFileSync(file,'utf8');
  if(file==='app-runtime.js'||!source.includes('registerSearch('))continue;
  const registrations=source.split('\n').filter(line=>line.includes('window.CC_RUNTIME.registerSearch(')).map(line=>line.slice(line.indexOf('window.CC_RUNTIME.registerSearch(')).replace(/;\}\s*$/,';')).join('\n');
- source=source.replace(/if\(document\.readyState==='loading'\)[\s\S]*?(?=\}\)\(\);\s*$)/,registrations+'\n');
+ source=source.replace(/window\.CC_BOOT\.register\('[^']+',\w+\);/,()=>registrations);
  vm.runInContext(source,sandbox,{filename:file});
 }
 const cases=[
@@ -80,7 +80,7 @@ const pane={querySelector:()=>null,appendChild(){attached++}};
 sandbox.document.getElementById=id=>id==='contextResult'?{querySelector:()=>pane}:null;
 window.CC_PROJECT_STORE.active=()=>({bimMode:'revit'});
 let contextSource=fs.readFileSync('v233_bim_context.js','utf8');
-contextSource=contextSource.replace("if(document.readyState==='loading')", "window.__testBimContext=patchHow;\nif(document.readyState==='loading')");
+contextSource=contextSource.replace("window.CC_BOOT.register(", "window.__testBimContext=patchHow;\nwindow.CC_BOOT.register(");
 vm.runInContext(contextSource,sandbox);
 for(const level of [1,2,3,4,5]){window.CC_LEVEL_STORE.state=()=>({view:level});window.__testBimContext();}
 assert.equal(attached,5,'BIM basic context must remain available at every level');

@@ -75,5 +75,5 @@ function install(){
   Object.values(MATRIX).forEach(x=>Object.values(x.phases).forEach(v=>counts[v]++));
   window.CC_TASK_PHASE_FIT={version:VERSION,scope:'all-13',tasks:Object.keys(MATRIX).length,decisions:Object.keys(MATRIX).length*6,statuses:Object.keys(STATUS),counts};
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v247_task_phase_fit',install);
 })();

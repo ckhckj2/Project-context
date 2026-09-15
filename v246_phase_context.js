@@ -49,5 +49,5 @@ function install(){
   window.CC_RUNTIME.registerContext('phase',enhance);
   window.CC_PHASE_CONTEXT={version:VERSION,phases:PHASE_ORDER.length,phaseAware:true};
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+window.CC_BOOT.register('v246_phase_context',install);
 })();

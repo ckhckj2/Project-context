@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const env={window:{}};vm.createContext(env);
+const env={window:{CC_BOOT:{register(){}}}};vm.createContext(env);
 for(const file of ['quiz-bank.js','quiz-engine.js'])vm.runInContext(fs.readFileSync(file,'utf8'),env,{filename:file});
 const bank=env.window.CC_QUIZ_BANK,engine=env.window.CC_QUIZ_ENGINE;
 assert.equal(bank.length,64);assert.equal(new Set(bank.map(q=>q.id)).size,64);
