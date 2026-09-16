@@ -38,15 +38,10 @@ function renderLegalUse(){
   box.innerHTML=`<small>건축법상 용도 분류</small><b>${p.legalUse}</b><span>공공 발주·운영 성격은 이 용도분류와 별도로 확인합니다.</span>`;
   banner.insertAdjacentElement('afterend',box);
 }
-function installStyle(){
-  if(document.getElementById('cc225LegalStyle'))return;
-  const s=document.createElement('style');s.id='cc225LegalStyle';
-  s.textContent='.cc225-legal{margin:9px 0 0;padding:11px 13px;border:1px solid #DCE6F6;border-radius:13px;background:#F8FAFE;display:grid;grid-template-columns:auto 1fr;gap:3px 10px;align-items:baseline}.cc225-legal small{font-size:9px;font-weight:950;color:#70809A}.cc225-legal b{font-size:12px;font-weight:950;color:#294568}.cc225-legal span{grid-column:2;font-size:10px;line-height:1.5;color:#728099}@media(max-width:700px){.cc225-legal{grid-template-columns:1fr;gap:4px}.cc225-legal span{grid-column:1}}';
-  document.head.appendChild(s);
-}
+
 function install(){
-  addData();addSelectOptions();installStyle();
-  
+  addData();addSelectOptions();
+
   window.CC_RUNTIME.registerContext('public-use',renderLegalUse);
   if(document.getElementById('contextResult')?.innerHTML.trim())renderLegalUse();
 }

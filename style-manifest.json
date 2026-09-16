@@ -1,0 +1,143 @@
+[
+  {"source":"v217_precedent_search.js","section":"v217_precedent_search.js"},
+  {
+    "source": "v21_search.js",
+    "section": "v21_search.js"
+  },
+  {
+    "source": "v218_lv2_context.js",
+    "section": "v218_lv2_context.js"
+  },
+  {
+    "source": "v219_lv2_tools.js",
+    "section": "v219_lv2_tools.js"
+  },
+  {
+    "source": "v224_public_classification.js",
+    "section": "v224_public_classification.js"
+  },
+  {
+    "source": "v226_facility_first.js",
+    "section": "v226_facility_first.js"
+  },
+  {
+    "source": "v227_public_procurement.js",
+    "section": "v227_public_procurement.js"
+  },
+  {
+    "source": "v228_search_quality.js",
+    "section": "v228_search_quality.js"
+  },
+  {
+    "source": "v229_glossary.js",
+    "section": "v229_glossary.js"
+  },
+  {
+    "source": "v230_projects.js",
+    "section": "v230_projects.js"
+  },
+  {
+    "source": "v231_projects_fix.js",
+    "section": "v231_projects_fix.js"
+  },
+  {
+    "source": "v232_lv3_bim.js",
+    "section": "v232_lv3_bim.js"
+  },
+  {
+    "source": "v233_bim_context.js",
+    "section": "v233_bim_context.js"
+  },
+  {
+    "source": "v234_bim_search_fix.js",
+    "section": "v234_bim_search_fix.js"
+  },
+  {
+    "source": "v245_comparison_router.js",
+    "section": "v245_comparison_router.js"
+  },
+  {
+    "source": "v235_permit_reviews.js",
+    "section": "v235_permit_reviews.js"
+  },
+  {
+    "source": "v236_ui_readability.js",
+    "section": "v236_ui_readability.js"
+  },
+  {
+    "source": "v237_answer_readability_nav.js",
+    "section": "v237_answer_readability_nav.js"
+  },
+  {
+    "source": "v238_search_typography_unify.js",
+    "section": "v238_search_typography_unify.js"
+  },
+  {
+    "source": "v241_permit_workflow.js",
+    "section": "v241_permit_workflow.js"
+  },
+  {
+    "source": "v242_compact_search_ui.js",
+    "section": "v242_compact_search_ui.js"
+  },
+  {
+    "source": "v243_change_workflow.js",
+    "section": "v243_change_workflow.js"
+  },
+  {
+    "source": "v244_change_impact.js",
+    "section": "v244_change_impact.js"
+  },
+  {
+    "source": "v246_phase_context.js",
+    "section": "v246_phase_context.js"
+  },
+  {
+    "source": "v247_task_phase_fit.js",
+    "section": "v247_task_phase_fit.js"
+  },
+  {
+    "source": "v248_project_route_judgement.js",
+    "section": "v248_project_route_judgement.js"
+  },
+  {
+    "source": "v249_home_search_focus.js",
+    "section": "v249_home_search_focus.js"
+  },
+  {
+    "source": "v250_result_action_focus.js",
+    "section": "v250_result_action_focus.js"
+  },
+  {
+    "source": "v251_search_reliability.js",
+    "section": "v251_search_reliability.js"
+  },
+  {
+    "source": "v252_level_depth_progression.js",
+    "section": "v252_level_depth_progression.js"
+  },
+  {
+    "source": "v253_ui_foundation.js",
+    "section": "v253_ui_foundation.js"
+  },
+  {
+    "source": "v254_information_hierarchy.js",
+    "section": "v254_information_hierarchy.js"
+  },
+  {
+    "source": "v255_visual_language.js",
+    "section": "v255_visual_language.js"
+  },
+  {
+    "source": "v256_interaction_feedback.js",
+    "section": "v256_interaction_feedback.js"
+  },
+  {
+    "source": "v257_stage_drawing_guide.js",
+    "section": "v257_stage_drawing_guide.js"
+  },
+  {
+    "source": "judgement-ui.js",
+    "section": "judgement-ui.js"
+  }
+]

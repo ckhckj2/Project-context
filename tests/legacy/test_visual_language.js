@@ -1,7 +1,7 @@
 const fs=require('fs');
 const assert=require('assert');
 
-const src=fs.readFileSync('v255_visual_language.js','utf8')+'\n'+fs.readFileSync('context-controller.js','utf8');
+const src=fs.readFileSync('v255_visual_language.js','utf8')+'\n'+fs.readFileSync('context-controller.js','utf8')+require('../component-style.cjs')('v255_visual_language.js');
 
 assert(src.includes("const VERSION='2.1.59'"),'version must be 2.1.59');
 assert(src.includes("event.target.closest('#contextResult .actions [data-drawer]')"),'all drawer buttons must share one delegated controller');

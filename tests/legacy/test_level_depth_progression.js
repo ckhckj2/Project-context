@@ -28,12 +28,13 @@ assert.match(source,/bindOpenDrawer/,'drawer unlock behavior');
 assert.match(source,/function normalizeActionShell/,'consistent action shell');
 assert.match(source,/if\(current!==button\)actions\.insertBefore\(button,current\|\|null\)/,'only repair action order when needed');
 assert.doesNotMatch(source,/actions\.append\(button\)/,'stable action order must not create a mutation loop');
-assert.match(source,/cc256-building/,'atomic loading state');
-assert.match(source,/cc256-ready/,'single completed reveal');
+const styles=require('../component-style.cjs')('v252_level_depth_progression.js');
+assert.match(styles,/cc256-building/,'atomic loading state');
+assert.match(styles,/cc256-ready/,'single completed reveal');
 assert.match(fs.readFileSync('app-runtime.js','utf8'),/aria-busy/,'loading state accessibility');
-assert.match(source,/prefers-reduced-motion/,'motion accessibility');
+assert.match(styles,/prefers-reduced-motion/,'motion accessibility');
 assert.match(source,/removeAttribute\('aria-disabled'\)/,'aria lock removal');
-assert.match(source,/@media\(max-width:760px\)/,'responsive guard');
+assert.match(styles,/@media\(max-width:760px\)/,'responsive guard');
 assert.doesNotMatch(source,/localStorage\.(?:setItem|removeItem|clear)/,'depth UI must not mutate stored projects');
 
 console.log('v2.1.56 atomic level-depth checks passed');

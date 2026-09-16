@@ -38,14 +38,9 @@ function enhance(){
   updateFlow(root,phase);updateContext(root,phase,task);updateWhy(root,task,phase,rule);updateHow(root,task,phase,rule);
   root.dataset.cc246Phase=phase;
 }
-function style(){
-  if($('cc246Style'))return;const s=document.createElement('style');s.id='cc246Style';s.textContent=`
-  .cc246-phase-label{display:inline-flex;margin:0 7px 4px 0;padding:4px 7px;border-radius:999px;background:#EEF4FF;color:#3565BD;font-size:8.5px;font-weight:950;vertical-align:middle}.cc246-how-phase{display:flex;gap:8px;align-items:flex-start;padding:10px 13px;border:1px solid #DCE7F7;border-top:0;background:#F3F7FE}.cc246-how-phase small{flex:0 0 auto;color:#3765B7;font-size:8.5px;font-weight:950}.cc246-how-phase b{color:#435B79;font-size:10px;line-height:1.5}.flow .node.now{max-width:190px;line-height:1.35}
-  @media(max-width:700px){.cc246-how-phase{display:grid;gap:4px}.flow .node.now{max-width:none}}
-  `;document.head.appendChild(s);
-}
+
 function install(){
-  style();
+
   window.CC_RUNTIME.registerContext('phase',enhance);
   window.CC_PHASE_CONTEXT={version:VERSION,phases:PHASE_ORDER.length,phaseAware:true};
 }

@@ -131,55 +131,8 @@ function patchContext(){
   root.dataset.cc254Depth=String(level);
 }
 
-function installStyle(){
-  if($('cc254Style'))return;
-  const style=document.createElement('style');
-  style.id='cc254Style';
-  style.textContent=`
-  /* v2.1.56 — atomic context reveal; every area open; level changes depth */
-  #contextResult .actions [data-drawer],#contextResult .actions [data-ask-context]{opacity:1!important;filter:none!important;pointer-events:auto!important}
-  #contextResult.cc256-building{position:relative;min-height:250px;overflow:hidden}
-  #contextResult.cc256-building>*{visibility:hidden!important}
-  #contextResult.cc256-building:before{content:"";position:absolute;z-index:3;left:50%;top:88px;width:24px;height:24px;margin-left:-12px;border:2px solid #DCE6F4;border-top-color:#3E73C8;border-radius:50%;animation:cc256-spin .7s linear infinite}
-  #contextResult.cc256-building:after{content:"업무 맥락을 정리하고 있어요";position:absolute;z-index:3;left:0;right:0;top:126px;text-align:center;color:#60738F;font-size:10px;font-weight:850}
-  #contextResult.cc256-ready{animation:cc256-reveal .18s ease-out both}
-  @keyframes cc256-spin{to{transform:rotate(360deg)}}
-  @keyframes cc256-reveal{from{opacity:.35;transform:translateY(3px)}to{opacity:1;transform:none}}
-  .cc254-depth-guide{margin:0 0 10px;padding:15px 16px;border:1px solid #D9E3F1;border-radius:15px;background:#fff}
-  .cc254-depth-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .cc254-depth-head small{display:block;color:#6E7F97;font-size:8.5px;font-weight:900}
-  .cc254-depth-head b{display:block;margin-top:3px;color:#203F69;font-size:14px}
-  .cc254-depth-head>span{padding:5px 8px;border-radius:999px;background:#EAF4ED;color:#39724B;font-size:8px;font-weight:950}
-  .cc254-depth-track{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
-  .cc254-depth-track>div{display:grid;grid-template-columns:23px 1fr;gap:7px;align-items:start;padding:9px;border:1px solid #E5EAF1;border-radius:10px;background:#FAFBFD}
-  .cc254-depth-track i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#EDF1F6;color:#77869B;font-size:8px;font-style:normal;font-weight:950}
-  .cc254-depth-track b,.cc254-depth-track small{display:block}
-  .cc254-depth-track b{color:#5D6D82;font-size:8.5px;line-height:1.35}
-  .cc254-depth-track small{margin-top:3px;color:#99A3B1;font-size:7.5px;line-height:1.4}
-  .cc254-depth-track .is-current{border-color:#AFC8EF;background:#F0F6FF;box-shadow:inset 0 0 0 1px #D8E6FA}
-  .cc254-depth-track .is-current i{background:#2F6FD1;color:#fff}
-  .cc254-depth-track .is-current b{color:#244F8D}
-  .cc254-depth-track .is-passed{background:#F5F8FC}
-  .cc254-depth-track .is-passed i{background:#DAE7F8;color:#3665A6}
-  .cc254-depth-guide>p{margin:10px 1px 0;color:#718095;font-size:8.5px;line-height:1.55}
-  .cc252-pane-head small{color:#4569A8!important}
-  .cc252-level-note{color:#61738D!important;background:#F8FAFD!important}
-  @media(max-width:760px){
-    .cc254-depth-track{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .cc254-depth-head{align-items:flex-start}
-  }
-  @media(max-width:420px){
-    .cc254-depth-track{grid-template-columns:1fr 1fr}
-    .cc254-depth-track small{display:none}
-  }
-  @media(prefers-reduced-motion:reduce){#contextResult.cc256-building:before{animation:none}#contextResult.cc256-ready{animation:none}}
-  `;
-  document.head.append(style);
-}
-
-
 function install(){
-  installStyle();
+
   window.CC_RUNTIME.registerContext('depth',patchContext);
 }
 window.CC_LEVEL_DEPTH={version:VERSION,depths:DEPTHS.map(item=>({...item})),openAreas:[...OPEN_AREAS]};

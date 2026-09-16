@@ -1,7 +1,7 @@
 const fs=require('fs');
 const assert=require('assert');
 
-const source=fs.readFileSync('v249_home_search_focus.js','utf8');
+const source=fs.readFileSync('v249_home_search_focus.js','utf8')+require('../component-style.cjs')('v249_home_search_focus.js');
 
 assert.match(source,/const VERSION='2\.1\.51'/,'version marker');
 assert.match(source,/cc251-structured/,'structured search fold');

@@ -46,10 +46,6 @@ function render(q){
 
 function install(){
 
-  const style=document.createElement('style');
-  style.id='cc217Style';
-  style.textContent='.cc217-context{margin:12px 0;padding:11px 12px;border:1px solid #DFE8FA;border-radius:12px;background:#F8FAFF}.cc217-context small{display:block;margin-bottom:4px;color:#7B89A2;font-size:8.5px;font-weight:950}.cc217-context p{margin:0;color:#33415E;font-size:10px;font-weight:750;line-height:1.55}.cc217-result .result-cell b{color:#245FD6}.cc217-warn{background:#FFF9ED!important;border-color:#F6DFC0!important}.cc217-warn b{color:#B46A11!important}';
-  if(!document.getElementById(style.id))document.head.appendChild(style);
   window.CC_RUNTIME.registerSearch('precedent',q=>PRECEDENT.test(q),(_,q)=>{const result=render(q);window.CC_SEARCH_ANSWER.write($("searchResult"),result.html,result.answer)});
 }
 window.CC_BOOT.register('v217_precedent_search',install);

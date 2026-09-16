@@ -1,0 +1,5 @@
+/* 10-4 regression fix: long project names must not widen mobile grid tracks. */
+.cc230-card{min-width:0}
+.cc230-card-top>div:first-child{min-width:0}
+.cc230-card h3,.cc230-card p{overflow-wrap:anywhere}
+@media(max-width:700px){.cc230-list{grid-template-columns:minmax(0,1fr)}}

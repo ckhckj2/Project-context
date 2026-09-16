@@ -1,6 +1,6 @@
 const fs=require('fs');
 const assert=require('assert');
-const src=fs.readFileSync('v256_interaction_feedback.js','utf8');
+const src=fs.readFileSync('v256_interaction_feedback.js','utf8')+require('../component-style.cjs')('v256_interaction_feedback.js');
 
 assert(src.includes("const VERSION='2.1.62'"),'version must be 2.1.62');
 assert(src.includes("['기존 승인','변경 내용','영향 범위','처리 절차']"),'change work must expose its four-stage reasoning flow');

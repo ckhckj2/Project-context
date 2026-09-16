@@ -63,13 +63,9 @@ function enhance(){
   const root=$('contextResult');if(!root||!root.innerHTML.trim())return;
   const s=selected();render(root,classify(s.task,s.phase));
 }
-function style(){
-  if($('cc247Style'))return;const s=document.createElement('style');s.id='cc247Style';
-  s.textContent='.cc247-fit-gate{display:flex;justify-content:space-between;gap:18px;align-items:center;margin:12px 0;padding:14px 16px;border:1px solid #D8E5F7;border-radius:14px;background:#F4F8FE}.cc247-fit-gate.conditional{border-color:#E9DFC5;background:#FFF9EE}.cc247-fit-gate.mismatch{border-color:#EED7D7;background:#FFF5F5}.cc247-fit-copy{min-width:0}.cc247-fit-copy small{display:block;color:#3864B0;font-size:8.5px;font-weight:950}.cc247-fit-gate.conditional small{color:#8A672C}.cc247-fit-gate.mismatch small{color:#A55252}.cc247-fit-copy b{display:block;margin-top:4px;color:#314A6B;font-size:13px}.cc247-fit-copy p{margin:4px 0 0;color:#68788D;font-size:10px;line-height:1.5}.cc247-choices{display:flex;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end;gap:6px}.cc247-choices button{padding:7px 9px;border:1px solid #D7E0EC;border-radius:9px;background:#fff;color:#4F6380;font-size:9px;font-weight:900}.cc247-choices button:first-child{border-color:#8FB1E8;background:#EEF4FF;color:#2E5EB5}.cc247-fit-gate.resolved{padding:11px 14px}.actions.cc247-pending{display:none!important}.cc247-mode{display:inline-flex;margin-right:7px;padding:4px 7px;border-radius:999px;background:#EEF4FF;color:#3565BD;font-size:8.5px;font-weight:950}.cc247-exception-note{display:flex;gap:8px;margin-top:10px;padding:10px 12px;border:1px solid #E9DFC5;border-radius:11px;background:#FFF9EE}.cc247-exception-note b{flex:0 0 auto;color:#856227;font-size:9px}.cc247-exception-note span{color:#6F6553;font-size:9.5px;line-height:1.5}@media(max-width:760px){.cc247-fit-gate{align-items:stretch;flex-direction:column}.cc247-choices{justify-content:flex-start}.cc247-choices button{flex:1 1 auto}.cc247-exception-note{display:grid}}';
-  document.head.appendChild(s);
-}
+
 function install(){
-  style();
+
   window.CC_RUNTIME.registerContext('phase-fit',enhance);
   const counts={normal:0,prep:0,conditional:0,mismatch:0};
   Object.values(MATRIX).forEach(x=>Object.values(x.phases).forEach(v=>counts[v]++));

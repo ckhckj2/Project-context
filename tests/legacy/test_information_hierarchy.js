@@ -1,7 +1,7 @@
 const fs=require('fs');
 const assert=require('assert');
 
-const src=fs.readFileSync('v254_information_hierarchy.js','utf8');
+const src=fs.readFileSync('v254_information_hierarchy.js','utf8')+require('../component-style.cjs')('v254_information_hierarchy.js');
 
 assert(src.includes("const VERSION='2.1.58'"),'version must be 2.1.58');
 assert(src.includes("document.createElement('details')"),'depth guide must become a native disclosure');

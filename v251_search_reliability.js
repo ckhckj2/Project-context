@@ -149,15 +149,8 @@ function repairLegacy(){
   }
 }
 
-function installStyle(){
-  if($('cc253Style'))return;
-  const style=document.createElement('style');style.id='cc253Style';style.textContent=`
-  .cc253-card .result-grid{margin-top:12px!important}.cc253-card .result-cell{background:#F7F9FC!important}.cc253-caution{display:flex;gap:9px;margin-top:10px;padding:10px 12px;border-radius:11px;background:#FFF9F1}.cc253-caution b{flex:0 0 auto;color:#8B6531;font-size:9px}.cc253-caution span{color:#716555;font-size:9.5px;line-height:1.55}.cc253-sources{display:flex;flex-wrap:wrap;gap:9px;margin-top:8px}.cc253-sources a{color:#3868BA;font-size:9px;font-weight:850;text-decoration:none}.cc253-card.cc242-card:not(.cc242-expanded)>.cc253-caution,.cc253-card.cc242-card:not(.cc242-expanded)>.cc253-sources{display:none!important}
-  `;document.head.append(style);
-}
-
 function install(){
-  installStyle();
+
   window.CC_RUNTIME.registerSearch('definition',q=>{const route=routeQuery(q);return route.type==='definition'&&!/(?:무엇|뭐)부터|어떻게|요청|하래|검토|작성|취합|준비/.test(q)?route:null},renderRoute);
   window.CC_RUNTIME.registerResult('neutral',()=>{lastQuery=$('searchInput')?.value||'';repairLegacy()});
 }

@@ -31,9 +31,9 @@ assert(source.includes('실제 납품·심의·허가 목록은 회사, 계약, 
 assert(source.includes('과업지시서·계약'));
 assert(source.includes('심의·허가 요구'));
 assert(source.includes('협력분야 일정'));
-assert(source.includes("style.id='cc264DrawingStyle'"),'drawing guide style id must not collide with the v2.1.57 foundation style');
+assert(!source.includes("createElement('style')"),'drawing guide must not inject styles at runtime');
 assert(source.includes('프로젝트별·제출 전 추가 확인'),'secondary information must be progressively disclosed');
-assert(source.includes('font-size:12px;line-height:1.5'),'drawing list text must match the readable context scale');
+assert(require('../component-style.cjs')('v257_stage_drawing_guide.js').includes('font-size:12px;line-height:1.5'),'drawing list text must match the readable context scale');
 assert(!/locked|disabled\s*=/.test(source),'drawing guide must not lock information by level');
 assert(!source.includes('translateY('),'drawing guide buttons must not use geometry motion');
 assert(source.includes("if(!root||!root.innerHTML.trim())return;"),'empty results must not start a polling loop');

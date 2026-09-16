@@ -28,23 +28,11 @@ function installMobileShortcut(){
   tools.insertBefore(btn,tools.lastElementChild);
 }
 
-function installStyle(){
-  if(document.getElementById('cc231ProjectFixStyle'))return;
-  const s=document.createElement('style');
-  s.id='cc231ProjectFixStyle';
-  s.textContent=`
-    .cc230-home-project[hidden],.cc230-search-project[hidden]{display:none!important}
-    .cc231-project-shortcut{display:none}
-    @media(max-width:700px){.cc231-project-shortcut{display:inline-flex}}
-  `;
-  document.head.appendChild(s);
-}
-
 function install(){
   wireProjectNav();
   installMobileShortcut();
-  installStyle();
-  
+
+
 }
 
 window.CC_BOOT.register('v231_projects_fix',install);

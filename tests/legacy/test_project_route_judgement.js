@@ -38,7 +38,7 @@ ok(changed.checks.length===3,'three judgement checks');
 const fast=t.judgement({typeId:'fab',businessMode:'special',approvalRoute:'industry',routeException:'fast_track'},'협력업체 조정','실시설계');
 ok(fast.exceptionSummary.includes('설계·인허가·시공이 병행'),'fast-track phase caution');
 ok(t.taskKind('보고서 작성')==='other'&&t.taskKind('변경업무 검토')==='change','task kinds');
-ok(source.includes('@media(max-width:800px)'),'responsive breakpoint');
+ok(require('../component-style.cjs')('v248_project_route_judgement.js').includes('@media(max-width:800px)'),'responsive breakpoint');
 ok(!source.includes(':has('),'avoid unsupported selector');
 ok(!source.includes('CSS.escape'),'avoid unnecessary Safari selector dependency');
 ok(source.includes('cc250RouteSig'),'mutation update must be idempotent');

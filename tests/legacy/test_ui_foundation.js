@@ -1,7 +1,7 @@
 const fs=require('node:fs');
 const assert=require('node:assert');
 
-const source=fs.readFileSync('v253_ui_foundation.js','utf8');
+const source=fs.readFileSync('v253_ui_foundation.js','utf8')+require('../component-style.cjs')('v253_ui_foundation.js');
 
 assert.match(source,/const VERSION='2\.1\.57'/,'version');
 assert.match(source,/function syncNavigation\(\)/,'navigation state sync');
