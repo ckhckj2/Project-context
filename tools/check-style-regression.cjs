@@ -20,7 +20,7 @@ const server=http.createServer((req,res)=>{
   if(!cache.has(key))cache.set(key,version==='baseline'
    ?cp.execFileSync('git',['show',baseline+':'+file],{cwd:root,stdio:['ignore','pipe','pipe']})
    :fs.readFileSync(path.join(root,file)));
-  const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml'};
+  const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml'};
   res.writeHead(200,{'Content-Type':mime[path.extname(file)]||'application/octet-stream'});res.end(cache.get(key));
  }catch(error){res.writeHead(404);res.end('Not found');}
 });

@@ -1,0 +1,277 @@
+.cc-app .work-page {
+  max-width: 1280px;
+}
+.cc-app .work-heading {
+  margin-bottom: 28px;
+}
+.cc-app .work-heading h1 {
+  font-size: 36px;
+  margin: 8px 0 12px;
+}
+.cc-app .work-toolbar {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.cc-app .work-secondary {
+  color: var(--cc-accent-text);
+  border: 1px solid var(--cc-border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  background: var(--cc-surface);
+}
+.cc-app .work-context-summary {
+  color: var(--cc-muted);
+  font-size: 15px;
+}
+.cc-app .work-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 56px;
+  align-items: start;
+}
+.cc-app .work-canvas {
+  min-width: 0;
+}
+.cc-app .work-current {
+  padding-bottom: 28px;
+}
+.cc-app .work-current h2 {
+  font-size: 25px;
+  margin: 8px 0 18px;
+}
+.cc-app .work-open-detail {
+  display: inline-flex;
+}
+.cc-app .work-nodes {
+  display: grid;
+  gap: 18px;
+}
+.cc-app .work-node {
+  width: 100%;
+  padding: 20px 24px;
+  border-radius: 22px;
+  background: var(--cc-accent);
+  color: var(--cc-background);
+  text-align: left;
+  display: grid;
+  gap: 8px;
+}
+.cc-app .work-node strong {
+  font-size: 22px;
+  font-weight: var(--cc-weight-title);
+}
+.cc-app .work-node[aria-pressed='true'] {
+  outline: 2px solid var(--cc-accent);
+  outline-offset: 4px;
+}
+.cc-app .work-edge {
+  color: var(--cc-muted);
+  font-size: 14px;
+  margin: 8px 8px 14px;
+}
+.cc-app .work-candidates {
+  border-left: 2px dashed var(--cc-border-strong);
+  margin: 28px 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 12px;
+}
+.cc-app .work-candidate {
+  border: 1px dashed var(--cc-border-strong);
+  background: var(--cc-surface);
+  color: var(--cc-muted);
+  text-align: left;
+  padding: 16px 18px;
+  border-radius: 16px;
+}
+.cc-app .work-detail {
+  padding: 32px;
+  border-radius: 24px;
+  background: var(--cc-surface);
+}
+.cc-app .work-detail h2 {
+  font-size: 28px;
+  margin: 8px 0 24px;
+}
+.cc-app .work-steps {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 26px;
+}
+.cc-app .work-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--cc-border);
+  cursor: pointer;
+}
+.cc-app .work-step input {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin: 5px 0;
+  accent-color: var(--cc-accent);
+}
+.cc-app .work-step > span {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.cc-app .work-step strong {
+  font-weight: var(--cc-weight-title);
+  font-size: 20px;
+}
+.cc-app .work-step span span {
+  color: var(--cc-muted);
+}
+.cc-app .work-done {
+  margin: 8px 0 22px;
+}
+.cc-app .work-fold {
+  margin-top: 26px;
+}
+.cc-app .work-fold summary {
+  cursor: pointer;
+  min-height: 44px;
+  color: var(--cc-accent-text);
+  padding: 8px 0;
+}
+.cc-app .work-explanation {
+  display: grid;
+  gap: 16px;
+  margin: 16px 0;
+}
+.cc-app .work-explanation h3 {
+  font-size: 18px;
+  margin: 8px 0 0;
+}
+.cc-app .work-notice {
+  color: var(--cc-muted);
+  font-size: 14px;
+  margin-top: 20px;
+}
+.cc-app .work-list {
+  padding-left: 24px;
+}
+.cc-app .work-list li {
+  margin-bottom: 14px;
+}
+.cc-app .work-context {
+  display: grid;
+  gap: 18px;
+}
+.cc-app select,
+.cc-app textarea {
+  font: inherit;
+  color: var(--cc-ink);
+  background: var(--cc-background);
+  border: 1px solid var(--cc-border-strong);
+  border-radius: 12px;
+  padding: 12px;
+  width: 100%;
+  min-height: 44px;
+}
+.cc-app select:focus-visible,
+.cc-app textarea:focus-visible {
+  outline: 3px solid var(--cc-accent);
+  outline-offset: 3px;
+}
+.cc-app #workBody > div > .primary {
+  margin: 24px 12px 8px 0;
+}
+.cc-app #workBody .work-detail {
+  background: var(--cc-background);
+  padding: 12px 0;
+}
+@media (max-width: 800px) {
+  .cc-app .work-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cc-app .work-side {
+    display: none;
+  }
+  .cc-app .work-open-detail {
+    display: inline-flex;
+  }
+  .cc-app .work-heading h1 {
+    font-size: 29px;
+  }
+  .cc-app .work-toolbar {
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .cc-app .work-context-summary {
+    width: 100%;
+  }
+  .cc-app .work-current h2 {
+    font-size: 24px;
+  }
+  .cc-app .work-detail h2 {
+    font-size: 26px;
+  }
+  .cc-app .work-step strong {
+    font-size: 21px;
+  }
+  .cc-app #workDialog {
+    width: 100%;
+    max-width: none;
+    margin: auto 0 0;
+    max-height: 88svh;
+    border-radius: 24px 24px 0 0;
+  }
+}
+/* Parallel siblings share a row; the final comparison joins the drawing/report branch. */
+@media (min-width: 1000px) {
+  .cc-app .work-parallel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 20px;
+  }
+  .cc-app .work-parallel .work-node-group:first-child {
+    grid-column: 1 / -1;
+  }
+  .cc-app .work-parallel .work-node-group[data-task='document-match'] {
+    grid-column: 1 / -1;
+  }
+  .cc-app .work-parallel .work-node {
+    padding: 20px;
+  }
+  .cc-app .work-parallel .work-node strong {
+    font-size: 20px;
+  }
+}
+.cc-app .work-canvas > .work-secondary {
+  margin-top: 24px;
+}
+/* The dialog already names the task; avoid repeating a large heading in the sheet. */
+.cc-app #workBody .work-detail > h2 {
+  display: none;
+}
+.cc-app .reading-button {
+  display: block;
+  color: var(--cc-muted);
+  font-size: 14px;
+  padding: 8px 0;
+  margin-bottom: 16px;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cc-app .reading-options {
+  display: grid;
+  gap: 18px;
+}
+.cc-app .reading-section {
+  display: grid;
+  gap: 12px;
+}
+.cc-app .reading-overview {
+  display: grid;
+  gap: 28px;
+}
+.cc-app .reading-other-steps {
+  margin: 8px 0 26px;
+}

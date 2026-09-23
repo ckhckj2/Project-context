@@ -1,0 +1,18 @@
+:root {
+  --cc-ink: #17283f;
+  --cc-muted: #526177;
+  --cc-accent: #3859dc;
+  --cc-accent-text: #3153c9;
+  --cc-background: #fff;
+  --cc-surface: #f6f8fb;
+  --cc-pale: #edf2ff;
+  --cc-border: #dce3ec;
+  --cc-border-subtle: #edf0f6;
+  --cc-border-strong: #9ca9bd;
+  --cc-backdrop: #17283f66;
+  --cc-weight-body: 400;
+  --cc-weight-label: 600;
+  --cc-weight-title: 800;
+  --cc-focus-ring: var(--cc-accent);
+  --cc-touch-target: 44px;
+}

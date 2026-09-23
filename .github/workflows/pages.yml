@@ -1,0 +1,51 @@
+name: Verified Pages release
+# Manual release of the stage 8 redesign and its compatibility pages.
+# Before enabling, switch Pages Source to GitHub Actions and require Validate in
+# branch protection. A branch-based Pages job can otherwise bypass these checks.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: verified-pages-release
+  cancel-in-progress: false
+jobs:
+  validate:
+    uses: ./.github/workflows/validate.yml
+  package:
+    needs: validate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Require the verified Actions deployment route
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          source=$(gh api "repos/$GH_REPO/pages" --jq .build_type)
+          test "$source" = workflow || { echo 'Pages Source must be GitHub Actions before this release.'; exit 1; }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - run: npm ci --ignore-scripts
+      - run: npm run build:release
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: dist-release
+  deploy:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy the verified artifact
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
