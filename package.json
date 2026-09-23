@@ -1,0 +1,21 @@
+{
+  "name": "cheokcheok",
+  "version": "2.1.75",
+  "private": true,
+  "description": "Architecture workflow navigator: local checks and static site tooling",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "check": "npm run format:check && node tools/check-boundaries.cjs && node tools/check-entrypoints.cjs && node --test tests/foundation/*.test.mjs && node tests/run.cjs",
+    "check:browser": "node tools/check-foundation-browser.cjs && node docs/redesign/check-preview.cjs && node tools/check-browser-flows.cjs && node tools/check-navigation-browser.cjs && node tools/check-execution-browser.cjs && node tools/check-reading-browser.cjs && node tools/check-learning-browser.cjs && node tools/check-progress-browser.cjs && node tools/check-release-browser.cjs",
+    "build:site": "node tools/build-site.cjs",
+    "build:release": "node tools/build-site.cjs --redesign",
+    "format:check": "prettier --check \"src/**/*.{mjs,css}\" \"tests/foundation/*.{mjs,html}\" \"docs/redesign/preview/*.{js,mjs,css,html}\" \"tools/check-{boundaries,entrypoints,foundation-browser,navigation-browser,execution-browser,reading-browser,learning-browser,progress-browser,release-browser}.cjs\" tools/build-site.cjs \".github/workflows/*.yml\" \"app/*.{mjs,html}\" docs/redesign/level-preview.html"
+  },
+  "devDependencies": {
+    "acorn": "8.15.0",
+    "playwright": "1.62.1",
+    "prettier": "3.6.2"
+  }
+}

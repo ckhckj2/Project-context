@@ -1,0 +1,15 @@
+/* Common typography and interaction rules. Screen layout belongs to its owner. */
+.cc-title {
+  font-weight: var(--cc-weight-title);
+  font-synthesis: weight;
+}
+
+.cc-focusable:focus-visible {
+  outline: 3px solid var(--cc-focus-ring);
+  outline-offset: 4px;
+}
+
+.cc-control {
+  min-height: var(--cc-touch-target);
+  min-width: var(--cc-touch-target);
+}

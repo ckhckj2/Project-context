@@ -1,0 +1,56 @@
+.cc-app .save-status {
+  max-width: 1120px;
+  margin: 12px auto;
+  padding: 0 24px;
+  color: var(--cc-muted);
+  font-size: 14px;
+}
+.cc-app .save-status button {
+  margin: 8px 0 8px 16px;
+}
+.cc-app .save-form {
+  display: grid;
+  gap: 24px;
+}
+.cc-app .save-form input {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  border: 1px solid var(--cc-border);
+  border-radius: 12px;
+  padding: 14px;
+}
+.cc-app .saved-page {
+  max-width: 1000px;
+}
+.cc-app .saved-page select {
+  padding: 12px;
+  margin: 24px 0;
+}
+.cc-app .saved-list {
+  display: grid;
+  gap: 24px;
+}
+.cc-app .saved-card {
+  padding: 28px;
+  border: 1px solid var(--cc-border);
+  border-radius: 20px;
+  background: var(--cc-surface);
+}
+.cc-app .saved-card h2 {
+  font-size: 24px;
+  margin: 0 0 18px;
+  overflow-wrap: anywhere;
+}
+.cc-app .saved-card details {
+  margin-top: 20px;
+}
+.cc-app .saved-card summary {
+  cursor: pointer;
+}
+.cc-app .saved-empty {
+  padding: 40px 0;
+}
+.cc-app .saved-page > .help-link {
+  margin-right: 24px;
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>척척 · 1단계 인터랙션 시안</title>
+    <link rel="stylesheet" href="../../../src/styles/tokens.css" />
+    <link rel="stylesheet" href="../../../src/styles/components.css" />
+    <link rel="stylesheet" href="preview.css" />
+    <script type="module" src="preview.js"></script>
+  </head>
+  <body>
+    <header class="header">
+      <button class="brand" data-go="home" aria-label="척척 홈">
+        척척<span class="spark">✦</span><span class="smile"></span></button
+      ><span class="preview-label">설계 시안</span
+      ><button class="menu-button" id="menuOpen" aria-label="메뉴 열기">☰</button>
+    </header>
+    <main id="app"></main>
+    <p id="notice" class="notice" role="status" hidden></p>
+    <dialog id="sheet" aria-labelledby="sheetTitle">
+      <div class="sheet-head">
+        <h2 id="sheetTitle"></h2>
+        <button id="sheetClose" aria-label="닫기">×</button>
+      </div>
+      <div id="sheetBody"></div>
+    </dialog>
+    <footer class="preview-footer">
+      1단계 검토용 · 저장은 이 화면에서만 유지되며 새로고침하면 초기화됩니다.
+    </footer>
+  </body>
+</html>

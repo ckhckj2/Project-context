@@ -1,0 +1,119 @@
+.cc-app .learning-page {
+  max-width: 860px;
+}
+.cc-app .learning-page h1 {
+  font-size: 32px;
+  margin: 8px 0 18px;
+}
+.cc-app .learning-page > .context-note {
+  margin-bottom: 30px;
+}
+.cc-app .learning-tracks {
+  display: grid;
+  gap: 20px;
+  margin: 32px 0;
+}
+.cc-app .learning-tracks .category-card {
+  display: grid;
+  gap: 8px;
+}
+.cc-app .learning-intro {
+  padding: 30px;
+  margin: 28px 0;
+  border-radius: 24px;
+  background: var(--cc-surface);
+  display: grid;
+  gap: 20px;
+}
+.cc-app .learning-page > .primary {
+  margin: 24px 18px 18px 0;
+}
+.cc-app .quiz-prompt {
+  font-size: 26px;
+  margin: 16px 0 28px;
+  line-height: 1.55;
+}
+.cc-app .quiz-answers {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.cc-app .quiz-choice {
+  display: flex;
+  gap: 16px;
+  padding: 18px 22px;
+  border: 1px solid var(--cc-border);
+  border-radius: 16px;
+  align-items: center;
+  cursor: pointer;
+}
+.cc-app .quiz-choice:has(input:checked) {
+  border-color: var(--cc-accent);
+  background: var(--cc-pale);
+}
+.cc-app .quiz-choice input {
+  flex: 0 0 22px;
+  height: 22px;
+  accent-color: var(--cc-accent);
+}
+.cc-app .quiz-order {
+  text-align: left;
+  padding: 18px 22px;
+  border: 1px solid var(--cc-border);
+  border-radius: 16px;
+}
+.cc-app .quiz-order[aria-pressed='true'] {
+  background: var(--cc-pale);
+  color: var(--cc-accent-text);
+}
+.cc-app .quiz-short {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--cc-border-strong);
+  border-radius: 12px;
+  margin-top: 14px;
+}
+.cc-app .quiz-feedback {
+  padding: 26px;
+  display: grid;
+  gap: 18px;
+  background: var(--cc-surface);
+  border-radius: 22px;
+  margin-top: 26px;
+}
+.cc-app .quiz-feedback h3 {
+  margin: 0;
+  font-size: 24px;
+}
+.cc-app .learning-error {
+  color: var(--cc-ink);
+  margin: 20px 0;
+}
+@media (max-width: 700px) {
+  .cc-app .learning-page h1 {
+    font-size: 28px;
+  }
+  .cc-app .quiz-prompt {
+    font-size: 23px;
+  }
+  .cc-app .quiz-choice {
+    padding: 16px;
+  }
+  .cc-app .learning-page > .primary {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1000px) {
+  .cc-app .learning-page:has(.learning-tracks) {
+    max-width: 1120px;
+  }
+  .cc-app .learning-tracks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .cc-app .learning-tracks .category-card {
+    min-height: 220px;
+    align-content: center;
+    gap: 18px;
+  }
+}

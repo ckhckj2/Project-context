@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>척척 — 건축 실무, 물으면 척척</title>
+    <link rel="stylesheet" href="../src/styles/tokens.css" />
+    <link rel="stylesheet" href="../src/styles/components.css" />
+    <link rel="stylesheet" href="../src/styles/navigation.css" />
+    <link rel="stylesheet" href="../src/styles/execution.css" />
+    <link rel="stylesheet" href="../src/styles/learning.css" />
+    <link rel="stylesheet" href="../src/styles/progress.css" />
+    <script type="module" src="main.mjs"></script>
+  </head>
+  <body class="cc-app">
+    <a class="skip-link" href="#main">본문으로 이동</a>
+    <header class="site-header">
+      <a class="brand" href="#/" aria-label="척척 홈">척척<span aria-hidden="true">✦</span></a>
+      <button
+        id="menu"
+        class="menu-button cc-control cc-focusable"
+        aria-label="메뉴 열기"
+        aria-haspopup="dialog"
+      >
+        ☰
+      </button>
+    </header>
+    <div id="saveStatus" class="save-status" role="status" hidden></div>
+    <main id="main" tabindex="-1"></main>
+    <dialog id="workDialog" aria-labelledby="workTitle">
+      <div class="dialog-heading">
+        <h2 id="workTitle" class="cc-title">업무 안내</h2>
+        <button id="workClose" class="cc-control" aria-label="닫기">×</button>
+      </div>
+      <div id="workBody"></div>
+    </dialog>
+    <noscript>척척의 업무 선택을 사용하려면 JavaScript를 허용해 주세요.</noscript>
+    <dialog id="menuDialog" aria-labelledby="menuTitle">
+      <div class="dialog-heading">
+        <h2 id="menuTitle" class="cc-title">메뉴</h2>
+        <button id="menuClose" class="cc-control" aria-label="닫기">×</button>
+      </div>
+      <div id="menuBody"></div>
+    </dialog>
+  </body>
+</html>
