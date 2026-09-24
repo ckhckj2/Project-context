@@ -11,6 +11,7 @@ const tags = new Set([
   'h3',
   'h1',
   'ul',
+  'ol',
   'li',
   'nav',
   'button',

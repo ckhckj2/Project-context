@@ -593,6 +593,13 @@
   color: var(--cc-muted);
   font-size: 15px;
 }
+.cc-app .task-shortcut .card-arrow {
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  margin-top: 4px;
+}
 .cc-app .task-trail {
   display: flex;
   flex-wrap: wrap;
@@ -625,5 +632,145 @@
   }
   .cc-app .task-group {
     padding: 20px;
+  }
+}
+
+/* Reading surfaces remain plain; actions have an explicit verb and control shape. */
+.cc-app .task-guide-page {
+  max-width: 980px;
+}
+.cc-app .task-guide-page .page-heading {
+  margin-bottom: 20px;
+}
+.cc-app .task-guide-page .purpose {
+  margin: 0 0 28px;
+  padding: 0;
+  border: 0;
+}
+.cc-app .task-guide-page .purpose h2 {
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+.cc-app .task-guide-page .purpose p {
+  font-size: 20px;
+  line-height: 1.75;
+  padding: 0;
+}
+.cc-app .task-guide-page .first-action {
+  max-width: none;
+  border-radius: 14px;
+  padding: 28px 32px;
+}
+.cc-app .first-action > .primary {
+  margin-top: 24px;
+}
+.cc-app .action-caption {
+  color: var(--cc-muted);
+  font-size: 14px;
+  margin-top: 12px;
+}
+.cc-app .task-guide {
+  margin-top: 44px;
+}
+.cc-app .task-guide > h2 {
+  font-size: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--cc-ink);
+}
+.cc-app .task-preparation {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  padding: 24px 0;
+}
+.cc-app .guide-section h3,
+.cc-app .guide-done h3,
+.cc-app .guide-notice h3 {
+  font-size: 17px;
+  margin: 0 0 10px;
+}
+.cc-app .guide-section p,
+.cc-app .guide-done p {
+  line-height: 1.8;
+}
+.cc-app .guide-sequence {
+  border: 1px solid var(--cc-border-strong);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.cc-app .guide-sequence > summary,
+.cc-app .guide-legacy > summary {
+  min-height: 48px;
+  padding: 14px 18px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.cc-app .guide-sequence > summary:hover {
+  background: var(--cc-surface);
+}
+.cc-app .guide-sequence[open] > summary {
+  border-bottom: 1px solid var(--cc-border);
+  background: var(--cc-surface);
+}
+.cc-app .guide-steps {
+  margin: 0;
+  padding: 8px 24px 8px 48px;
+}
+.cc-app .guide-steps li {
+  padding: 16px 0 16px 6px;
+}
+.cc-app .guide-steps li + li {
+  border-top: 1px solid var(--cc-border);
+}
+.cc-app .guide-steps li::marker {
+  font-weight: 700;
+}
+.cc-app .guide-steps p {
+  margin-top: 6px;
+  color: var(--cc-muted);
+}
+.cc-app .guide-done {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--cc-border);
+}
+.cc-app .guide-notice {
+  margin-top: 28px;
+  padding: 18px 22px;
+  background: var(--cc-surface);
+  border-left: 3px solid var(--cc-border-strong);
+  font-size: 15px;
+}
+.cc-app .guide-notice p + p {
+  margin-top: 8px;
+}
+.cc-app .guide-legacy {
+  margin-top: 28px;
+  font-size: 15px;
+}
+.cc-app .guide-legacy > summary {
+  padding-left: 0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cc-app .guide-legacy p {
+  color: var(--cc-muted);
+}
+.cc-app .guide-legacy .help-link {
+  margin-top: 8px;
+}
+@media (max-width: 700px) {
+  .cc-app .task-guide-page .purpose p {
+    font-size: 18px;
+  }
+  .cc-app .task-guide-page .first-action {
+    padding: 24px;
+  }
+  .cc-app .first-action > .primary {
+    width: 100%;
+    padding-inline: 14px;
+  }
+  .cc-app .task-preparation {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
   }
 }

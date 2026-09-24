@@ -25,6 +25,9 @@ test('release requires validation and packages production assets only', () => {
   assert.match(workflow, /needs: validate/);
   assert.match(workflow, /needs: package/);
   assert.match(workflow, /uses: \.\/\.github\/workflows\/validate.yml/);
+  assert.match(workflow, /push:\s+branches: \[main\]/);
+  assert.match(workflow, /if: github.ref == 'refs\/heads\/main'/);
+  assert.match(workflow, /workflow_dispatch:/);
   assert.doesNotMatch(workflow, /continue-on-error|always\(\)|pull_request_target/);
   const validation = fs.readFileSync(path.join(root, '.github/workflows/validate.yml'), 'utf8');
   for (const command of ['npm ci --ignore-scripts', 'npm run check', 'npm run check:browser'])

@@ -1,8 +1,10 @@
 name: Verified Pages release
-# Manual release of the stage 8 redesign and its compatibility pages.
+# Release merged main changes and retain manual releases for recovery.
 # Before enabling, switch Pages Source to GitHub Actions and require Validate in
 # branch protection. A branch-based Pages job can otherwise bypass these checks.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read

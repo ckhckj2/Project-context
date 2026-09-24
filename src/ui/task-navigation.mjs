@@ -1,5 +1,6 @@
 import { element as el, navigationLink as link } from './elements.mjs';
 import { createDialog } from './dialog.mjs';
+import { taskPreparation, taskSequence } from './task-guide.mjs';
 import {
   categoryList,
   tasksInCategory,
@@ -100,7 +101,11 @@ function choose() {
     const tasks = el('div', undefined, 'task-group-links');
     for (const task of tasksInCategory(category.id)) {
       const anchor = link('', pathFor(task.id), 'task-shortcut');
-      anchor.append(el('strong', task.title), el('span', task.description));
+      anchor.append(
+        el('strong', task.title),
+        el('span', task.description),
+        el('small', '업무 안내 보기 →', 'card-arrow'),
+      );
       tasks.append(anchor);
     }
     group.append(tasks);
@@ -124,7 +129,8 @@ function category(id) {
 
 function task(id) {
   const item = findTask(id);
-  const section = page(item.title, '선택한 업무');
+  const section = page(item.title, '업무 안내');
+  section.classList.add('task-guide-page');
   const category = categoryList().find((group) => group.taskIds.includes(id));
   const trail = el('nav', undefined, 'task-trail');
   trail.setAttribute('aria-label', '현재 업무 경로');
@@ -133,24 +139,41 @@ function task(id) {
     el('span', '› ' + category.title + ' › ' + item.title),
   );
   section.insertBefore(trail, section.querySelector('.page-heading'));
+  const purpose = el('section', undefined, 'purpose');
+  purpose.append(el('h2', '왜 이 일을 하나요?', 'cc-title'), el('p', item.detail.purpose));
+  section.append(purpose);
   const card = el('section', undefined, 'first-action');
   card.append(
     el('p', '먼저 할 일', 'eyebrow'),
     el('h2', item.firstAction.title, 'cc-title'),
     el('p', item.firstAction.hint, 'first-action-hint'),
+    link('체크리스트로 진행하기 →', '#/flow/' + id, 'primary'),
+    el('p', '실행 항목을 체크하고, 메모를 남기며 업무를 진행할 수 있어요.', 'action-caption'),
   );
   section.append(card);
-  const purpose = el('details', undefined, 'purpose');
-  purpose.open = true;
-  purpose.append(el('summary', '왜 이 일부터 하나요?'), el('p', item.guide.purpose));
-  section.append(
-    purpose,
-    link('전체 흐름과 실행 항목 보기 →', '#/flow/' + id, 'primary'),
+  const guide = el('section', undefined, 'task-guide');
+  guide.setAttribute('aria-label', '업무 상세안내');
+  guide.append(
+    el('h2', '업무 상세안내', 'cc-title'),
+    taskPreparation(item.detail),
+    taskSequence(item.detail),
+  );
+  const done = el('section', undefined, 'guide-done');
+  done.append(el('h3', '어디까지 하면 되나요?', 'cc-title'), el('p', item.detail.done));
+  guide.append(done);
+  const notice = el('section', undefined, 'guide-notice');
+  notice.append(
+    el('h3', '시작 전 확인', 'cc-title'),
+    el('p', '공통 업무 안내예요. 시설·설계 단계·실제 승인 절차에 따라 적용할 내용이 달라져요.'),
+    el('p', '제출·변경 전에는 최신 기준자료와 책임자에게 적용 여부를 확인하세요.'),
+  );
+  const legacy = el('details', undefined, 'guide-legacy');
+  legacy.append(
+    el('summary', '이전 화면의 추가 자료 찾기'),
+    el('p', '프로젝트별 절차·용어 등 더 넓은 자료가 필요하면 이전 화면에서 찾아볼 수 있어요.'),
     link('기존 상세 안내 보기', legacyDestination('task', id), 'help-link'),
   );
-  section.append(
-    el('p', '건물 종류와 설계 단계에 따라 확인할 내용이 달라질 수 있어요.', 'context-note'),
-  );
+  section.append(guide, notice, legacy);
   return section;
 }
 
