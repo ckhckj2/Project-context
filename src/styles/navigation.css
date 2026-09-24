@@ -145,7 +145,7 @@
 .cc-app .text-link,
 .cc-app .text-button,
 .cc-app .help-link {
-  color: var(--cc-accent-text);
+  color: var(--cc-ink);
   min-height: 44px;
   display: inline-flex;
   align-items: center;
@@ -155,7 +155,7 @@
 }
 .cc-app .examples summary {
   cursor: pointer;
-  color: var(--cc-accent-text);
+  color: var(--cc-ink);
   min-height: 44px;
   display: flex;
   align-items: center;
@@ -217,7 +217,7 @@
   text-align: right;
 }
 .cc-app .card-arrow {
-  color: var(--cc-accent-text);
+  color: var(--cc-ink);
   font-size: 15px;
 }
 .cc-app .page {
@@ -243,7 +243,7 @@
   overflow-wrap: anywhere;
 }
 .cc-app .eyebrow {
-  color: var(--cc-accent-text);
+  color: var(--cc-ink);
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 14px;
@@ -301,14 +301,16 @@
   margin-top: 30px;
 }
 .cc-app .first-action {
-  background: var(--cc-pale);
+  background: var(--cc-surface);
+  border: 1px solid var(--cc-border);
+  border-left: 4px solid var(--cc-ink);
   border-radius: 20px;
   padding: 36px;
   max-width: 800px;
 }
 .cc-app .first-action h2 {
   font-size: 28px;
-  line-height: 1.6;
+  line-height: 1.45;
 }
 .cc-app .first-action-hint {
   color: var(--cc-muted);
@@ -320,7 +322,7 @@
   margin: 22px 0 32px;
 }
 .cc-app .purpose summary {
-  color: var(--cc-accent-text);
+  color: var(--cc-ink);
   cursor: pointer;
   min-height: 44px;
   padding: 8px 0;
@@ -531,5 +533,97 @@
 @media (prefers-reduced-motion: reduce) {
   .cc-app * {
     scroll-behavior: auto;
+  }
+}
+
+/* Task selection is one screen; hierarchy comes from type and grouping, not blue. */
+.cc-app .home-shortcuts {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 22px;
+}
+.cc-app .home-shortcuts a {
+  padding: 8px 0;
+  min-height: 44px;
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.cc-app .selection-intro {
+  margin: -12px 0 28px;
+  color: var(--cc-muted);
+}
+.cc-app .selection-alternatives {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px 28px;
+}
+.cc-app .task-group {
+  border: 1px solid var(--cc-border);
+  border-radius: 16px;
+  padding: 24px;
+  background: var(--cc-background);
+}
+.cc-app .task-group h2 {
+  font-size: 22px;
+  margin-bottom: 12px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--cc-border);
+}
+.cc-app .task-group-links {
+  display: grid;
+}
+.cc-app .task-shortcut {
+  display: grid;
+  padding: 14px 8px;
+  gap: 4px;
+  border-radius: 8px;
+}
+.cc-app .task-shortcut:hover,
+.cc-app .task-card:hover {
+  background: var(--cc-surface);
+}
+.cc-app .task-shortcut strong {
+  font-size: 18px;
+}
+.cc-app .task-shortcut span {
+  color: var(--cc-muted);
+  font-size: 15px;
+}
+.cc-app .task-trail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--cc-muted);
+  margin: -16px 0 22px;
+}
+.cc-app .task-trail a,
+.cc-app .text-link,
+.cc-app .help-link,
+.cc-app .text-button {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cc-app .purpose {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--cc-border);
+}
+.cc-app .purpose summary {
+  font-weight: 700;
+}
+.cc-app .purpose p {
+  padding: 8px 0;
+  max-width: 65ch;
+}
+@media (max-width: 700px) {
+  .cc-app .home-shortcuts {
+    justify-content: flex-start;
+  }
+  .cc-app .task-group {
+    padding: 20px;
   }
 }

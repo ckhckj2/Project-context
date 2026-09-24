@@ -92,15 +92,21 @@ const server = http.createServer((req, res) => {
     );
     await page.locator('.brand').click();
     await page.locator('.hero-copy > .primary').click();
-    await page.locator('.category-card').first().waitFor();
-    assert.equal(await page.locator('.category-card').count(), 4);
+    await page.locator('.task-group').first().waitFor();
+    assert.equal(await page.locator('.task-group').count(), 4);
     await capture('categories-desktop');
-    await page.locator('a[href="#/category/design"]').click();
+    assert.ok((await page.locator('.task-shortcut').count()) >= tasks.length);
+    // First guidance is two clicks from home, with no mandatory category screen.
+
     await page.locator('a[href="#/task/drawing-revision"]').click();
     assert.match(await page.locator('.first-action').innerText(), /수정 요청/);
+    assert.ok(await page.locator('.purpose p').isVisible());
+    assert.match(await page.locator('.task-trail').innerText(), /도면·설계/);
+    assert.equal(await page.locator('main .primary').count(), 1);
+
     await page.goBack();
-    await page.locator('.task-card').first().waitFor();
-    assert.match(await page.locator('main h1').innerText(), /도면·설계/);
+    await page.locator('.task-shortcut').first().waitFor();
+    assert.match(await page.locator('main h1').innerText(), /어떤 일을 맡았나요/);
     await page.goForward();
     await page.reload();
     assert.match(await page.locator('main h1').innerText(), /도면 수정/);
