@@ -37,6 +37,7 @@ export function renderExecution(
 ) {
   let activeId = session.snapshot().nextTaskId ?? session.snapshot().rootId;
   let detailOpen = false;
+  let optionsOpen = false;
   const mobile = () => matchMedia('(max-width: 800px)').matches;
   const titleOf = (id) => session.snapshot().tasks.find((task) => task.id === id)?.title ?? id;
   function message(text) {
@@ -328,7 +329,7 @@ export function renderExecution(
         'work-context-summary',
       ),
     );
-    page.append(controls);
+    // Conditions refine the result; they must not block the first action.
     const layout = el('div', undefined, 'work-layout'),
       canvas = el('section', undefined, 'work-canvas');
     canvas.setAttribute('aria-label', '선택한 업무와 선행 관계');
@@ -356,6 +357,7 @@ export function renderExecution(
         'cc-title',
       ),
     );
+    if (pending) current.append(el('p', pending.text, 'work-current-hint'));
     if (next)
       current.append(
         button('다음 행동 보기 →', () => showDetail(next.id), 'primary work-open-detail'),
@@ -363,7 +365,36 @@ export function renderExecution(
     else if (state.workflow.status === 'completed')
       current.append(button('다시 진행하기', () => act(() => session.reopen())));
     else current.append(button('이번 흐름 완료', () => act(() => session.complete()), 'primary'));
-    canvas.append(current);
+    canvas.append(current, controls);
+    const treeHeading = el('h2', '전체 업무 흐름', 'work-tree-title cc-title');
+    treeHeading.tabIndex = -1;
+    current.append(
+      button(
+        '전체 흐름으로 이동 ↓',
+        () => {
+          treeHeading.scrollIntoView({ block: 'start' });
+          treeHeading.focus({ preventScroll: true });
+        },
+        'text-button work-tree-jump',
+      ),
+    );
+    canvas.append(
+      treeHeading,
+      el(
+        'p',
+        '현재 보는 업무는 테두리로 표시해요. 업무를 누르면 실행 항목을 볼 수 있어요.',
+        'work-tree-hint',
+      ),
+    );
+    const trail = el(
+      'p',
+      '현재 위치 · ' +
+        (activeId === state.rootId
+          ? titleOf(activeId)
+          : titleOf(state.rootId) + ' › ' + titleOf(activeId)),
+      'work-location',
+    );
+    canvas.append(trail);
     const parallel =
       state.workflow.nodes.includes('report-update') &&
       state.workflow.nodes.includes('consultant-send');
@@ -408,7 +439,13 @@ export function renderExecution(
         candidate.dataset.branch = branch.id;
         choices.append(candidate);
       }
-      canvas.append(choices);
+      const optional = fold('필요한 후속 업무 추가 (' + candidates.length + ')', choices);
+      optional.classList.add('work-optional');
+      optional.open = optionsOpen;
+      optional.addEventListener('toggle', () => {
+        optionsOpen = optional.open;
+      });
+      canvas.append(optional);
     }
     if (state.branches.some((branch) => branch.selected))
       canvas.append(button('흐름 편집', editPath));
@@ -429,7 +466,9 @@ export function renderExecution(
     });
     const label = el('label', '업무 메모 (500자 이내)');
     label.htmlFor = memo.id;
-    canvas.append(fold('메모', label, memo, error));
+    const memoFold = fold('메모', label, memo, error);
+    memoFold.classList.add('work-memo');
+    canvas.append(memoFold);
     const side = el('div', undefined, 'work-side');
     side.append(detail(activeId));
     layout.append(canvas, side);

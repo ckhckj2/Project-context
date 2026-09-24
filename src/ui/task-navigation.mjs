@@ -46,6 +46,11 @@ function home() {
     heading('지금 할 업무를 찾아볼까요?'),
     link('업무 선택하기 ↗', '#/tasks', 'primary'),
   );
+  const shortcuts = el('nav', undefined, 'home-shortcuts');
+  shortcuts.setAttribute('aria-label', '자주 찾는 업무 바로가기');
+  for (const example of exampleList())
+    shortcuts.append(link(findTask(example.taskId).title, pathFor(example.taskId)));
+  copy.append(shortcuts);
   const tools = el('div', undefined, 'home-tools');
   const examples = el('details', undefined, 'examples');
   examples.append(el('summary', '+ 어떤 일을 도와주나요?'));
@@ -87,17 +92,24 @@ function home() {
 
 function choose() {
   const section = page('어떤 일을 맡았나요?', '업무 선택', '#/', '← 홈으로');
+  section.append(el('p', '업무를 고르면 먼저 할 일을 바로 보여드려요.', 'selection-intro'));
   const list = el('div', undefined, 'category-list');
   for (const category of categoryList()) {
-    const card = link('', `#/category/${category.id}`, 'category-card');
-    card.append(
-      el('strong', category.title),
-      el('span', category.description),
-      el('small', '업무 고르기 →', 'card-arrow'),
-    );
-    list.append(card);
+    const group = el('section', undefined, 'task-group');
+    group.append(el('h2', category.title, 'cc-title'));
+    const tasks = el('div', undefined, 'task-group-links');
+    for (const task of tasksInCategory(category.id)) {
+      const anchor = link('', pathFor(task.id), 'task-shortcut');
+      anchor.append(el('strong', task.title), el('span', task.description));
+      tasks.append(anchor);
+    }
+    group.append(tasks);
+    list.append(group);
   }
-  section.append(list, helpLink());
+  const alternatives = el('nav', undefined, 'selection-alternatives');
+  alternatives.setAttribute('aria-label', '업무 찾기 도움');
+  alternatives.append(link('업무명으로 검색하기', '#/search', 'text-link'), helpLink());
+  section.append(list, alternatives);
   return section;
 }
 
@@ -113,6 +125,14 @@ function category(id) {
 function task(id) {
   const item = findTask(id);
   const section = page(item.title, '선택한 업무');
+  const category = categoryList().find((group) => group.taskIds.includes(id));
+  const trail = el('nav', undefined, 'task-trail');
+  trail.setAttribute('aria-label', '현재 업무 경로');
+  trail.append(
+    link('업무 선택', '#/tasks'),
+    el('span', '› ' + category.title + ' › ' + item.title),
+  );
+  section.insertBefore(trail, section.querySelector('.page-heading'));
   const card = el('section', undefined, 'first-action');
   card.append(
     el('p', '먼저 할 일', 'eyebrow'),
@@ -121,10 +141,11 @@ function task(id) {
   );
   section.append(card);
   const purpose = el('details', undefined, 'purpose');
+  purpose.open = true;
   purpose.append(el('summary', '왜 이 일부터 하나요?'), el('p', item.guide.purpose));
   section.append(
     purpose,
-    link('업무 흐름 시작하기 →', '#/flow/' + id, 'primary'),
+    link('전체 흐름과 실행 항목 보기 →', '#/flow/' + id, 'primary'),
     link('기존 상세 안내 보기', legacyDestination('task', id), 'help-link'),
   );
   section.append(

@@ -95,8 +95,25 @@ const server = http.createServer((req, res) => {
       assert.ok((await page.locator('.work-done').innerText()).length > 10);
     }
     await go('drawing-revision');
+    assert.equal(await page.locator('.work-optional').getAttribute('open'), null);
+    assert.ok(await page.locator('.work-current-hint').isVisible());
+    assert.notEqual(
+      await page
+        .locator('.work-node')
+        .first()
+        .evaluate((node) => getComputedStyle(node).backgroundColor),
+      await page
+        .locator('.work-open-detail')
+        .evaluate((node) => getComputedStyle(node).backgroundColor),
+    );
+    await page.locator('.work-tree-jump').click();
+    assert.equal(await page.evaluate(() => document.activeElement.textContent), '전체 업무 흐름');
     await capture('flow-desktop');
+    if (!(await page.locator('[data-branch="report"]').isVisible()))
+      await page.locator('.work-optional > summary').click();
     await page.locator('[data-branch="report"]').click();
+    if (!(await page.locator('[data-branch="send"]').isVisible()))
+      await page.locator('.work-optional > summary').click();
     await page.locator('[data-branch="send"]').click();
     assert.equal(await page.locator('.work-node').count(), 4);
     await page.locator('[data-node="report-update"]').click();
@@ -126,7 +143,7 @@ const server = http.createServer((req, res) => {
     assert.doesNotMatch(await page.locator('[data-node="document-match"]').innerText(), /확인됨/);
     await checkTask('report-update');
     await checkTask('document-match');
-    await page.locator('.work-canvas > details summary').click();
+    await page.locator('.work-memo > summary').click();
     await page.locator('#workflow-memo').fill('<img src=x onerror=alert(1)> 업무 메모');
     assert.equal(await page.locator('main img').count(), 0);
     await page.getByRole('button', { name: '흐름 편집', exact: true }).click();
@@ -176,6 +193,8 @@ const server = http.createServer((req, res) => {
       await page.setViewportSize({ width, height: 900 });
       await go('drawing-revision');
       await fits();
+      if (!(await page.locator('[data-branch="report"]').isVisible()))
+        await page.locator('.work-optional > summary').click();
       await page.locator('[data-branch="report"]').click();
       await fits();
       await page.locator('[data-node="report-update"]').click();
@@ -210,9 +229,8 @@ const server = http.createServer((req, res) => {
     // Hash-only navigation preserves session; a fresh browser navigation resets it.
     await page.locator('.brand').click();
     await page.locator('.hero-copy > .primary').click();
-    await page.locator('a[href="#/category/design"]').click();
-    await page.locator('a[href="#/task/drawing-revision"]').click();
-    await page.getByRole('link', { name: '업무 흐름 시작하기 →' }).click();
+    await page.locator('.task-shortcut[href="#/task/drawing-revision"]').click();
+    await page.getByRole('link', { name: '전체 흐름과 실행 항목 보기 →' }).click();
     await page.locator('.work-open-detail').click();
     assert.equal(await page.locator('#workBody input:checked').count(), 1);
     await page.keyboard.press('Escape');
@@ -237,6 +255,8 @@ const server = http.createServer((req, res) => {
     });
     const isolated = await blocked.newPage();
     await isolated.goto(origin + '/app/#/flow/drawing-revision');
+    if (!(await isolated.locator('[data-branch="report"]').isVisible()))
+      await isolated.locator('.work-optional > summary').click();
     await isolated.locator('[data-branch="report"]').click();
     assert.equal(await isolated.locator('.work-node').count(), 3);
     await blocked.close();

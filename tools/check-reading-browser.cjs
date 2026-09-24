@@ -67,9 +67,11 @@ const server = http.createServer((req, res) => {
       await page.getByRole('button', { name: '이 깊이로 보기', exact: true }).click();
       if (mobile) await page.locator('[data-node="drawing-revision"]').click();
     };
+    if (!(await page.locator('[data-branch="report"]').isVisible()))
+      await page.locator('.work-optional > summary').click();
     await page.locator('[data-branch="report"]').click();
     await page.locator('.work-side .work-detail > .work-steps input').click();
-    await page.locator('.work-canvas > details summary').click();
+    await page.locator('.work-memo > summary').click();
     await page.fill('#workflow-memo', '레벨 변경에도 유지');
     await page.getByRole('button', { name: '내 상황에 맞추기', exact: true }).click();
     await page.selectOption('#context-phase', '실시설계');

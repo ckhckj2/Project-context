@@ -60,7 +60,7 @@ const server = http.createServer((req, res) => {
     };
     const memo = async (p, value) => {
       const input = p.locator('#workflow-memo');
-      if (!(await input.isVisible())) await p.locator('.work-canvas > details summary').click();
+      if (!(await input.isVisible())) await p.locator('.work-memo > summary').click();
       await input.fill(value);
     };
     fs.mkdirSync(out, { recursive: true });
@@ -74,6 +74,8 @@ const server = http.createServer((req, res) => {
     await page.reload();
     assert.equal(await page.locator('#workflow-memo').inputValue(), '');
     assert.equal(await page.evaluate((key) => localStorage.getItem(key), key), null);
+    if (!(await page.locator('[data-branch="report"]').isVisible()))
+      await page.locator('.work-optional > summary').click();
     await page.locator('[data-branch="report"]').click();
     await page.locator('.work-side .work-detail > .work-steps input').click();
     await memo(page, '복원할 메모');
