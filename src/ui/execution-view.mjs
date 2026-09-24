@@ -1,6 +1,7 @@
 import { readingContent, coordinationOverview } from './reading-content.mjs';
 import { element as el, navigationLink as link } from './elements.mjs';
 import { createDialog } from './dialog.mjs';
+import { workContext } from './work-context.mjs';
 
 export function mountExecutionDialog() {
   return createDialog({
@@ -152,8 +153,12 @@ export function renderExecution(
   function showDetail(id) {
     activeId = id;
     detailOpen = mobile();
-    if (mobile()) dialog.open(titleOf(id), detail(id));
-    else {
+    if (mobile()) {
+      const fromCurrent = document.activeElement?.classList.contains('work-open-detail');
+      paint();
+      root.querySelector(fromCurrent ? '.work-open-detail' : `[data-node="${id}"]`)?.focus();
+      dialog.open(titleOf(id), detail(id));
+    } else {
       paint();
       root.querySelector('.work-detail h2')?.focus();
     }
@@ -317,7 +322,7 @@ export function renderExecution(
     );
     if (persistence?.save) heading.append(button('저장하고 나중에 이어보기', persistence.save));
     if (persistence?.saved) heading.append(link('내 업무 목록', '#/saved', 'help-link'));
-    page.append(heading);
+    page.append(heading, workContext(state, activeId, conditions));
     const controls = el('div', undefined, 'work-toolbar');
     controls.append(
       button('내 상황에 맞추기', conditions),
