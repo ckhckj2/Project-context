@@ -108,6 +108,10 @@ const server = http.createServer((req, res) => {
     );
     await page.locator('.work-tree-jump').click();
     assert.equal(await page.evaluate(() => document.activeElement.textContent), '전체 업무 흐름');
+    assert.match(await page.locator('.work-phase-status').innerText(), /미설정/);
+    assert.equal(await page.locator('.work-phases [aria-current]').count(), 0);
+    assert.equal(await page.locator('.work-context-relations section').count(), 3);
+    assert.ok(await page.locator('.work-context-purpose').isVisible());
     await capture('flow-desktop');
     if (!(await page.locator('[data-branch="report"]').isVisible()))
       await page.locator('.work-optional > summary').click();
@@ -117,6 +121,8 @@ const server = http.createServer((req, res) => {
     await page.locator('[data-branch="send"]').click();
     assert.equal(await page.locator('.work-node').count(), 4);
     await page.locator('[data-node="report-update"]').click();
+    assert.match(await page.locator('.work-context-task').innerText(), /보고서 반영/);
+    assert.match(await page.locator('.work-context-relations').innerText(), /협력사 전달/);
     assert.equal(await page.locator('.work-side input:disabled').count(), 3);
     await checkTask('drawing-revision');
     await checkTask('report-update');
@@ -170,6 +176,9 @@ const server = http.createServer((req, res) => {
     assert.match(await page.locator('#workBody').innerText(), /6개 체크/);
     await page.getByRole('button', { name: '조건 적용하고 다시 확인' }).click();
     assert.match(await page.locator('.work-context-summary').innerText(), /공항시설 · 실시설계/);
+    assert.equal(await page.locator('.work-phases [aria-current="step"]').innerText(), '실시설계');
+    assert.match(await page.locator('.work-phase-guide').innerText(), /납품도서/);
+    await capture('context-desktop');
     assert.equal(await page.locator('.work-side input:checked').count(), 0);
     assert.equal(
       await page.locator('#workflow-memo').inputValue(),
@@ -201,6 +210,7 @@ const server = http.createServer((req, res) => {
       if (width <= 800) {
         assert.equal(await page.locator('#workDialog').evaluate((n) => n.open), true);
         await page.keyboard.press('Escape');
+        assert.match(await page.locator('.work-context-task').innerText(), /보고서 반영/);
       }
       await fits();
     }

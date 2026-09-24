@@ -77,6 +77,9 @@ const server = http.createServer((req, res) => {
     if (!(await page.locator('[data-branch="report"]').isVisible()))
       await page.locator('.work-optional > summary').click();
     await page.locator('[data-branch="report"]').click();
+    await click(page, '단계·시설 설정');
+    await page.selectOption('#context-phase', '중간설계');
+    await click(page, '적용하기');
     await page.locator('.work-side .work-detail > .work-steps input').click();
     await memo(page, '복원할 메모');
     await click(page, '저장하고 나중에 이어보기');
@@ -87,6 +90,7 @@ const server = http.createServer((req, res) => {
     await page.reload();
     assert.equal(await page.locator('#workflow-memo').inputValue(), '복원할 메모');
     assert.equal(await page.locator('.work-node').count(), 3);
+    assert.equal(await page.locator('.work-phases [aria-current="step"]').innerText(), '중간설계');
     const original = await page.evaluate(
       (key) => JSON.parse(localStorage.getItem(key)).data.works[0].execution,
       key,
