@@ -307,6 +307,42 @@
   color: var(--cc-muted);
   font-weight: 600;
 }
+.cc-app .work-node-action {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cc-app .work-guide-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cc-app .work-preparation .task-preparation {
+  grid-template-columns: minmax(0, 1fr);
+  padding-bottom: 0;
+}
+.cc-app .work-guide .task-preparation {
+  grid-template-columns: minmax(0, 1fr);
+}
+.cc-app .work-guide > h3 {
+  margin: 24px 0 8px;
+  font-size: 17px;
+}
+.cc-app .work-fold > summary {
+  border: 1px solid var(--cc-border-strong);
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: var(--cc-background);
+}
+.cc-app .work-fold[open] > summary {
+  background: var(--cc-surface);
+}
 .cc-app .work-fold summary {
   font-weight: 600;
   text-decoration: underline;

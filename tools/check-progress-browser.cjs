@@ -96,6 +96,25 @@ const server = http.createServer((req, res) => {
       key,
     );
     assert.equal(original.checks.length, 1);
+    const savedUrl = page.url();
+    await click(page, '업무 안내 다시 읽기');
+    assert.ok(
+      await page
+        .locator('#workBody')
+        .getByText('어떤 자료를 준비하나요?', { exact: true })
+        .isVisible(),
+    );
+    await page.locator('#workBody .guide-sequence > summary').click();
+    assert.equal(await page.locator('#workBody .guide-steps li').count(), 3);
+    await page.keyboard.press('Escape');
+    assert.equal(page.url(), savedUrl, 'reading guidance must stay in the saved work');
+    assert.deepEqual(
+      await page.evaluate(
+        (key) => JSON.parse(localStorage.getItem(key)).data.works[0].execution,
+        key,
+      ),
+      original,
+    );
     await memo(page, '자동 저장된 메모');
     await page.waitForFunction(
       (key) =>

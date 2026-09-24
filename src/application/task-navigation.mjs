@@ -1,6 +1,7 @@
 import { tasks, tracks } from '../content/catalog.mjs';
 import { categories, taskHelp, examples, terms, firstActions } from '../content/navigation.mjs';
 import { startGuides } from '../content/start-guides.mjs';
+import { executionGuides } from '../content/execution-guides.mjs';
 
 const byId = new Map(tasks.map((task) => [task.id, task]));
 const normalize = (value) => value.normalize('NFKC').toLocaleLowerCase('ko-KR').replace(/\s+/g, '');
@@ -9,7 +10,13 @@ const copy = (value) => structuredClone(value);
 export function findTask(id) {
   const task = byId.get(id);
   return task
-    ? copy({ ...task, ...taskHelp[id], guide: startGuides[id], firstAction: firstActions[id] })
+    ? copy({
+        ...task,
+        ...taskHelp[id],
+        guide: startGuides[id],
+        firstAction: firstActions[id],
+        detail: executionGuides[id],
+      })
     : null;
 }
 

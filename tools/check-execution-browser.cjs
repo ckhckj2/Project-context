@@ -184,7 +184,7 @@ const server = http.createServer((req, res) => {
       await page.locator('#workflow-memo').inputValue(),
       '<img src=x onerror=alert(1)> 업무 메모',
     );
-    await page.locator('.work-side').getByText('이유와 자세한 안내', { exact: true }).click();
+    await page.locator('.work-side').getByText('설명 깊이별 안내 보기', { exact: true }).click();
     assert.doesNotMatch(
       await page.locator('.work-explanation').innerText(),
       /실시설계에서 판단하기/,
@@ -240,7 +240,7 @@ const server = http.createServer((req, res) => {
     await page.locator('.brand').click();
     await page.locator('.hero-copy > .primary').click();
     await page.locator('.task-shortcut[href="#/task/drawing-revision"]').click();
-    await page.getByRole('link', { name: '전체 흐름과 실행 항목 보기 →' }).click();
+    await page.getByRole('link', { name: '체크리스트로 진행하기 →' }).click();
     await page.locator('.work-open-detail').click();
     assert.equal(await page.locator('#workBody input:checked').count(), 1);
     await page.keyboard.press('Escape');

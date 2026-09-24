@@ -2,6 +2,7 @@ import { readingContent, coordinationOverview } from './reading-content.mjs';
 import { element as el, navigationLink as link } from './elements.mjs';
 import { createDialog } from './dialog.mjs';
 import { workContext } from './work-context.mjs';
+import { taskPreparation, taskSequence } from './task-guide.mjs';
 
 export function mountExecutionDialog() {
   return createDialog({
@@ -72,7 +73,7 @@ export function renderExecution(
       task = state.tasks.find((item) => item.id === id);
     const body = el('section', undefined, 'work-detail');
     body.append(
-      el('p', task.blocked ? '선행 업무를 먼저 확인하세요.' : '실행 항목', 'eyebrow'),
+      el('p', task.blocked ? '선행 업무를 먼저 확인하세요.' : '직접 체크하며 진행', 'eyebrow'),
       el('h2', task.title, 'cc-title'),
     );
     if (task.blocked)
@@ -135,10 +136,13 @@ export function renderExecution(
       body.append(remaining);
     }
     body.append(el('p', '완료 기준', 'eyebrow'), el('p', task.done, 'work-done'));
+    const preparation = fold('준비자료·확인할 사람 보기', taskPreparation(task));
+    preparation.classList.add('work-preparation');
+    body.append(preparation);
     const learning = readingContent(task, state);
     if (!['report-update', 'consultant-send', 'document-match'].includes(task.id))
       learning.append(link('관련 분야 한 문제 풀기', '#/practice/' + task.id, 'help-link'));
-    body.append(fold('이유와 자세한 안내', learning));
+    body.append(fold('설명 깊이별 안내 보기', learning));
     if (reading.sections.overview)
       body.append(
         button('전체 조율 살펴보기', () => {
@@ -310,6 +314,26 @@ export function renderExecution(
     h1.tabIndex = -1;
     page.append(link('← 업무 선택', '#/tasks', 'back-link'));
     heading.append(
+      button(
+        '업무 안내 다시 읽기',
+        () => {
+          detailOpen = false;
+          const task = state.tasks.find((item) => item.id === state.rootId);
+          const guide = el('div', undefined, 'work-guide');
+          guide.append(
+            el('p', task.purpose),
+            taskPreparation(task),
+            taskSequence(task),
+            el('h3', '완료 기준', 'cc-title'),
+            el('p', task.done),
+            el('p', state.essentialNotice, 'work-notice'),
+          );
+          dialog.open(task.title + ' · 업무 안내', guide);
+        },
+        'work-guide-link',
+      ),
+    );
+    heading.append(
       el('p', titleOf(state.rootId), 'eyebrow'),
       h1,
       el(
@@ -365,7 +389,7 @@ export function renderExecution(
     if (pending) current.append(el('p', pending.text, 'work-current-hint'));
     if (next)
       current.append(
-        button('다음 행동 보기 →', () => showDetail(next.id), 'primary work-open-detail'),
+        button('실행 항목 열기 →', () => showDetail(next.id), 'primary work-open-detail'),
       );
     else if (state.workflow.status === 'completed')
       current.append(button('다시 진행하기', () => act(() => session.reopen())));
@@ -422,10 +446,11 @@ export function renderExecution(
             : task.blocked
               ? '선행 업무 대기'
               : state.nextTaskId === task.id
-                ? '선택됨 · 지금'
-                : '선택됨',
+                ? '진행 가능 · 다음 업무'
+                : '진행 가능',
         ),
         el('strong', task.title),
+        el('span', '실행 항목 열기 →', 'work-node-action'),
       );
       group.append(node);
       nodes.append(group);

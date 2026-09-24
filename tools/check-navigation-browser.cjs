@@ -5,7 +5,8 @@ const http = require('node:http'),
 const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
 const root = path.resolve(__dirname, '..'),
-  out = path.join(root, 'docs/redesign/screenshots/stage-3');
+  out = path.join(root, 'docs/redesign/screenshots/stage-3'),
+  guideOut = path.join(root, 'docs/redesign/screenshots/recovery-1');
 const server = http.createServer((req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost');
@@ -53,6 +54,7 @@ const server = http.createServer((req, res) => {
       if (response.status() >= 400) failed.push(response.url());
     });
     fs.mkdirSync(out, { recursive: true });
+    fs.mkdirSync(guideOut, { recursive: true });
     const capture = async (name) => {
       await page.evaluate(() => document.fonts.ready);
       await page.screenshot({ path: path.join(out, name + '.png'), fullPage: true });
@@ -103,6 +105,7 @@ const server = http.createServer((req, res) => {
     assert.ok(await page.locator('.purpose p').isVisible());
     assert.match(await page.locator('.task-trail').innerText(), /도면·설계/);
     assert.equal(await page.locator('main .primary').count(), 1);
+    await page.screenshot({ path: path.join(guideOut, 'guide-desktop.png'), fullPage: true });
 
     await page.goBack();
     await page.locator('.task-shortcut').first().waitFor();
@@ -114,6 +117,25 @@ const server = http.createServer((req, res) => {
       await go('#/task/' + item.id);
       assert.equal(await page.locator('main h1').innerText(), item.title);
       assert.ok((await page.locator('.first-action h2').innerText()).length > 0);
+      const { executionGuides } = await import('../src/content/execution-guides.mjs');
+      const expected = executionGuides[item.id];
+      assert.ok(await page.getByText(expected.material, { exact: true }).isVisible());
+      assert.ok(await page.getByText(expected.owner, { exact: true }).isVisible());
+      assert.ok(await page.getByText(expected.done, { exact: true }).isVisible());
+      assert.equal(
+        await page.locator('.purpose summary').count(),
+        0,
+        'purpose is reading, not a control',
+      );
+      assert.equal(await page.locator('.task-guide input').count(), 0, 'guide is read-only');
+      await page.getByText('수행 순서 살펴보기', { exact: true }).click();
+      assert.equal(await page.locator('.guide-steps li').count(), expected.steps.length);
+      for (const step of expected.steps)
+        assert.ok(
+          await page.locator('.guide-steps').getByText(step.text, { exact: true }).isVisible(),
+        );
+      assert.equal(await page.locator('main .primary').count(), 1);
+      await page.locator('.guide-legacy > summary').click();
       await page.getByRole('link', { name: '기존 상세 안내 보기' }).click();
       await page.waitForFunction(() => window.CC_BOOT?.diagnostics().state === 'ready');
       assert.ok(
@@ -186,6 +208,11 @@ const server = http.createServer((req, res) => {
     await capture('tasks-mobile');
     await go('#/task/drawing-revision');
     await capture('first-action-mobile');
+    await page.getByText('수행 순서 살펴보기', { exact: true }).click();
+    await page.screenshot({ path: path.join(guideOut, 'guide-mobile.png'), fullPage: true });
+    await page.locator('.guide-sequence > summary').focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('.guide-sequence').getAttribute('open'), null);
     // CSS-pixel equivalent of a 200% zoomed 640px-wide window.
     await page.setViewportSize({ width: 320, height: 600 });
     for (const hash of ['#/', '#/tasks', '#/task/consultant-coordination', '#/search']) {

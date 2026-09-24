@@ -65,6 +65,16 @@ test('first actions preserve existing common guidance instead of adding legal cl
     const source = context.window.CC_WORK_RULES.task.taskRule(task.title);
     assert.equal(findTask(task.id).guide.firstAction, source.steps[0]);
     assert.equal(findTask(task.id).guide.purpose, source.why);
+    const detail = findTask(task.id).detail;
+    assert.equal(detail.material, source.material);
+    assert.equal(detail.owner, source.owner);
+    assert.equal(detail.done, source.done);
+    assert.deepEqual(
+      detail.steps.map((step) => step.text),
+      Array.from(source.steps),
+    );
+    detail.steps.length = 0;
+    assert.equal(findTask(task.id).detail.steps.length, source.steps.length);
     assert.equal(legacyRequest('task', task.id).taskTitle, task.title);
   }
 });
