@@ -73,7 +73,7 @@ const server = http.createServer((req, res) => {
     await page.locator('.work-side .work-detail > .work-steps input').click();
     await page.locator('.work-memo > summary').click();
     await page.fill('#workflow-memo', '레벨 변경에도 유지');
-    await page.getByRole('button', { name: '내 상황에 맞추기', exact: true }).click();
+    await page.getByRole('button', { name: '단계·시설 설정', exact: true }).click();
     await page.selectOption('#context-phase', '실시설계');
     await page.getByRole('button', { name: '적용하기', exact: true }).click();
     await page.getByRole('button', { name: '조건 적용하고 다시 확인' }).click();

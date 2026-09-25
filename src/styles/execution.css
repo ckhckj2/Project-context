@@ -538,6 +538,173 @@
   text-decoration: underline;
   text-underline-offset: 4px;
 }
+/* Recovery 2.5: pilot the workbench hierarchy on drawing revision and its branches. */
+.cc-app .work-focused {
+  --cc-ink: #242628;
+  --cc-muted: #565b61;
+  --cc-surface: #f4f5f5;
+  --cc-border: #dedfe1;
+  --cc-border-strong: #a3a7ac;
+  color: var(--cc-ink);
+}
+.cc-app .work-focused .work-heading {
+  margin-bottom: 20px;
+}
+.cc-app .work-focused .work-heading h1 {
+  margin: 4px 0 8px;
+  font-size: 38px;
+  letter-spacing: -0.04em;
+}
+.cc-app .work-focused .work-heading > .context-note {
+  margin: 0;
+  font-size: 14px;
+}
+.cc-app .work-heading-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  margin-top: 8px;
+}
+.cc-app .work-focused .work-secondary,
+.cc-app .work-focused .work-fold > summary {
+  border-radius: 6px;
+  background: #fff;
+  font-size: 15px;
+}
+.cc-app .work-focused .work-context-map {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  margin-bottom: 32px;
+}
+.cc-app .work-focused .work-context-header {
+  padding-top: 16px;
+  border-top: 1px solid var(--cc-border);
+}
+.cc-app .work-focused .work-context-summary {
+  width: auto;
+  color: var(--cc-ink);
+}
+.cc-app .work-focused .work-phase-status {
+  font-size: 14px;
+  margin: 6px 0 12px;
+}
+.cc-app .work-focused .work-context-current {
+  padding: 0;
+  margin: 12px 0 20px;
+  border: 0;
+  background: transparent;
+}
+.cc-app .work-focused .work-context-task {
+  font-size: 23px;
+}
+.cc-app .work-focused .work-context-purpose {
+  font-size: 16px;
+  max-width: 72ch;
+}
+.cc-app .work-focused .work-current {
+  padding: 24px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--cc-surface);
+  margin-bottom: 24px;
+}
+.cc-app .work-focused .work-current h2 {
+  margin: 4px 0 8px;
+  font-size: 28px;
+}
+.cc-app .work-focused .work-current-hint {
+  max-width: 72ch;
+  margin-bottom: 16px;
+}
+.cc-app .work-focused .work-tree-jump {
+  color: var(--cc-ink);
+  text-decoration: underline;
+}
+.cc-app .work-focused .work-context-relations {
+  gap: 24px;
+}
+.cc-app .work-focused .work-context-relations h3 {
+  font-size: 14px;
+  color: var(--cc-muted);
+  font-weight: 500;
+}
+.cc-app .work-focused .work-relation-title {
+  margin: 0;
+  line-height: 1.6;
+}
+.cc-app .work-focused .work-relation-link {
+  background: #fff;
+  border-radius: 6px;
+}
+.cc-app .work-focused .work-process {
+  margin-top: 20px;
+}
+.cc-app .work-focused .work-process > .work-phases {
+  margin-top: 20px;
+}
+.cc-app .work-focused .work-layout {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--cc-border-strong);
+}
+.cc-app .work-focused .work-tree-title {
+  border: 0;
+  padding: 0;
+  margin-top: 0;
+}
+.cc-app .work-focused .work-detail {
+  background: #fff;
+  border-radius: 0;
+  padding: 0 0 0 32px;
+  border-left: 1px solid var(--cc-border);
+}
+.cc-app .work-focused .work-node {
+  padding: 14px 16px;
+  border-radius: 6px;
+  gap: 2px;
+}
+.cc-app .work-focused .work-node strong {
+  font-size: 18px;
+}
+.cc-app .work-focused .work-node[aria-pressed='true'] {
+  outline: 0;
+  border: 2px solid var(--cc-ink);
+  padding: 13px 15px;
+}
+.cc-app .work-focused .work-node:focus-visible {
+  outline: 3px solid var(--cc-accent);
+  outline-offset: 3px;
+}
+@media (max-width: 800px) {
+  .cc-app .work-focused .work-heading h1 {
+    font-size: 30px;
+  }
+  .cc-app .work-focused .work-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cc-app .work-focused .work-current {
+    padding: 18px;
+  }
+  .cc-app .work-focused .work-current h2 {
+    font-size: 24px;
+  }
+  .cc-app .work-focused .work-context-relations {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .cc-app .work-focused .work-context-relations section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 4px 12px;
+  }
+  .cc-app .work-focused .work-context-relations .work-context-note,
+  .cc-app .work-focused .work-relation-link {
+    grid-column: 2;
+  }
+}
 @media (max-width: 700px) {
   .cc-app .project-map-steps {
     grid-template-columns: repeat(2, minmax(0, 1fr));
