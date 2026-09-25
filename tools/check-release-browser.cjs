@@ -90,8 +90,10 @@ const server = http.createServer((req, res) => {
     assert.equal(await page.evaluate(() => document.activeElement.className), 'skip-link');
     await page.keyboard.press('Enter');
     assert.equal(await page.evaluate(() => document.activeElement.id), 'main');
-    await page.getByRole('link', { name: '업무 선택하기 ↗', exact: true }).click();
-    await go('#/flow/drawing-revision');
+    await page.locator('#work-instruction').fill('도면을 고치라고 했어요');
+    await page.locator('.instruction-form .primary').click();
+    await page.locator('[data-intake-task="drawing-revision"]').click();
+    await page.locator('.intake-context .primary').click();
     await page.locator('.work-side .work-detail > .work-steps input').click();
     await click('저장하고 나중에 이어보기');
     await page.locator('#workBody input').fill('통합 검수 업무');

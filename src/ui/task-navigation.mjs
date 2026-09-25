@@ -1,6 +1,7 @@
 import { element as el, navigationLink as link } from './elements.mjs';
 import { createDialog } from './dialog.mjs';
 import { taskPreparation, taskSequence } from './task-guide.mjs';
+import { instructionForm } from './work-intake.mjs';
 import {
   categoryList,
   tasksInCategory,
@@ -38,14 +39,15 @@ function helpLink() {
   return link('선택이 어려워요', '#/help', 'help-link');
 }
 
-function home() {
+function home(startInstruction) {
   const body = el('div');
   const hero = el('section', undefined, 'home-hero');
   const copy = el('div', undefined, 'hero-copy');
   copy.append(
     el('p', '건축 실무, 물으면 척척.', 'tagline'),
-    heading('지금 할 업무를 찾아볼까요?'),
-    link('업무 선택하기 ↗', '#/tasks', 'primary'),
+    heading('받은 지시, 어디서부터 할까요?'),
+    instructionForm('', startInstruction),
+    link('업무 목록에서 직접 고르기 →', '#/tasks', 'home-task-link text-link'),
   );
   const shortcuts = el('nav', undefined, 'home-shortcuts');
   shortcuts.setAttribute('aria-label', '자주 찾는 업무 바로가기');
@@ -272,7 +274,11 @@ function help(id) {
   return section;
 }
 
-export function renderNavigation(root, route) {
+export function renderNavigation(root, route, startInstruction = () => {}) {
+  if (route.name === 'home') {
+    root.replaceChildren(home(startInstruction));
+    return;
+  }
   const renderers = { home, tasks: choose, category, task, search, help };
   const render = Object.hasOwn(renderers, route.name) ? renderers[route.name] : null;
   if (render) root.replaceChildren(render(route.id));

@@ -53,25 +53,30 @@ function projectMap(state) {
   return map;
 }
 
-export function workContext(state, taskId, editContext, openTask, overview = null) {
+export function workContext(state, taskId, editContext, openTask, overview) {
   const task = state.tasks.find((item) => item.id === taskId);
   const panel = el('section', undefined, 'work-context-map');
   panel.setAttribute('aria-label', '현재 업무의 맥락');
   const header = el('div', undefined, 'work-context-header');
-  header.append(el('h2', '전체 과정 속 내 업무', 'cc-title'));
+  const summary = el('div', undefined, 'work-context-summary');
+  const known = state.context.phase !== state.options.phase[0];
+  const position = el('strong');
+  position.append(
+    el(
+      'span',
+      (state.context.facility === state.options.facility[0]
+        ? '시설 미설정'
+        : state.context.facility) + ' · ',
+    ),
+    el('span', known ? state.context.phase : '단계 미설정', 'work-phase-status'),
+  );
+  summary.append(el('span', '프로젝트 위치', 'work-section-label'), position);
+  header.append(summary);
   const edit = el('button', '단계·시설 설정', 'work-secondary cc-control');
   edit.type = 'button';
   edit.addEventListener('click', editContext);
   header.append(edit);
   panel.append(header);
-  const known = state.context.phase !== state.options.phase[0];
-  panel.append(
-    el(
-      'p',
-      known ? '현재 단계 · ' + state.context.phase : '현재 단계 · 미설정',
-      'work-phase-status',
-    ),
-  );
   const phases = el('ol', undefined, 'work-phases');
   phases.setAttribute('aria-label', '설계 과정과 현재 단계');
   for (const name of state.options.phase.slice(1)) {
@@ -79,12 +84,10 @@ export function workContext(state, taskId, editContext, openTask, overview = nul
     if (name === state.context.phase) phase.setAttribute('aria-current', 'step');
     phases.append(phase);
   }
-  const processDetails = overview ? el('details', undefined, 'work-process work-fold') : panel;
-  if (overview) {
-    processDetails.append(el('summary', '시설 전체 과정과 설계 단계 보기'));
-    processDetails.open = overview.open;
-    processDetails.addEventListener('toggle', () => overview.onToggle(processDetails.open));
-  }
+  const processDetails = el('details', undefined, 'work-process work-fold');
+  processDetails.append(el('summary', '시설 전체 과정과 설계 단계 보기'));
+  processDetails.open = overview.open;
+  processDetails.addEventListener('toggle', () => overview.onToggle(processDetails.open));
   processDetails.append(phases);
   if (!known)
     processDetails.append(
@@ -97,23 +100,26 @@ export function workContext(state, taskId, editContext, openTask, overview = nul
   processDetails.append(projectMap(state));
   const current = el('div', undefined, 'work-context-current');
   current.append(
-    el('p', known ? state.context.phase + '에서 보고 있는 업무' : '지금 보고 있는 업무', 'eyebrow'),
-    el('h3', task.title, 'work-context-task'),
+    el('p', '이 업무의 목적', 'work-section-label'),
     el('p', task.purpose, 'work-context-purpose'),
   );
-  if (task.phaseGuide)
-    (overview ? processDetails : current).append(el('p', task.phaseGuide.note, 'work-phase-guide'));
+  if (task.phaseGuide) current.append(el('p', task.phaseGuide.note, 'work-phase-guide'));
   panel.append(current);
+  const support = el('section', undefined, 'work-context-support');
+  support.append(
+    el('h2', '이 일의 앞뒤 맥락', 'cc-title'),
+    el('p', '지금 보는 업무 · ' + task.title, 'work-section-label'),
+  );
   const relations = el('div', undefined, 'work-context-relations');
   const summaries = taskContext[task.id];
   const linked = taskRelationships(state, task.id);
-  for (const [index, label] of [
-    '선행 업무 · 이 일을 하기 전에',
-    '병행·관련 업무 · 함께 맞출 일',
-    '후속 업무 · 이 일 다음에',
-  ].entries()) {
+  for (const [index, label] of ['이전에 확인', '함께 맞출 일', '다음에 활용'].entries()) {
     const column = el('section');
-    column.append(el('h3', label), el('p', summaries[index], 'work-relation-title'));
+    column.append(
+      el('span', ['BEFORE', 'WITH', 'AFTER'][index], 'work-relation-order'),
+      el('h3', label),
+      el('p', summaries[index], 'work-relation-title'),
+    );
     if (linked[index].length) {
       column.append(el('p', '내 흐름에 연결된 업무', 'work-context-note'));
       for (const item of linked[index]) {
@@ -127,14 +133,15 @@ export function workContext(state, taskId, editContext, openTask, overview = nul
     }
     relations.append(column);
   }
-  panel.append(
+  support.append(
     relations,
     el(
       'p',
-      '위 설명은 일반적인 업무 관계예요. 버튼은 내 흐름에 추가된 업무를 열며, 체크나 메모를 바꾸지 않아요.',
+      '일반적인 업무 관계예요. 연결 버튼이 있는 업무만 내 흐름에 추가된 항목이에요.',
       'work-context-note',
     ),
   );
-  if (overview) panel.append(processDetails);
+  support.append(processDetails);
+  panel.append(support);
   return panel;
 }

@@ -1,0 +1,377 @@
+/* Recovery 3: hierarchy shared by instruction intake and all execution tasks. */
+.cc-app .instruction-form {
+  display: grid;
+  gap: 10px;
+  max-width: 720px;
+  margin: 28px 0 18px;
+  text-align: left;
+}
+.cc-app .instruction-form label {
+  font-size: 16px;
+  font-weight: 700;
+}
+.cc-app .instruction-form textarea {
+  min-height: 110px;
+  padding: 18px;
+  border-radius: 8px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+.cc-app .instruction-form .context-note {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.cc-app .instruction-form .primary {
+  justify-self: start;
+}
+.cc-app .home-task-link {
+  display: inline-block;
+  min-height: 44px;
+  padding: 8px 0;
+}
+.cc-app .intake-page {
+  max-width: 940px;
+}
+.cc-app .intake-trail {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  gap: 12px 24px;
+  font-size: 14px;
+  color: var(--cc-muted);
+}
+.cc-app .intake-trail li {
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--cc-border);
+}
+.cc-app .intake-trail [aria-current] {
+  color: var(--cc-ink);
+  border-color: var(--cc-ink);
+  font-weight: 700;
+}
+.cc-app .intake-page h1 {
+  font-size: 32px;
+  margin: 28px 0;
+}
+.cc-app .intake-instruction {
+  margin: 0;
+  padding: 12px 18px;
+  border-left: 3px solid var(--cc-border-strong);
+  background: var(--cc-surface);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.cc-app .intake-page .text-button {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cc-app .intake-lead {
+  margin: 24px 0;
+  font-size: 17px;
+}
+.cc-app .intake-candidates {
+  display: grid;
+  gap: 12px;
+}
+.cc-app .intake-candidate {
+  display: grid;
+  gap: 6px;
+  padding: 20px;
+  text-align: left;
+  border: 1px solid var(--cc-border-strong);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--cc-ink);
+}
+.cc-app .intake-candidate strong {
+  font-size: 22px;
+}
+.cc-app .intake-candidate small {
+  color: var(--cc-muted);
+}
+.cc-app .intake-choice-action {
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: underline;
+  margin-top: 6px;
+}
+.cc-app .intake-selected {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+  border-bottom: 1px solid var(--cc-border);
+  padding-bottom: 16px;
+}
+.cc-app .intake-selected > span,
+.cc-app .intake-field > span,
+.cc-app .intake-first > span {
+  font-size: 14px;
+  color: var(--cc-muted);
+}
+.cc-app .intake-selected > strong {
+  font-size: 22px;
+}
+.cc-app .intake-context {
+  display: grid;
+  gap: 24px;
+}
+.cc-app .intake-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+.cc-app .intake-field label,
+.cc-app .intake-field select {
+  grid-column: 1 / -1;
+}
+.cc-app .intake-field > span {
+  grid-column: 1 / -1;
+}
+.cc-app .intake-first {
+  border-top: 1px solid var(--cc-border);
+  padding: 20px 0;
+  display: grid;
+  gap: 6px;
+}
+.cc-app .intake-first > strong {
+  font-size: 21px;
+}
+.cc-app .intake-first p {
+  margin: 0;
+}
+.cc-app .intake-context > .primary {
+  justify-self: start;
+  margin-top: 12px;
+}
+
+.cc-app .work-stage-three .work-heading {
+  margin-bottom: 20px;
+}
+.cc-app .work-stage-three .work-context-map {
+  margin-bottom: 24px;
+}
+.cc-app .work-context-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 20px;
+  margin-top: 8px;
+}
+.cc-app .work-context-navigation .text-button {
+  margin: 0;
+  min-height: 44px;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cc-app .work-stage-three .work-context-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  border-top: 0;
+  padding: 12px 16px;
+  border-radius: 6px;
+  background: var(--cc-surface);
+}
+.cc-app .work-stage-three .work-context-summary {
+  display: grid;
+  gap: 2px;
+}
+.cc-app .work-section-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cc-muted);
+  margin: 0 0 6px;
+}
+.cc-app .work-stage-three .work-phase-status {
+  display: inline-block;
+  font-size: inherit;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.cc-app .work-stage-three .work-context-current {
+  margin: 16px 0 0;
+}
+.cc-app .work-stage-three .work-context-purpose {
+  font-size: 19px;
+  line-height: 1.6;
+  max-width: 76ch;
+}
+.cc-app .work-stage-three .work-phase-guide {
+  border: 0;
+  padding: 0;
+  color: var(--cc-muted);
+  font-size: 15px;
+  margin: 8px 0 0;
+}
+.cc-app .work-stage-three .work-layout {
+  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1fr);
+  border-top: 1px solid var(--cc-border);
+  gap: 48px;
+}
+.cc-app .work-stage-three .work-detail {
+  border-left: 0;
+  padding: 0;
+}
+.cc-app .work-stage-three .work-detail > .eyebrow {
+  font-size: 14px;
+  color: var(--cc-muted);
+  margin: 0 0 4px;
+}
+.cc-app .work-stage-three .work-detail > h2 {
+  font-size: 24px;
+  margin: 0;
+}
+.cc-app .work-check-count {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 8px 0 4px;
+}
+.cc-app .work-stage-three .work-step,
+.cc-app #workBody .work-step {
+  padding: 20px 16px;
+  border: 1px solid var(--cc-border);
+  border-radius: 6px;
+  background: #fff;
+}
+.cc-app .work-stage-three .work-step[data-state='current'],
+.cc-app #workBody .work-step[data-state='current'] {
+  border-left: 4px solid var(--cc-accent);
+  background: #f5f7ff;
+}
+.cc-app .work-step-number {
+  color: var(--cc-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.cc-app .work-stage-three .work-step strong {
+  font-size: 23px;
+  line-height: 1.5;
+}
+.cc-app .work-stage-three .work-step[data-state='done'] {
+  background: var(--cc-surface);
+}
+.cc-app .work-outcome {
+  padding: 18px 20px;
+  background: #f3f4f2;
+  border-radius: 6px;
+  margin: 24px 0;
+}
+.cc-app .work-outcome .work-done {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+.cc-app .work-stage-three .work-canvas {
+  border-left: 1px solid var(--cc-border);
+  padding-left: 28px;
+}
+.cc-app .work-stage-three .work-tree-title {
+  font-size: 19px;
+}
+.cc-app .work-stage-three .work-node,
+.cc-app .work-stage-three .work-parallel .work-node {
+  padding: 12px;
+}
+.cc-app .work-stage-three .work-node[aria-pressed='true'] {
+  border: 1px solid var(--cc-border-strong);
+  border-left: 4px solid var(--cc-ink);
+}
+.cc-app .work-stage-three .work-nodes {
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.cc-app .work-stage-three .work-heading-tools {
+  padding-top: 20px;
+  margin-top: 28px;
+  border-top: 1px solid var(--cc-border);
+}
+.cc-app .work-context-support {
+  border-top: 1px solid var(--cc-border-strong);
+  margin-top: 36px;
+  padding-top: 24px;
+}
+.cc-app .work-context-support > h2 {
+  font-size: 24px;
+  margin: 0 0 4px;
+}
+.cc-app .work-stage-three .work-context-relations {
+  margin-top: 20px;
+  gap: 20px;
+}
+.cc-app .work-stage-three .work-context-relations section {
+  background: var(--cc-surface);
+  border: 0;
+  padding: 16px 18px;
+  border-radius: 6px;
+}
+.cc-app .work-relation-order {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cc-muted);
+  letter-spacing: 0.1em;
+}
+.cc-app .work-stage-three .work-context-relations h3 {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 4px 0 8px;
+  color: var(--cc-ink);
+}
+.cc-app .work-stage-three .work-relation-title {
+  font-size: 17px;
+}
+.cc-app .work-stage-three .project-map-steps li {
+  border: 0;
+  border-radius: 4px;
+  padding: 14px;
+  background: var(--cc-surface);
+}
+.cc-app .work-stage-three .project-map-steps .is-relevant {
+  background: var(--cc-ink);
+  color: #fff;
+}
+.cc-app .work-stage-three .is-relevant .project-map-number {
+  color: #fff;
+}
+.cc-app .work-stage-three .project-map-title {
+  font-size: 20px;
+}
+.cc-app .work-stage-three .project-map-caution {
+  border-left: 3px solid var(--cc-border-strong);
+  padding-left: 12px;
+}
+@media (min-width: 801px) {
+  .cc-app .work-stage-three .work-current.is-current-detail {
+    display: none;
+  }
+}
+@media (max-width: 800px) {
+  .cc-app .intake-page h1 {
+    font-size: 27px;
+  }
+  .cc-app .work-stage-three .work-layout {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 20px;
+  }
+  .cc-app .work-stage-three .work-canvas {
+    border: 0;
+    padding: 0;
+  }
+  .cc-app .work-stage-three .work-context-purpose {
+    font-size: 17px;
+  }
+  .cc-app .work-stage-three .work-context-relations section {
+    display: block;
+  }
+  .cc-app .work-stage-three .work-current {
+    margin-bottom: 0;
+  }
+  .cc-app .work-stage-three .work-phase-guide {
+    font-size: 14px;
+  }
+}

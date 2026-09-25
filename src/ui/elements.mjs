@@ -22,6 +22,8 @@ const tags = new Set([
   'option',
   'details',
   'summary',
+  'form',
+  'blockquote',
 ]);
 export function element(tag, value, className) {
   if (!tags.has(tag)) throw new TypeError('Unsupported UI element');

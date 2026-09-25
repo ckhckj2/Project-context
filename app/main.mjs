@@ -1,6 +1,9 @@
 // Composition root: browser history and DOM owners are wired here, not in domain.
 import { routeFromHash } from '../src/application/task-navigation.mjs';
 import { renderNavigation, mountMenu } from '../src/ui/task-navigation.mjs';
+import { createIntakeDraft, inspectInstruction } from '../src/application/work-intake.mjs';
+import { renderIntake } from '../src/ui/work-intake.mjs';
+import { element as el } from '../src/ui/elements.mjs';
 
 import { renderExecution, mountExecutionDialog } from '../src/ui/execution-view.mjs';
 import { renderLearning } from '../src/ui/learning-view.mjs';
@@ -12,6 +15,7 @@ import { createPersistenceSession } from '../src/application/persistence-session
 import { createValidatedStore } from '../src/infrastructure/validated-store.mjs';
 import { openFirstSave, renderSavedWorks, mountSaveStatus } from '../src/ui/progress-view.mjs';
 const workDialog = mountExecutionDialog();
+const intake = createIntakeDraft();
 const key = 'cc_redesign_progress_v1';
 let storage;
 try {
@@ -62,10 +66,48 @@ document.querySelector('.skip-link').addEventListener('click', (event) => {
   main.focus();
 });
 let previousHash = location.hash;
+function startInstruction(value) {
+  Object.assign(intake, {
+    instruction: value,
+    result: inspectInstruction(value),
+    selected: null,
+    context: null,
+  });
+  location.hash = '#/start';
+}
+function startWork(id, context) {
+  const session = workspace.draft(id);
+  const impact = session.contextImpact(context);
+  const proceed = (change) => {
+    if (change) session.applyContext(context, true);
+    workDialog.close();
+    location.hash = '#/flow/' + id;
+  };
+  if (impact.changed && impact.checkKeys.length) {
+    const body = el('div');
+    body.append(
+      el(
+        'p',
+        `임시 업무에 체크 ${impact.checkKeys.length}개가 있어요. 조건을 바꾸면 체크를 다시 확인해야 합니다. 메모와 업무 선택은 유지돼요.`,
+      ),
+    );
+    for (const [label, change] of [
+      ['기존 조건과 기록으로 이어가기', false],
+      ['새 조건 적용하고 체크 다시 확인', true],
+    ]) {
+      const button = el('button', label, 'work-secondary cc-control');
+      button.type = 'button';
+      button.addEventListener('click', () => proceed(change));
+      body.append(button);
+    }
+    workDialog.open('진행 중인 업무가 있어요', body);
+  } else proceed(true);
+}
 function render(moveFocus = false) {
   workDialog.close();
   const route = routeFromHash(location.hash);
-  if (route.name === 'flow') {
+  if (route.name === 'start') renderIntake(main, intake, startWork);
+  else if (route.name === 'flow') {
     renderExecution(
       main,
       workspace.draft(route.id),
@@ -91,7 +133,7 @@ function render(moveFocus = false) {
   } else if (route.name === 'saved') renderSavedWorks(main, workspace, workDialog);
   else if (['learn', 'quiz', 'practice'].includes(route.name))
     renderLearning(main, route, learning, workDialog);
-  else renderNavigation(main, route);
+  else renderNavigation(main, route, startInstruction);
   document.title = `${main.querySelector('h1')?.textContent ?? '척척'} · 척척`;
   if (moveFocus) {
     window.scrollTo({ top: 0, behavior: 'instant' });

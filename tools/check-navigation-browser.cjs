@@ -93,7 +93,7 @@ const server = http.createServer((req, res) => {
       '필요한 곳에서 시작하세요.',
     );
     await page.locator('.brand').click();
-    await page.locator('.hero-copy > .primary').click();
+    await page.locator('.home-task-link').click();
     await page.locator('.task-group').first().waitFor();
     assert.equal(await page.locator('.task-group').count(), 4);
     await capture('categories-desktop');
@@ -219,6 +219,86 @@ const server = http.createServer((req, res) => {
       await go(hash);
       await fits('320px ' + hash);
     }
+    // Recovery 3: instruction -> explicit task choice -> only missing context -> execution.
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await go('#/');
+    await page.locator('#work-instruction').fill('운수시설 중간설계 사례를 조사하래요');
+    await page.locator('.instruction-form .primary').click();
+    assert.ok(page.url().endsWith('#/start'));
+    await page.locator('.intake-candidates').waitFor();
+    assert.equal(await page.locator('.intake-candidate').count(), 1);
+    await page.locator('[data-intake-task="precedent-research"]').click();
+    assert.equal(
+      await page.locator('.intake-context select').count(),
+      0,
+      'known conditions are not asked again',
+    );
+    await capture('intake-known-context');
+    await page.locator('.intake-context .primary').click();
+    assert.match(await page.locator('.work-context-summary').innerText(), /운수시설 · 중간설계/);
+    assert.equal(
+      await page.locator('.work-current').isVisible(),
+      false,
+      'desktop does not repeat the active checklist',
+    );
+    assert.ok(await page.locator('.work-outcome').isVisible());
+    await capture('precedent-execution-tablet');
+    await page.locator('.work-process > summary').click();
+    await capture('precedent-context-tablet');
+    await page.locator('.work-side .work-detail > .work-steps input').click();
+    await page.locator('.work-memo > summary').click();
+    await page.locator('#workflow-memo').fill('지시를 바꿔도 유지');
+    await page.locator('.brand').click();
+    await page.locator('#work-instruction').fill('공동주택 실시설계 사례조사');
+    await page.locator('.instruction-form .primary').click();
+    await page.locator('[data-intake-task="precedent-research"]').click();
+    await page.locator('.intake-context .primary').click();
+    await page.getByRole('button', { name: '기존 조건과 기록으로 이어가기', exact: true }).click();
+    assert.match(await page.locator('.work-context-summary').innerText(), /운수시설 · 중간설계/);
+    assert.equal(await page.locator('.work-side input:checked').count(), 1);
+    assert.equal(await page.locator('#workflow-memo').inputValue(), '지시를 바꿔도 유지');
+    await page.locator('.brand').click();
+    await page.locator('#work-instruction').fill('공동주택 실시설계 사례조사');
+    await page.locator('.instruction-form .primary').click();
+    await page.locator('[data-intake-task="precedent-research"]').click();
+    await page.locator('.intake-context .primary').click();
+    await page
+      .getByRole('button', { name: '새 조건 적용하고 체크 다시 확인', exact: true })
+      .click();
+    assert.match(await page.locator('.work-context-summary').innerText(), /공동주택 · 실시설계/);
+    assert.equal(await page.locator('.work-side input:checked').count(), 0);
+    assert.equal(await page.locator('#workflow-memo').inputValue(), '지시를 바꿔도 유지');
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await go('#/');
+      await page.locator('#work-instruction').fill('도면 고쳐서 보고서 작성');
+      await page.locator('.instruction-form .primary').click();
+      await page.locator('.intake-candidates').waitFor();
+      assert.equal(await page.locator('.intake-candidate').count(), 2);
+      await fits('intake candidates ' + width);
+      await page.locator('[data-intake-task="drawing-revision"]').click();
+      assert.equal(await page.locator('.intake-context select').count(), 2);
+      await fits('intake context ' + width);
+      await page.locator('.intake-context .primary').click();
+      assert.match(await page.locator('.work-phase-status').innerText(), /미설정/);
+      await fits('execution ' + width);
+      if (width === 390) await capture('intake-execution-mobile');
+    }
+    await go('#/');
+    await page.locator('#work-instruction').fill('<img src=x onerror=alert(1)> 견적 금액');
+    await page.locator('.instruction-form .primary').click();
+    await page.locator('.intake-candidates').waitFor({ state: 'attached' });
+    assert.equal(await page.locator('main img').count(), 0);
+    assert.equal(await page.locator('.intake-candidate').count(), 0);
+    assert.match(await page.locator('.intake-lead').innerText(), /찾지 못했어요/);
+    await page.getByRole('button', { name: '지시 수정하기', exact: true }).click();
+    assert.match(await page.locator('#work-instruction').inputValue(), /견적 금액/);
+    await page.reload();
+    assert.equal(await page.locator('#work-instruction').inputValue(), '');
+    assert.equal(
+      await page.evaluate(() => JSON.stringify(localStorage).includes('견적 금액')),
+      false,
+    );
     assert.deepEqual(errors, []);
     assert.deepEqual(external, []);
     assert.deepEqual(failed, []);
