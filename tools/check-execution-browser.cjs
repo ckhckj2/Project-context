@@ -113,11 +113,11 @@ const server = http.createServer((req, res) => {
     assert.equal(await page.locator('.work-context-relations section').count(), 3);
     assert.ok(await page.locator('.work-context-purpose').isVisible());
     assert.equal(await page.locator('.project-map-steps').count(), 0);
-    await page.locator('.work-action-jump').click();
-    assert.equal(
-      await page.evaluate(() => document.activeElement.classList.contains('work-open-detail')),
-      true,
-    );
+    assert.equal(await page.locator('.work-process').getAttribute('open'), null);
+    assert.equal(await page.locator('.work-action-jump').count(), 0);
+    assert.equal(await page.locator('.work-context-header button').count(), 1);
+    await page.locator('.work-open-detail').click();
+    assert.equal(await page.evaluate(() => document.activeElement.tagName), 'H2');
     await capture('flow-desktop');
     if (!(await page.locator('[data-branch="report"]').isVisible()))
       await page.locator('.work-optional > summary').click();
@@ -172,20 +172,21 @@ const server = http.createServer((req, res) => {
     await page.getByRole('button', { name: '이 가지 제거하기' }).click();
     assert.equal(await page.locator('.work-node').count(), 2);
     assert.match(await page.locator('[data-node="consultant-send"]').innerText(), /확인됨/);
-    await page.getByRole('button', { name: '내 상황에 맞추기', exact: true }).click();
+    await page.getByRole('button', { name: '단계·시설 설정', exact: true }).click();
     await page.selectOption('#context-phase', '실시설계');
     await page.keyboard.press('Escape');
     assert.match(
       await page.locator('.work-context-summary').innerText(),
       /잘 모르겠어요|아직 조건/,
     );
-    await page.getByRole('button', { name: '내 상황에 맞추기', exact: true }).click();
+    await page.getByRole('button', { name: '단계·시설 설정', exact: true }).click();
     await page.selectOption('#context-facility', '공항시설');
     await page.selectOption('#context-phase', '실시설계');
     await page.getByRole('button', { name: '적용하기', exact: true }).click();
     assert.match(await page.locator('#workBody').innerText(), /6개 체크/);
     await page.getByRole('button', { name: '조건 적용하고 다시 확인' }).click();
     assert.match(await page.locator('.work-context-summary').innerText(), /공항시설 · 실시설계/);
+    await page.locator('.work-process > summary').click();
     assert.equal(await page.locator('.work-phases [aria-current="step"]').innerText(), '실시설계');
     assert.match(await page.locator('.work-phase-guide').innerText(), /납품도서/);
     assert.match(await page.locator('.project-map-title').innerText(), /공항시설 \/ 격납고/);
@@ -198,6 +199,7 @@ const server = http.createServer((req, res) => {
     await page.getByRole('button', { name: '단계·시설 설정', exact: true }).click();
     await page.selectOption('#context-facility', '지식산업센터');
     await page.getByRole('button', { name: '적용하기', exact: true }).click();
+    assert.ok(await page.locator('.work-process').evaluate((node) => node.open));
     assert.equal(await page.locator('.project-map-steps .is-relevant').count(), 0);
     assert.match(await page.locator('.project-map-unmapped').innerText(), /따로 표시되어 있지/);
     assert.equal(await page.locator('.work-phases [aria-current="step"]').innerText(), '실시설계');
@@ -247,7 +249,15 @@ const server = http.createServer((req, res) => {
     }
     await page.setViewportSize({ width: 390, height: 844 });
     await go('drawing-revision');
+    await page.evaluate(() => scrollTo(0, 0));
     await capture('flow-mobile');
+    assert.ok(
+      await page.locator('.work-open-detail').evaluate((node) => {
+        const bounds = node.getBoundingClientRect();
+        return bounds.top >= 0 && bounds.bottom <= innerHeight;
+      }),
+      'The first action must fit the initial mobile viewport',
+    );
     await page.locator('.work-open-detail').click();
     await capture('detail-mobile');
     await page.keyboard.press('Tab');
@@ -264,7 +274,7 @@ const server = http.createServer((req, res) => {
     );
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('#workDialog').evaluate((n) => n.open), false);
-    await page.getByRole('button', { name: '내 상황에 맞추기', exact: true }).click();
+    await page.getByRole('button', { name: '단계·시설 설정', exact: true }).click();
     await capture('conditions-mobile');
     await page.keyboard.press('Escape');
     // Hash-only navigation preserves session; a fresh browser navigation resets it.

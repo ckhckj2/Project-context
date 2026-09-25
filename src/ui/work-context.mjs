@@ -53,7 +53,7 @@ function projectMap(state) {
   return map;
 }
 
-export function workContext(state, taskId, editContext, openTask) {
+export function workContext(state, taskId, editContext, openTask, overview = null) {
   const task = state.tasks.find((item) => item.id === taskId);
   const panel = el('section', undefined, 'work-context-map');
   panel.setAttribute('aria-label', '현재 업무의 맥락');
@@ -79,23 +79,30 @@ export function workContext(state, taskId, editContext, openTask) {
     if (name === state.context.phase) phase.setAttribute('aria-current', 'step');
     phases.append(phase);
   }
-  panel.append(phases);
+  const processDetails = overview ? el('details', undefined, 'work-process work-fold') : panel;
+  if (overview) {
+    processDetails.append(el('summary', '시설 전체 과정과 설계 단계 보기'));
+    processDetails.open = overview.open;
+    processDetails.addEventListener('toggle', () => overview.onToggle(processDetails.open));
+  }
+  processDetails.append(phases);
   if (!known)
-    panel.append(
+    processDetails.append(
       el(
         'p',
         '아직 단계를 모르면 그대로 진행해도 돼요. 업무명만으로 현재 위치를 추정하지 않아요.',
         'work-context-note',
       ),
     );
-  panel.append(projectMap(state));
+  processDetails.append(projectMap(state));
   const current = el('div', undefined, 'work-context-current');
   current.append(
     el('p', known ? state.context.phase + '에서 보고 있는 업무' : '지금 보고 있는 업무', 'eyebrow'),
     el('h3', task.title, 'work-context-task'),
     el('p', task.purpose, 'work-context-purpose'),
   );
-  if (task.phaseGuide) current.append(el('p', task.phaseGuide.note, 'work-phase-guide'));
+  if (task.phaseGuide)
+    (overview ? processDetails : current).append(el('p', task.phaseGuide.note, 'work-phase-guide'));
   panel.append(current);
   const relations = el('div', undefined, 'work-context-relations');
   const summaries = taskContext[task.id];
@@ -128,5 +135,6 @@ export function workContext(state, taskId, editContext, openTask) {
       'work-context-note',
     ),
   );
+  if (overview) panel.append(processDetails);
   return panel;
 }

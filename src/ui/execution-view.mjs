@@ -40,6 +40,7 @@ export function renderExecution(
   let activeId = session.snapshot().nextTaskId ?? session.snapshot().rootId;
   let detailOpen = false;
   let optionsOpen = false;
+  let overviewOpen = false;
   const mobile = () => matchMedia('(max-width: 800px)').matches;
   const titleOf = (id) => session.snapshot().tasks.find((task) => task.id === id)?.title ?? id;
   function message(text) {
@@ -308,9 +309,14 @@ export function renderExecution(
   function paint() {
     const state = session.snapshot();
     if (!state.workflow.nodes.includes(activeId)) activeId = state.rootId;
-    const page = el('section', undefined, 'page work-page'),
+    const focused = state.rootId === 'drawing-revision';
+    const page = el('section', undefined, 'page work-page' + (focused ? ' work-focused' : '')),
       heading = el('div', undefined, 'work-heading'),
-      h1 = el('h1', persistence?.title ?? '내 업무 흐름', 'cc-title');
+      h1 = el(
+        'h1',
+        focused ? titleOf(activeId) : (persistence?.title ?? '내 업무 흐름'),
+        'cc-title',
+      );
     h1.tabIndex = -1;
     page.append(link('← 업무 선택', '#/tasks', 'back-link'));
     heading.append(
@@ -334,7 +340,7 @@ export function renderExecution(
       ),
     );
     heading.append(
-      el('p', titleOf(state.rootId), 'eyebrow'),
+      el('p', focused ? (persistence?.title ?? '설계 작업대') : titleOf(state.rootId), 'eyebrow'),
       h1,
       el(
         'p',
@@ -346,18 +352,39 @@ export function renderExecution(
     );
     if (persistence?.save) heading.append(button('저장하고 나중에 이어보기', persistence.save));
     if (persistence?.saved) heading.append(link('내 업무 목록', '#/saved', 'help-link'));
-    const contextMap = workContext(state, activeId, conditions, showDetail);
-    heading.append(
-      button(
-        '지금 할 일로 이동 ↓',
-        () => {
-          const action = root.querySelector('.work-current button');
-          action?.scrollIntoView({ block: 'center' });
-          action?.focus({ preventScroll: true });
-        },
-        'text-button work-action-jump',
-      ),
+    if (focused) {
+      const tools = el('div', undefined, 'work-heading-tools');
+      tools.append(heading.querySelector('.work-guide-link'));
+      const save = heading.querySelector('.work-secondary, .help-link');
+      if (save) tools.append(save);
+      heading.append(tools);
+    }
+    const contextMap = workContext(
+      state,
+      activeId,
+      conditions,
+      showDetail,
+      focused
+        ? {
+            open: overviewOpen,
+            onToggle: (open) => {
+              overviewOpen = open;
+            },
+          }
+        : null,
     );
+    if (!focused)
+      heading.append(
+        button(
+          '지금 할 일로 이동 ↓',
+          () => {
+            const action = root.querySelector('.work-current button');
+            action?.scrollIntoView({ block: 'center' });
+            action?.focus({ preventScroll: true });
+          },
+          'text-button work-action-jump',
+        ),
+      );
     page.append(heading, contextMap);
     const controls = el('div', undefined, 'work-toolbar');
     controls.append(
@@ -385,7 +412,9 @@ export function renderExecution(
         state.workflow.status === 'completed'
           ? '이번 흐름 완료'
           : next
-            ? '지금 할 일'
+            ? focused
+              ? '지금 할 일 · ' + next.title
+              : '지금 할 일'
             : '확인을 마쳤어요',
         'eyebrow',
       ),
@@ -401,12 +430,25 @@ export function renderExecution(
     if (pending) current.append(el('p', pending.text, 'work-current-hint'));
     if (next)
       current.append(
-        button('실행 항목 열기 →', () => showDetail(next.id), 'primary work-open-detail'),
+        button(
+          focused ? (pending?.title ?? next.title) + ' 시작 →' : '실행 항목 열기 →',
+          () => showDetail(next.id),
+          'primary work-open-detail',
+        ),
       );
     else if (state.workflow.status === 'completed')
       current.append(button('다시 진행하기', () => act(() => session.reopen())));
     else current.append(button('이번 흐름 완료', () => act(() => session.complete()), 'primary'));
-    canvas.append(current, controls);
+    if (focused) {
+      contextMap.querySelector('.work-context-current').after(current);
+      const taskHeading = contextMap.querySelector('.work-context-task');
+      taskHeading.remove();
+      h1.classList.add('work-context-task');
+      contextMap.querySelector('.work-context-current .eyebrow').remove();
+      current.after(heading.querySelector('.work-heading-tools'));
+      const summary = controls.querySelector('.work-context-summary');
+      contextMap.querySelector('.work-context-header h2').replaceWith(summary);
+    } else canvas.append(current, controls);
     const treeHeading = el('h2', '전체 업무 흐름', 'work-tree-title cc-title');
     treeHeading.tabIndex = -1;
     current.append(

@@ -91,6 +91,8 @@ const server = http.createServer((req, res) => {
     await page.reload();
     assert.equal(await page.locator('#workflow-memo').inputValue(), '복원할 메모');
     assert.equal(await page.locator('.work-node').count(), 3);
+    assert.equal(await page.locator('.work-process').getAttribute('open'), null);
+    await page.locator('.work-process > summary').click();
     assert.equal(await page.locator('.work-phases [aria-current="step"]').innerText(), '중간설계');
     assert.match(await page.locator('.project-map-title').innerText(), /데이터센터/);
     assert.match(await page.locator('.project-map-steps').innerText(), /전력·관계기관 협의/);
