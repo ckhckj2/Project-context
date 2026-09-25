@@ -90,13 +90,19 @@ const server = http.createServer((req, res) => {
     const { tasks } = await import('../src/content/catalog.mjs');
     for (const task of tasks) {
       await go(task.id);
-      assert.equal(await page.locator('.work-side h2').innerText(), task.title);
+      assert.equal(await page.locator('main h1').innerText(), task.title);
+      assert.equal(await page.locator('.work-side h2').innerText(), '실행 체크');
+      assert.equal(
+        await page.locator('.work-side .work-detail').getAttribute('data-detail-task'),
+        task.id,
+      );
       assert.equal(await page.locator('.work-side .work-step').count(), 3);
       assert.ok((await page.locator('.work-done').innerText()).length > 10);
     }
     await go('drawing-revision');
     assert.equal(await page.locator('.work-optional').getAttribute('open'), null);
-    assert.ok(await page.locator('.work-current-hint').isVisible());
+    assert.equal(await page.locator('.work-current-hint').isVisible(), false);
+    assert.ok(await page.locator('.work-side .work-detail > .work-steps input').isVisible());
     assert.notEqual(
       await page
         .locator('.work-node')
@@ -116,7 +122,7 @@ const server = http.createServer((req, res) => {
     assert.equal(await page.locator('.work-process').getAttribute('open'), null);
     assert.equal(await page.locator('.work-action-jump').count(), 0);
     assert.equal(await page.locator('.work-context-header button').count(), 1);
-    await page.locator('.work-open-detail').click();
+    await page.locator('[data-node="drawing-revision"]').click();
     assert.equal(await page.evaluate(() => document.activeElement.tagName), 'H2');
     await capture('flow-desktop');
     if (!(await page.locator('[data-branch="report"]').isVisible()))
@@ -131,7 +137,10 @@ const server = http.createServer((req, res) => {
     assert.match(await page.locator('.work-context-relations').innerText(), /협력사 전달/);
     await page.locator('[data-context-task="consultant-send"]').click();
     assert.match(await page.locator('.work-context-task').innerText(), /협력사 전달/);
-    assert.match(await page.locator('.work-side h2').innerText(), /협력사 전달/);
+    assert.equal(
+      await page.locator('.work-side .work-detail').getAttribute('data-detail-task'),
+      'consultant-send',
+    );
     await page.locator('[data-context-task="report-update"]').click();
     assert.equal(await page.locator('.work-side input:disabled').count(), 3);
     await checkTask('drawing-revision');
@@ -175,10 +184,7 @@ const server = http.createServer((req, res) => {
     await page.getByRole('button', { name: '단계·시설 설정', exact: true }).click();
     await page.selectOption('#context-phase', '실시설계');
     await page.keyboard.press('Escape');
-    assert.match(
-      await page.locator('.work-context-summary').innerText(),
-      /잘 모르겠어요|아직 조건/,
-    );
+    assert.match(await page.locator('.work-context-summary').innerText(), /미설정/);
     await page.getByRole('button', { name: '단계·시설 설정', exact: true }).click();
     await page.selectOption('#context-facility', '공항시설');
     await page.selectOption('#context-phase', '실시설계');
@@ -222,10 +228,7 @@ const server = http.createServer((req, res) => {
     await page.goto(origin + '/app/#/flow/drawing-revision');
     await page.reload();
     await page.locator('.work-page').waitFor();
-    assert.match(
-      await page.locator('.work-context-summary').innerText(),
-      /잘 모르겠어요|아직 조건/,
-    );
+    assert.match(await page.locator('.work-context-summary').innerText(), /미설정/);
     for (const width of [320, 390, 768, 1440]) {
       await page.setViewportSize({ width, height: 900 });
       await go('drawing-revision');
@@ -279,7 +282,7 @@ const server = http.createServer((req, res) => {
     await page.keyboard.press('Escape');
     // Hash-only navigation preserves session; a fresh browser navigation resets it.
     await page.locator('.brand').click();
-    await page.locator('.hero-copy > .primary').click();
+    await page.locator('.home-task-link').click();
     await page.locator('.task-shortcut[href="#/task/drawing-revision"]').click();
     await page.getByRole('link', { name: '체크리스트로 진행하기 →' }).click();
     await page.locator('.work-open-detail').click();

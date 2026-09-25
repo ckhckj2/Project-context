@@ -35,6 +35,7 @@ export function searchTasks(query) {
 export function routeFromHash(hash) {
   if (typeof hash !== 'string' || hash.length > 150) return { name: 'not-found' };
   if (hash === '' || hash === '#/' || hash === '#/home') return { name: 'home' };
+  if (hash === '#/start') return { name: 'start' };
   const match =
     /^#\/(tasks|category|task|flow|search|help|learn|quiz|practice|saved|work)(?:\/([a-z][a-z0-9-]{0,63}))?$/.exec(
       hash,
