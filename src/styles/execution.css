@@ -496,6 +496,7 @@
   font-weight: 700;
 }
 .cc-app .project-map-number {
+  flex-shrink: 0;
   color: var(--cc-muted);
   font-size: 12px;
   padding-top: 3px;
