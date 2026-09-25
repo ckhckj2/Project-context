@@ -112,6 +112,12 @@ const server = http.createServer((req, res) => {
     assert.equal(await page.locator('.work-phases [aria-current]').count(), 0);
     assert.equal(await page.locator('.work-context-relations section').count(), 3);
     assert.ok(await page.locator('.work-context-purpose').isVisible());
+    assert.equal(await page.locator('.project-map-steps').count(), 0);
+    await page.locator('.work-action-jump').click();
+    assert.equal(
+      await page.evaluate(() => document.activeElement.classList.contains('work-open-detail')),
+      true,
+    );
     await capture('flow-desktop');
     if (!(await page.locator('[data-branch="report"]').isVisible()))
       await page.locator('.work-optional > summary').click();
@@ -123,6 +129,10 @@ const server = http.createServer((req, res) => {
     await page.locator('[data-node="report-update"]').click();
     assert.match(await page.locator('.work-context-task').innerText(), /보고서 반영/);
     assert.match(await page.locator('.work-context-relations').innerText(), /협력사 전달/);
+    await page.locator('[data-context-task="consultant-send"]').click();
+    assert.match(await page.locator('.work-context-task').innerText(), /협력사 전달/);
+    assert.match(await page.locator('.work-side h2').innerText(), /협력사 전달/);
+    await page.locator('[data-context-task="report-update"]').click();
     assert.equal(await page.locator('.work-side input:disabled').count(), 3);
     await checkTask('drawing-revision');
     await checkTask('report-update');
@@ -178,6 +188,22 @@ const server = http.createServer((req, res) => {
     assert.match(await page.locator('.work-context-summary').innerText(), /공항시설 · 실시설계/);
     assert.equal(await page.locator('.work-phases [aria-current="step"]').innerText(), '실시설계');
     assert.match(await page.locator('.work-phase-guide').innerText(), /납품도서/);
+    assert.match(await page.locator('.project-map-title').innerText(), /공항시설 \/ 격납고/);
+    assert.equal(await page.locator('.project-map-steps li').count(), 8);
+    assert.match(
+      await page.locator('.project-map-steps .is-relevant').innerText(),
+      /중간·실시설계/,
+    );
+    assert.equal(await page.locator('.project-map button, .project-map [aria-current]').count(), 0);
+    await page.getByRole('button', { name: '단계·시설 설정', exact: true }).click();
+    await page.selectOption('#context-facility', '지식산업센터');
+    await page.getByRole('button', { name: '적용하기', exact: true }).click();
+    assert.equal(await page.locator('.project-map-steps .is-relevant').count(), 0);
+    assert.match(await page.locator('.project-map-unmapped').innerText(), /따로 표시되어 있지/);
+    assert.equal(await page.locator('.work-phases [aria-current="step"]').innerText(), '실시설계');
+    await page.getByRole('button', { name: '단계·시설 설정', exact: true }).click();
+    await page.selectOption('#context-facility', '공항시설');
+    await page.getByRole('button', { name: '적용하기', exact: true }).click();
     await capture('context-desktop');
     assert.equal(await page.locator('.work-side input:checked').count(), 0);
     assert.equal(
@@ -205,14 +231,19 @@ const server = http.createServer((req, res) => {
       if (!(await page.locator('[data-branch="report"]').isVisible()))
         await page.locator('.work-optional > summary').click();
       await page.locator('[data-branch="report"]').click();
+      await page.getByRole('button', { name: '단계·시설 설정', exact: true }).click();
+      await page.selectOption('#context-facility', '공항시설');
+      await page.selectOption('#context-phase', '실시설계');
+      await page.getByRole('button', { name: '적용하기', exact: true }).click();
       await fits();
-      await page.locator('[data-node="report-update"]').click();
+      await page.locator('[data-context-task="report-update"]').click();
       if (width <= 800) {
         assert.equal(await page.locator('#workDialog').evaluate((n) => n.open), true);
         await page.keyboard.press('Escape');
         assert.match(await page.locator('.work-context-task').innerText(), /보고서 반영/);
       }
       await fits();
+      if (width === 390 || width === 1440) await capture('project-context-' + width);
     }
     await page.setViewportSize({ width: 390, height: 844 });
     await go('drawing-revision');

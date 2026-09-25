@@ -1,10 +1,10 @@
 import { createReadingProfile } from './reading-profile.mjs';
+import { projectContextOptions as contextOptions } from './work-context.mjs';
 import { executionGuides, phaseGuides, changePhaseGuides } from '../content/execution-guides.mjs';
 import {
   relatedDefinitions,
   drawingBranches,
   drawingEdges,
-  contextOptions,
   essentialNotice,
 } from '../content/execution-paths.mjs';
 import { createWorkflow, setStep, finishWorkflow, nextTask } from '../domain/workflow.mjs';

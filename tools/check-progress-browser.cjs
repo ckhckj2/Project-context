@@ -78,6 +78,7 @@ const server = http.createServer((req, res) => {
       await page.locator('.work-optional > summary').click();
     await page.locator('[data-branch="report"]').click();
     await click(page, '단계·시설 설정');
+    await page.selectOption('#context-facility', '데이터센터');
     await page.selectOption('#context-phase', '중간설계');
     await click(page, '적용하기');
     await page.locator('.work-side .work-detail > .work-steps input').click();
@@ -91,11 +92,23 @@ const server = http.createServer((req, res) => {
     assert.equal(await page.locator('#workflow-memo').inputValue(), '복원할 메모');
     assert.equal(await page.locator('.work-node').count(), 3);
     assert.equal(await page.locator('.work-phases [aria-current="step"]').innerText(), '중간설계');
+    assert.match(await page.locator('.project-map-title').innerText(), /데이터센터/);
+    assert.match(await page.locator('.project-map-steps').innerText(), /전력·관계기관 협의/);
     const original = await page.evaluate(
       (key) => JSON.parse(localStorage.getItem(key)).data.works[0].execution,
       key,
     );
     assert.equal(original.checks.length, 1);
+    await page.locator('[data-context-task="report-update"]').click();
+    assert.match(await page.locator('.work-context-task').innerText(), /보고서 반영/);
+    assert.deepEqual(
+      await page.evaluate(
+        (key) => JSON.parse(localStorage.getItem(key)).data.works[0].execution,
+        key,
+      ),
+      original,
+    );
+    await page.locator('[data-context-task="drawing-revision"]').click();
     const savedUrl = page.url();
     await click(page, '업무 안내 다시 읽기');
     assert.ok(

@@ -393,13 +393,13 @@
 }
 .cc-app .work-phases li {
   padding: 6px 10px;
-  background: var(--cc-surface);
-  border: 1px solid var(--cc-border);
-  border-radius: 6px;
+  border-bottom: 2px solid var(--cc-border);
+  color: var(--cc-muted);
   font-size: 14px;
 }
 .cc-app .work-phases li[aria-current='step'] {
-  border: 2px solid var(--cc-ink);
+  border-bottom-color: var(--cc-ink);
+  color: var(--cc-ink);
   font-weight: 700;
 }
 .cc-app .work-context-note {
@@ -409,7 +409,7 @@
 }
 .cc-app .work-context-task {
   font-size: 20px;
-  margin: 22px 0 8px;
+  margin: 4px 0 8px;
 }
 .cc-app .work-context-purpose {
   font-size: 18px;
@@ -456,4 +456,93 @@
   display: block;
   font-size: 16px;
   margin-bottom: 8px;
+}
+.cc-app .work-context-current {
+  margin-top: 24px;
+  padding: 16px 20px;
+  border-left: 4px solid var(--cc-ink);
+  background: var(--cc-surface);
+}
+.cc-app .work-context-current .work-context-purpose {
+  margin: 0;
+}
+.cc-app .project-map {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cc-border);
+}
+.cc-app .project-map-title {
+  margin: 0 0 16px;
+  font-size: 17px;
+}
+.cc-app .project-map-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+.cc-app .project-map-steps li {
+  display: flex;
+  gap: 8px;
+  border-top: 2px solid var(--cc-border);
+  padding-top: 8px;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.cc-app .project-map-steps .is-relevant {
+  border-top-color: var(--cc-ink);
+  font-weight: 700;
+}
+.cc-app .project-map-number {
+  color: var(--cc-muted);
+  font-size: 12px;
+  padding-top: 3px;
+}
+.cc-app .project-map-steps small {
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.cc-app .project-map-caution,
+.cc-app .project-map-unmapped {
+  font-size: 14px;
+  margin: 8px 0;
+}
+.cc-app .work-relation-link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--cc-border-strong);
+  border-radius: 8px;
+  background: var(--cc-surface);
+  color: var(--cc-ink);
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.cc-app .work-relation-link span {
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.cc-app .work-action-jump {
+  display: block;
+  min-height: 44px;
+  margin-top: 8px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .cc-app .project-map-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .cc-app .work-context-current {
+    padding: 12px;
+  }
 }

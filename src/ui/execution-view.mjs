@@ -230,7 +230,7 @@ export function renderExecution(
       select.id = 'context-' + key;
       label.htmlFor = select.id;
       for (const value of state.options[key]) {
-        const option = el('option', value);
+        const option = el('option', value === '공항시설' ? '공항시설 / 격납고' : value);
         option.value = value;
         select.append(option);
       }
@@ -346,7 +346,19 @@ export function renderExecution(
     );
     if (persistence?.save) heading.append(button('저장하고 나중에 이어보기', persistence.save));
     if (persistence?.saved) heading.append(link('내 업무 목록', '#/saved', 'help-link'));
-    page.append(heading, workContext(state, activeId, conditions));
+    const contextMap = workContext(state, activeId, conditions, showDetail);
+    heading.append(
+      button(
+        '지금 할 일로 이동 ↓',
+        () => {
+          const action = root.querySelector('.work-current button');
+          action?.scrollIntoView({ block: 'center' });
+          action?.focus({ preventScroll: true });
+        },
+        'text-button work-action-jump',
+      ),
+    );
+    page.append(heading, contextMap);
     const controls = el('div', undefined, 'work-toolbar');
     controls.append(
       button('내 상황에 맞추기', conditions),
