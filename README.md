@@ -6,6 +6,8 @@
 
 기존 업무 맥락은 현재 위치·첫 행동·앞뒤 설계 단계를 우선 표시한다. [맥락 정리 3단계](docs/redesign/stable-context-stage-3.md)에 화면 범위와 보존 기준을 기록한다.
 
+자연어 사례조사와 도면 수정 표현을 보완하고 태블릿·PC 기준선을 맞췄다. [검색 해석 4단계](docs/redesign/stable-search-stage-4.md)에 재현 사례·검증·지원 범위를 기록한다.
+
 ## 시작과 검사
 
 Node.js 22 이상(검증 환경 24), Python 3, Chromium을 사용한다. 런타임 프레임워크나 외부 CDN은 없다. npm 패키지는 개발 검사에만 사용한다.

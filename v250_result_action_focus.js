@@ -27,7 +27,8 @@ function prepareResult(){
   const actions=answer.items.map(item=>({label:short(item.label,28),body:short(item.body,125)}));
   const summary=document.createElement('section');
   summary.className='cc252-answer';
-  summary.innerHTML=`<div class="cc252-answer-head"><small>핵심 답변</small><h3>${esc(title)}</h3></div><div class="cc252-action-grid">${actions.map((item,index)=>`<div><small>0${index+1} · ${esc(item.label)}</small><p>${esc(item.body)}</p></div>`).join('')}</div><button type="button" class="cc252-detail-toggle" aria-expanded="false">상세 답변 보기 <span>↓</span></button>`;
+  if(first.classList.contains('cc217-result'))summary.classList.add('cc217-answer');
+  summary.innerHTML=`<div class="cc252-answer-head"><small>핵심 답변</small><h3>${esc(title)}</h3>${answer.context?`<p class="cc252-answer-context">${esc(answer.context)}</p>`:''}</div><div class="cc252-action-grid">${actions.map((item,index)=>`<div><small>0${index+1} · ${esc(item.label)}</small><p>${esc(item.body)}</p></div>`).join('')}</div><button type="button" class="cc252-detail-toggle" aria-expanded="false">상세 답변 보기 <span>↓</span></button>`;
   root.insertBefore(summary,first);
   const toggle=summary.querySelector('.cc252-detail-toggle');
   toggle.addEventListener('click',()=>{
