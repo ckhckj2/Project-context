@@ -121,7 +121,89 @@ const server = http.createServer((req, res) => {
       'the default app must not download the development UI',
     );
     const originalLegacy = await legacyStorage();
+    // Public home: task buttons and native select share one selection, without search.
+    assert.equal(await page.locator('#task').inputValue(), '');
+    assert.equal(await page.locator('#homeContextOptions').isVisible(), false);
+    await page.evaluate(() => document.getElementById('analyze').click());
+    assert.ok(
+      await page.locator('#view-home.active').isVisible(),
+      'empty task must not fabricate context',
+    );
+    assert.equal(await page.evaluate(() => document.activeElement.id), 'task');
+    assert.equal(
+      await page
+        .locator(
+          '#view-home .cc-help-grid, #view-home .cc-flow-card, #view-home .cc-topic-strip, #view-home .cc-popular-questions',
+        )
+        .count(),
+      0,
+    );
+    const choices = await page
+      .locator('#task option')
+      .evaluateAll((options) => options.map((option) => option.value).filter(Boolean));
+    assert.equal(choices.length, 13, 'all established task kinds remain available');
+    await page.locator('[data-home-task="사례조사"]').click();
+    await page.locator('#project').selectOption('airport');
+    await page.locator('#phase').selectOption('중간설계');
+    const shortcuts = page.locator('[data-home-task]');
+    assert.equal(await shortcuts.count(), 6);
+    for (const button of await shortcuts.all()) {
+      const task = await button.getAttribute('data-home-task');
+      assert.ok(choices.includes(task), 'shortcut uses an existing task');
+      await button.click();
+      assert.equal(await page.locator('#task').inputValue(), task);
+      assert.equal(await page.locator('[data-home-task][aria-pressed="true"]').count(), 1);
+      assert.equal(await page.locator('#project').inputValue(), 'airport');
+      assert.equal(await page.locator('#phase').inputValue(), '중간설계');
+    }
+    for (const task of choices) {
+      await page.locator('#task').selectOption(task);
+      await page.locator('#analyze').click();
+      assert.ok(await page.locator('#view-context.active').isVisible());
+      assert.equal(await page.locator('.stage-task').innerText(), task);
+      assert.match(await page.locator('.stage-copy').innerText(), /공항시설.*중간설계/);
+      await page.locator('#view-context [data-view="home"]').click();
+      assert.equal(
+        await page.locator('#task').inputValue(),
+        task,
+        'return preserves current selection',
+      );
+    }
+    await page.locator('[data-home-task="사례조사"]').focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#task').inputValue(), '사례조사');
+    await page.locator('#task').selectOption('');
+    assert.equal(await page.locator('[data-home-task][aria-pressed="true"]').count(), 0);
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      assert.ok(await page.locator('#homeSearch').isVisible());
+      assert.equal(await page.locator('#homeContextOptions').isVisible(), false);
+      if (width === 390) {
+        const searchBox = await page.locator('#homeSearch').boundingBox();
+        assert.ok(
+          searchBox.y + searchBox.height < 820,
+          'both entry points fit the first mobile screen',
+        );
+      }
+      assert.ok(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1),
+        `home fits ${width}px`,
+      );
+      const small = await shortcuts.first().boundingBox();
+      assert.ok(small.height >= 44 && small.width >= 44, 'touch targets stay usable');
+      if (width === 390) await capture('stable-home-mobile');
+    }
+    assert.deepEqual(
+      await legacyStorage(),
+      originalLegacy,
+      'home selection does not write project or level records',
+    );
     await capture('stable-home-desktop');
+    await page.locator('[data-home-task="사례조사"]').click();
+    await page.setViewportSize({ width: 390, height: 844 });
+    assert.ok(await page.locator('#analyze').isVisible());
+    await capture('stable-home-selected-mobile');
+    await page.setViewportSize({ width: 1440, height: 1000 });
     await page.locator('#homeSearch').fill('관리자 모드가 뭐야?');
     await page.locator('#homeSearchBtn').click();
     assert.ok(page.url().endsWith('legacy.html'));
