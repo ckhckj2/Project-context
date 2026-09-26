@@ -15,10 +15,10 @@
     },
     {
       "file": "app-components.css",
-      "sha256": "f1bedc1705177d5720bec7af359dcb5c8dde889b3bb12fd95296437739c1679c",
+      "sha256": "b176d933d0881486f4cad2a16554a3975f00ae95bf6248d1212b1dadb8557f51",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-26 stable home stage 2: replace home styles in the existing v249-owned section with scoped readable typography, task controls and a single primary action. Other page and search styles retained."
+      "review": "2026-09-27 stable context stage 3: scoped hierarchy, neutral reading surfaces, visible stage rail and one primary action in the existing v254-owned section; shared search styles retained."
     },
     {
       "file": "app-runtime.js",
@@ -47,9 +47,10 @@
     },
     {
       "file": "context-renderer.js",
-      "sha256": "76cfe691f96fb651ecefd6789553f8cc253811a88eb48fc89af7a7cdccf725b4",
+      "sha256": "0cb91c35e45aa8b6638330564f5733b73eb895a36d8d279d9f6093a5be0b82f6",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-27 stable context stage 3: change the existing task label from div to h1; escaped text and all legacy pane hooks retained."
     },
     {
       "file": "context-view.js",
@@ -65,10 +66,10 @@
     },
     {
       "file": "index.html",
-      "sha256": "1c043bf36d98fe8ea7af72bfaa7b5045b45621a48877720443391a63c066992d",
+      "sha256": "d168b4d60f10c31299d17ddbc962ca73c0f3e1ec6960f66a6a59cd3d5fcbfd80",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-26 stable home stage 2: replace only the public home with task shortcuts, the existing context fields and search; remove redundant home entry cards. Preserve control IDs, navigation, data and CSP. Bump changed asset versions together."
+      "review": "2026-09-27 stable context stage 3: cache versions for the three reviewed runtime assets only; stable default and development entry retained."
     },
     {
       "file": "judgement-data.js",
@@ -475,9 +476,10 @@
     },
     {
       "file": "v254_information_hierarchy.js",
-      "sha256": "61f8a29c9d22df5e1b5b4219a831a0289c3d87fecf0176de7591e1c31bb26154",
+      "sha256": "b0dea50e16c9180796c1d5cb2c0dde4b6d622de4a3bad335e8225779cd7dfa9d",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-27 stable context stage 3: visible truthful phase orientation, task title and model-backed first action, explicit button labels; existing detail controller, levels and storage retained."
     },
     {
       "file": "v255_visual_language.js",

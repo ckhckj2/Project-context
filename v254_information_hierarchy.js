@@ -68,10 +68,63 @@ function arrangeContext(){
   if(guide&&guideAnchor.nextElementSibling!==guide)guideAnchor.after(guide);
   if(flow&&guide&&guide.nextElementSibling!==flow)guide.after(flow);
 
+  clarifyContext(root,map,brief,actions);
+
   actions.querySelectorAll('[data-drawer]').forEach(button=>{
     if(!button.hasAttribute('aria-expanded'))button.setAttribute('aria-expanded','false');
   });
   root.dataset.cc258Hierarchy='ready';
+}
+
+// Presentation uses the same selection/fit model as the existing detail panes.
+// The visible rail describes design stages, never completion or approval status.
+function clarifyContext(root,map,brief,actions){
+  root.classList.add('cc-context-clear');
+  const model=window.CC_WORK_CONTEXT.resolve(root.querySelector('.cc247-fit-gate')?.dataset.mode);
+  const {task,phase}=model.input;
+  const banner=root.querySelector('.stage-banner');
+  const purpose=banner?.querySelector('.stage-copy p');
+  if(purpose)purpose.textContent=model.why.why;
+  let position=root.querySelector('.cc-context-position');
+  if(!position){
+    position=node('section','cc-context-position');
+    position.setAttribute('aria-label','설계 단계의 앞뒤');
+    banner?.after(position);
+  }
+  position.replaceChildren(node('h2','','설계 단계의 앞뒤'));
+  const phases=window.CC_WORK_RULES.phase.PHASE_ORDER;
+  const index=phases.indexOf(phase);
+  if(index<0){
+    position.append(node('p','','아직 설계 단계를 고르지 않았어요. 단계를 선택하면 앞뒤 흐름을 연결해 드려요.'));
+    const choose=node('button','','설계 단계 선택하기 →');
+    choose.type='button';choose.dataset.view='home';position.append(choose);
+  }else{
+    const list=node('ol','');
+    const items=[['이전',index>0?phases[index-1]:'사업조건·요구사항 확인'],['현재',phase],['다음',index<phases.length-1?phases[index+1]:'준공·운영 인계']];
+    items.forEach(([label,value],i)=>{
+      const item=node('li',i===1?'is-current':'');
+      if(i===1)item.setAttribute('aria-current','step');
+      item.append(node('small','',label),node('b','',value));list.append(item);
+    });
+    position.append(list);
+  }
+  const head=brief.querySelector('.cc252-brief-head');
+  if(head){head.querySelector('small').textContent='지금 먼저 할 일';head.querySelector('b').textContent=task;}
+  const cells=brief.querySelectorAll('.cc252-brief-grid>div');
+  const labels=['첫 행동','준비할 자료','함께 확인할 사람'];
+  const values=[model.how.steps[0],model.how.material,model.how.owner];
+  cells.forEach((cell,i)=>{
+    cell.querySelector('small').textContent=labels[i];
+    cell.querySelector('p').textContent=values[i]||'';
+  });
+  const buttons=[['[data-drawer="how"]','수행 순서 보기 →'],['[data-drawer="context"]','앞뒤 단계 보기'],['[data-drawer="why"]','목적·자료 보기'],['[data-ask-context]','담당자 질문하기'],['[data-drawer="caution"]','주의사항 보기']];
+  buttons.forEach(([selector,label])=>{
+    const button=actions.querySelector(selector);
+    if(button){button.textContent=label;button.setAttribute('aria-label',label);actions.append(button);}
+  });
+  // Legal classification remains readable, below the work guidance it qualifies.
+  const legal=root.querySelector('.cc226-legal,.cc225-legal');
+  if(legal&&map.nextElementSibling!==legal)map.after(legal);
 }
 
 function comparisonPreview(summary,source){

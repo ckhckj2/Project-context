@@ -33,10 +33,19 @@ async function flows(browser,url,width,motion){
    await page.evaluate(()=>showView('home'));
    await page.selectOption('#task','도면 수정');await page.selectOption('#project','multi');await page.selectOption('#phase','실시설계');
    await page.locator('#analyze').click();
+   assert.equal(await page.locator('#contextResult h1').innerText(),'도면 수정');
+   assert.equal(await page.locator('.cc-context-position [aria-current="step"] b').innerText(),'실시설계');
+   assert(await page.locator('.cc-context-position').isVisible(),'orientation must not require opening details');
+   const first=page.locator('#contextResult .actions>button').first();
+   assert.equal(await first.getAttribute('data-drawer'),'how');
+   const primaryColor=await first.evaluate(el=>getComputedStyle(el).backgroundColor);
+   assert.equal(primaryColor,'rgb(53, 89, 218)','one solid primary action');
    for(const pane of ['context','why','how','caution']){
     const button=page.locator('#contextResult [data-drawer="'+pane+'"]');
     for(let repeat=0;repeat<2;repeat++){
      await button.click();assert.equal(await button.getAttribute('aria-expanded'),'true');
+     await page.waitForFunction(colors=>colors.includes(getComputedStyle(document.querySelector('#contextResult [data-drawer="how"]')).backgroundColor),[primaryColor,'rgb(40, 71, 187)']);
+     assert.equal(await page.locator('#contextResult .actions>button').evaluateAll((buttons,colors)=>buttons.filter(el=>colors.includes(getComputedStyle(el).backgroundColor)).length,[primaryColor,'rgb(40, 71, 187)']),1,'opening '+pane+' must retain exactly one blue primary action: '+JSON.stringify(await page.locator('#contextResult .actions>button').evaluateAll(buttons=>buttons.map(el=>[el.textContent,getComputedStyle(el).backgroundColor]))));
      assert.equal(await page.locator('#contextResult .drawer.show').count(),1);
      assert(await page.locator('#contextResult [data-pane="'+pane+'"] .cc252-pane-head, #contextResult [data-pane="'+pane+'"]' ).last().isVisible());
      await overflow(page,'level '+level+' '+pane);
@@ -48,6 +57,37 @@ async function flows(browser,url,width,motion){
    assert((await page.locator('#searchResult').textContent()).trim().length>0);
   }
   assert.equal(await page.evaluate(()=>localStorage.getItem('pc_progress_level')),'2','preview must preserve actual progress');
+  // Unknown/edge stages and both phase-fit choices must retain truthful orientation,
+  // update the first action from the same model, and leave saved records untouched.
+  const savedBefore=await page.evaluate(()=>Object.fromEntries(Object.entries(localStorage).filter(([key])=>key.startsWith('pc_')||key.startsWith('cc_'))));
+  for(const phase of ['잘 모르겠습니다','사전기획 / 사업검토','시공·현장 대응']){
+   await page.evaluate(()=>showView('home'));
+   await page.selectOption('#task','사례조사');await page.selectOption('#phase',phase);await page.locator('#analyze').click();
+   if(phase==='잘 모르겠습니다'){
+    assert.equal(await page.locator('.cc-context-position [aria-current]').count(),0);
+    await page.locator('.cc-context-position [data-view="home"]').click();
+    assert(await page.locator('#view-home.active').isVisible());
+   }else{
+    assert.equal(await page.locator('.cc-context-position [aria-current] b').innerText(),phase);
+   }
+  }
+  for(const mode of ['prep','actual']){
+   await page.evaluate(()=>showView('home'));
+   await page.selectOption('#project','transport');await page.selectOption('#phase','중간설계');await page.locator('#analyze').click();
+   assert(await page.locator('.cc247-fit-gate').isVisible());
+   assert.equal(await page.locator('#contextResult .actions').isVisible(),false,'unresolved fit must not expose inactive execution buttons');
+   await page.locator('[data-fit="'+mode+'"]').click();
+   assert(await page.locator('#contextResult .actions').isVisible());
+   assert.equal(await page.locator('.cc-context-position').count(),1);
+   const expected=await page.evaluate(()=>CC_WORK_CONTEXT.resolve(document.querySelector('.cc247-fit-gate').dataset.mode).how.steps[0]);
+   assert.equal(await page.locator('.cc252-brief-grid>div:first-child p').innerText(),expected);
+   const how=page.locator('#contextResult [data-drawer="how"]');
+   await how.focus();await page.keyboard.press('Enter');
+   assert.equal(await how.getAttribute('aria-expanded'),'true');
+   assert(await page.locator('#contextResult [data-pane="how"]').isVisible());
+   await overflow(page,'phase-fit '+mode);
+  }
+  assert.deepEqual(await page.evaluate(()=>Object.fromEntries(Object.entries(localStorage).filter(([key])=>key.startsWith('pc_')||key.startsWith('cc_')))),savedBefore,'reading context must preserve saved records');
   await page.evaluate(()=>showView('projects'));
   await page.locator('[data-pid="qa-legacy"] [data-edit]').click();
   await page.fill('#cc230Name','기존 프로젝트 수정');await page.fill('#cc230Memo','갱신된 메모');await page.click('#cc230Save');
