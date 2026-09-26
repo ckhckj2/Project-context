@@ -159,6 +159,12 @@ const server = http.createServer((req, res) => {
     await page.locator('#menu').click();
     await page.locator('#menuBody a[href="#/tasks"]').click();
     assert.equal(await page.locator('#menuDialog').evaluate((node) => node.open), false);
+    // The menu closes in the click handler; route focus follows in hashchange.
+    // Wait for that observable result without weakening the focus assertion.
+    await page.waitForFunction(
+      () =>
+        location.hash === '#/tasks' && document.activeElement === document.querySelector('main h1'),
+    );
     assert.equal(await page.evaluate(() => document.activeElement.tagName), 'H1');
     await go('#/');
     await page.locator('.examples summary').click();
