@@ -21,7 +21,7 @@
 <link rel="stylesheet" href="./v221_progressive.css?v=2140">
 <link rel="stylesheet" href="./v223_ask_router.css?v=2140">
 <link rel="stylesheet" href="./quiz.css?v=2171">
-<link rel="stylesheet" href="./app-components.css?v=2175">
+<link rel="stylesheet" href="./app-components.css?v=stable-home2">
 <link rel="stylesheet" href="./ui-resilience.css?v=2175">
 </head>
 <body>
@@ -50,50 +50,41 @@
 </aside>
 <main class="main"><div class="inner">
   <div class="mobile-head"><div class="mobile-brand"><div class="cc-logo"><div class="cc-wordmark">척척<span class="cc-rays"><i></i><i></i><i></i></span></div><span class="cc-smile"></span></div><div class="cc-tagline">건축 실무, 물으면 <b>척척</b></div></div><span class="version">v2.1.75</span></div>
-  <section id="view-home" class="view active">
-    <div class="cc-home-tools"><button class="cc-icon-btn" aria-label="알림">♧<span class="cc-noti-dot"></span></button><button class="cc-help-btn" data-view="search">도움말</button></div>
+  <section id="view-home" class="view active cc-home-simple">
+    <div class="cc-home-tools"><button type="button" class="cc-help-btn" data-view="projects" data-cc231-projects="1">프로젝트</button></div>
     <div class="hero">
-      <h1>오늘 어떤 업무가 막혔나요?</h1>
-      <p class="lead">업무 맥락을 입력하면, 필요한 정보를 바로 찾아드려요.</p>
-      <div class="form">
-        <div class="field"><label for="task">지금 하는 업무</label><select id="task"></select><span class="chev">⌄</span></div>
-        <div class="field"><label for="project">프로젝트 유형</label><select id="project"></select><span class="chev">⌄</span></div>
-        <div class="field"><label for="phase">단계 <span class="cc-optional">(선택)</span></label><select id="phase"></select><span class="chev">⌄</span></div>
-        <button class="primary" id="analyze">✦&nbsp; 내 업무 맥락 보기</button>
-        <div class="cc-accuracy-note">ϟ <span>정확할수록 더 알맞은 답변을 드려요.</span></div>
-        <button class="details-toggle" id="detailsToggle">+ 규모·메모도 입력할래요</button>
-        <div class="details" id="details"><div class="mini-field"><label>규모·메모 (선택)</label><input id="meta" placeholder="예: 800세대 / 연면적 3만㎡"></div></div>
-      </div>
-    </div>
-
-    <div class="cc-help-grid">
-      <button class="cc-help-card" data-view="search" data-example="발주처 협의자료 작성은 왜 하는 업무인가요?"><span class="cc-help-icon">?</span><b>왜 이 업무를 하나요?</b><span>업무의 목적과 배경,<br>핵심 포인트를 이해해요.</span><em>→</em></button>
-      <button class="cc-help-card" data-view="search" data-example="보고서 작성 중인데 누구에게 어떤 내용으로 문의하면 좋을까요?"><span class="cc-help-icon">♟</span><b>누구에게 물어볼까요?</b><span>업무별 담당자와 협업 포인트,<br>물어보는 방법을 확인해요.</span><em>→</em></button>
-      <button class="cc-help-card" data-view="search" data-example="법규검토 업무를 요청받았어요. 어디서 무엇을 먼저 확인하면 될까요?"><span class="cc-help-icon">▤</span><b>어디서 확인하나요?</b><span>관련 도서·도면·법규·기준 등<br>필요한 자료를 찾아드려요.</span><em>→</em></button>
-      <button class="cc-help-card" data-view="search" data-example="사업계획승인은 어떤 의미인가요?"><span class="cc-help-icon">⌕</span><b>용어 찾기</b><span>어려운 건축 용어를 쉽고<br>정확하게 설명해드려요.</span><em>→</em></button>
-    </div>
-
-    <div class="cc-home-lower">
-      <section class="cc-flow-card">
-        <div class="cc-card-head"><b>건축 실무 흐름 한눈에 보기</b><button data-view="home">전체 보기</button></div>
-        <div class="cc-flow-line">
-          <div><span>⌕</span><small>01</small><b>정보 수집</b></div><i></i>
-          <div><span>▧</span><small>02</small><b>기획·계획</b></div><i></i>
-          <div><span>◎</span><small>03</small><b>설계</b></div><i></i>
-          <div><span>▤</span><small>04</small><b>도서 작성</b></div><i></i>
-          <div><span>◔</span><small>05</small><b>인허가</b></div><i></i>
-          <div><span>▥</span><small>06</small><b>시공·공정</b></div><i></i>
-          <div><span>⌁</span><small>07</small><b>준공·유지관리</b></div>
+      <header class="cc-home-intro">
+        <h1>어떤 업무를 맡았나요?</h1>
+        <p>업무를 고르면, 지금 할 일과 앞뒤 흐름을 함께 볼 수 있어요.</p>
+      </header>
+      <div class="form cc-home-context" role="region" aria-labelledby="homeContextTitle">
+        <h2 id="homeContextTitle">업무 맥락 보기</h2>
+        <div class="cc-home-task-buttons" role="group" aria-label="받은 업무 바로 선택">
+          <button type="button" aria-controls="homeContextOptions" data-home-task="사례조사" aria-pressed="false">사례조사</button>
+          <button type="button" aria-controls="homeContextOptions" data-home-task="도면 수정" aria-pressed="false">도면 수정</button>
+          <button type="button" aria-controls="homeContextOptions" data-home-task="법규 검토" aria-pressed="false">법규 검토</button>
+          <button type="button" aria-controls="homeContextOptions" data-home-task="입면·디자인 검토" aria-pressed="false">입면·디자인 검토</button>
+          <button type="button" aria-controls="homeContextOptions" data-home-task="보고서 작성" aria-pressed="false">보고서 작성</button>
+          <button type="button" aria-controls="homeContextOptions" data-home-task="협력업체 조정" aria-pressed="false">협력업체 조정</button>
         </div>
-        <p>각 단계별 업무와 체크포인트를 확인하고, 막힌 업무를 해결해보세요.</p>
-      </section>
-      <section class="cc-ask-card">
-        <div class="cc-ask-title">무엇이든 물어보세요, <b>척척</b>이 답해드릴게요!</div>
-        <div class="home-search"><input id="homeSearch" placeholder="예) 책임님께 법규검토 업무를 요청받았어요. 무엇부터 확인하면 될까요?"><button id="homeSearchBtn" aria-label="척척에게 물어보기">➤</button></div>
-        <div class="cc-popular-questions"><small>많이 묻는 질문</small><button data-example="법규검토 업무를 요청받았어요. 무엇부터 확인하면 될까요?"># 법규검토는 무엇부터?</button><button data-example="QGIS 확인을 요청받았어요. 어떤 내용을 보면 될까요?"># QGIS에서는 무엇을 확인할까요?</button><button data-example="지번 확인을 요청받았어요. 어디서 확인하면 될까요?"># 지번은 어디서 확인할까요?</button></div>
+        <div class="cc-home-field cc-home-task-field"><label for="task">받은 업무 <span>목록에서도 고를 수 있어요</span></label><select id="task" required><option value="">업무를 선택해 주세요</option></select></div>
+        <div id="homeContextOptions" hidden>
+        <div class="cc-home-project-fields">
+          <div class="cc-home-field"><label for="project">프로젝트 유형</label><select id="project"></select></div>
+          <div class="cc-home-field"><label for="phase">설계 단계 <span>선택</span></label><select id="phase"></select></div>
+        </div>
+        <button type="button" class="primary" id="analyze">내 업무 맥락 보기 <span aria-hidden="true">→</span></button>
+        <button type="button" class="details-toggle" id="detailsToggle">+ 규모·메모 입력</button>
+        <div class="details" id="details"><div class="cc-home-field"><label for="meta">규모·메모 <span>선택</span></label><input id="meta" placeholder="예: 800세대 / 연면적 3만㎡"></div></div>
+        </div>
+      </div>
+      <section class="cc-home-search" aria-labelledby="homeSearchTitle">
+        <h2 id="homeSearchTitle">궁금한 내용 검색</h2>
+        <p>업무명이나 용어를 직접 찾아보세요.</p>
+        <label for="homeSearch" class="cc-home-input-label">검색어</label>
+        <div class="cc-home-searchbox"><input id="homeSearch" type="search" placeholder="예: 변경허가와 변경신고 차이"><button type="button" id="homeSearchBtn" aria-label="척척에게 물어보기">검색 <span aria-hidden="true">→</span></button></div>
       </section>
     </div>
-    <div class="cc-topic-strip"><b>지금 많이 찾는 주제</b><div><button data-example="법규검토 업무를 요청받았어요. 무엇부터 확인하면 될까요?"># 법규 검토</button><button data-example="QGIS 확인을 요청받았어요. 어떤 내용을 보면 될까요?"># QGIS</button><button data-example="지번 확인을 요청받았어요. 어디서 확인하면 될까요?"># 지번 확인</button><button data-example="도로 검토를 요청받았어요. 무엇을 확인하면 될까요?"># 도로 검토</button><button data-example="면적표 검토를 요청받았어요. 무엇부터 맞추면 될까요?"># 면적표</button><button data-example="주차대수 산정을 요청받았어요. 어떤 기준부터 보면 될까요?"># 주차 계산</button></div><button data-view="search">더보기 ›</button></div>
   </section>
 
   <section id="view-context" class="view"><div class="back-row"><button data-view="home">← 처음으로</button><b>내 업무 맥락</b></div><div id="contextResult"></div></section>
@@ -122,7 +113,7 @@
 <script src="./context-view.js?v=2167"></script>
 <script src="./context-controller.js?v=2174"></script>
 <script src="./context-renderer.js?v=2174"></script>
-<script src="./v2_core.js?v=2174"></script>
+<script src="./v2_core.js?v=stable-home2"></script>
 <script src="./v21_search.js?v=2175"></script>
 <script src="./v211_polish.js?v=2174"></script>
 <script src="./v212_sidebar.js?v=2174b"></script>
@@ -158,7 +149,7 @@
 <script src="./v246_phase_context.js?v=2175"></script>
 <script src="./v247_task_phase_fit.js?v=2175"></script>
 <script src="./v248_project_route_judgement.js?v=2175"></script>
-<script src="./v249_home_search_focus.js?v=2175"></script>
+<script src="./v249_home_search_focus.js?v=stable-home2"></script>
 <script src="./v250_result_action_focus.js?v=2175"></script>
 <script src="./v251_search_reliability.js?v=2175"></script>
 <script src="./v252_level_depth_progression.js?v=2175"></script>

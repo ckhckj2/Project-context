@@ -15,9 +15,10 @@
     },
     {
       "file": "app-components.css",
-      "sha256": "025d9592cfaca197cbe070aae7d79eb1072bb742136820433fb27dad9bbad70a",
+      "sha256": "f1bedc1705177d5720bec7af359dcb5c8dde889b3bb12fd95296437739c1679c",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-26 stable home stage 2: replace home styles in the existing v249-owned section with scoped readable typography, task controls and a single primary action. Other page and search styles retained."
     },
     {
       "file": "app-runtime.js",
@@ -64,10 +65,10 @@
     },
     {
       "file": "index.html",
-      "sha256": "33d16bad11864fb09be62983498d7680a5663cc37c94d5affb8a84a804fc58ff",
+      "sha256": "1c043bf36d98fe8ea7af72bfaa7b5045b45621a48877720443391a63c066992d",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-26 stable entry stage 1: bump only the search runtime and entry adapter asset versions together so cached modules cannot mix old routing with the new navigation registration. Markup, controls and storage unchanged."
+      "review": "2026-09-26 stable home stage 2: replace only the public home with task shortcuts, the existing context fields and search; remove redundant home entry cards. Preserve control IDs, navigation, data and CSP. Bump changed asset versions together."
     },
     {
       "file": "judgement-data.js",
@@ -443,9 +444,10 @@
     },
     {
       "file": "v249_home_search_focus.js",
-      "sha256": "dc12de7543e8addf1a970842b325bf8b04f2c921bef50fef005bb175b3a9ecc2",
+      "sha256": "d9933a96059fcaf3c37612a1f282f14725db407556ad6b3446e0dba9927af13b",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-26 stable home stage 2: replace old home rearrangement with six buttons linked to the existing task select. Selection only, no storage or search route changes; dedicated search preparation retained."
     },
     {
       "file": "v250_result_action_focus.js",
@@ -503,9 +505,10 @@
     },
     {
       "file": "v2_core.js",
-      "sha256": "996eafafd216add0da545fd68ef4bd4de57311c43c602ca4af639f9224ad0e98",
+      "sha256": "c1d860a6d2f7029fdacd81fcbeee694f9fe15ec5ca827c3d0504582a47dbffad",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-26 stable home stage 2: the existing analyze click owner checks native task validity before rendering, so an unselected task cannot fabricate context. Renderer and navigation contracts unchanged."
     },
     {
       "file": "v2_data.js",

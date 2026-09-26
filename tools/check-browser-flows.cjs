@@ -31,7 +31,6 @@ async function flows(browser,url,width,motion){
    await page.locator('#masterLevels [data-level="'+level+'"]').click();
    if(level===5)await page.locator('#closeMaster').click();
    await page.evaluate(()=>showView('home'));
-   await page.locator('.cc251-structured > summary').click();
    await page.selectOption('#task','도면 수정');await page.selectOption('#project','multi');await page.selectOption('#phase','실시설계');
    await page.locator('#analyze').click();
    for(const pane of ['context','why','how','caution']){
@@ -47,7 +46,6 @@ async function flows(browser,url,width,motion){
    }
    await page.locator('#contextResult [data-ask-context]').click();assert(await page.locator('#view-search').evaluate(el=>el.classList.contains('active')));
    assert((await page.locator('#searchResult').textContent()).trim().length>0);
-   await page.evaluate(()=>{const fold=document.querySelector('.cc251-structured');fold.open=false;});
   }
   assert.equal(await page.evaluate(()=>localStorage.getItem('pc_progress_level')),'2','preview must preserve actual progress');
   await page.evaluate(()=>showView('projects'));
