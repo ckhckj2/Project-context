@@ -44,8 +44,13 @@ async function flows(browser,url,width,motion){
     const button=page.locator('#contextResult [data-drawer="'+pane+'"]');
     for(let repeat=0;repeat<2;repeat++){
      await button.click();assert.equal(await button.getAttribute('aria-expanded'),'true');
-     await page.waitForFunction(colors=>colors.includes(getComputedStyle(document.querySelector('#contextResult [data-drawer="how"]')).backgroundColor),[primaryColor,'rgb(40, 71, 187)']);
-     assert.equal(await page.locator('#contextResult .actions>button').evaluateAll((buttons,colors)=>buttons.filter(el=>colors.includes(getComputedStyle(el).backgroundColor)).length,[primaryColor,'rgb(40, 71, 187)']),1,'opening '+pane+' must retain exactly one blue primary action: '+JSON.stringify(await page.locator('#contextResult .actions>button').evaluateAll(buttons=>buttons.map(el=>[el.textContent,getComputedStyle(el).backgroundColor]))));
+     // Hover may change during the pane's smooth scroll. Both blue endpoints
+     // and their transition remain one primary action, not a second emphasis.
+     const blueCount=await page.locator('#contextResult .actions>button').evaluateAll(buttons=>buttons.filter(el=>{
+      const [r,g,b]=getComputedStyle(el).backgroundColor.match(/\d+/g).map(Number);
+      return r>=40&&r<=53&&g>=71&&g<=89&&b>=187&&b<=218;
+     }).length);
+     assert.equal(blueCount,1,'opening '+pane+' must retain exactly one blue primary action');
      assert.equal(await page.locator('#contextResult .drawer.show').count(),1);
      assert(await page.locator('#contextResult [data-pane="'+pane+'"] .cc252-pane-head, #contextResult [data-pane="'+pane+'"]' ).last().isVisible());
      await overflow(page,'level '+level+' '+pane);
@@ -128,6 +133,55 @@ async function flows(browser,url,width,motion){
   console.log('PASS flows',width,motion,': 5 levels, all panes twice, WHO, legacy/edit/create/reload, XSS, quiz, focus, CSP, overflow');
  }finally{await context.close();}
 }
+async function searchAndAlignment(browser,url){
+ const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+ const page=await context.newPage(),errors=[],requests=[];
+ page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>requests.push(request.url()));
+ await context.addInitScript(legacy=>{
+  localStorage.setItem('cc_projects_v1',JSON.stringify([legacy]));localStorage.setItem('cc_active_project_v1',legacy.id);
+  localStorage.setItem('pc_progress_level','2');localStorage.setItem('pc_level','2');
+ },legacy);
+ try{
+  await ready(page,url);
+  const saved=await page.evaluate(()=>Object.fromEntries(Object.entries(localStorage).filter(([key])=>key.startsWith('pc_')||key.startsWith('cc_'))));
+  await page.selectOption('#task','사례조사');await page.selectOption('#project','logistics');await page.selectOption('#phase','계획설계');
+  await page.click('#detailsToggle');await page.fill('#meta','다른 프로젝트 메모 트윈타워 987세대');
+  const selections=await page.evaluate(()=>['task','project','phase','meta'].map(id=>document.getElementById(id).value));
+  const search=async q=>{await page.fill('#searchInput',q);await page.locator('#searchInput').press('Enter');};
+  for(const width of [390,768,1024,1280,1440,1920]){
+   await page.setViewportSize({width,height:1000});
+   await page.evaluate(()=>showView('home'));await page.click('#analyze');
+   const bounds=await page.evaluate(()=>['#view-context .back-row','#contextResult .stage-banner','.cc-context-position','#contextResult .cc252-context-brief','#contextResult .actions'].map(selector=>{const r=document.querySelector(selector).getBoundingClientRect();return {left:r.left,right:r.right}}));
+   for(const rect of bounds){assert(Math.abs(rect.left-bounds[0].left)<1,width+' left alignment');assert(Math.abs(rect.right-bounds[0].right)<1,width+' right alignment');}
+   await overflow(page,'context alignment '+width);
+   if(process.env.CC_QA_SCREENSHOTS)await page.screenshot({path:path.join(process.env.CC_QA_SCREENSHOTS,'alignment-'+width+'.png'),fullPage:true});
+   await page.evaluate(()=>showView('home'));await page.fill('#homeSearch','물류 센터 입면사례 찾으래');await page.click('#homeSearchBtn');
+   assert.equal(await page.locator('.cc252-answer h3').innerText(),'물류·창고시설 · 입면 사례조사');
+   assert.match(await page.locator('.cc252-answer-context').innerText(),/설계단계 미입력/);
+   assert.equal(await page.locator('#cc230SearchProject').isVisible(),false,'unrelated saved project must not appear as the research context');
+   assert.doesNotMatch(await page.locator('#searchResult').innerText(),/공동주택|987|다른 프로젝트/);
+   assert(await page.locator('.cc217-answer .cc252-action-grid p').evaluateAll(items=>items.every(el=>el.scrollHeight<=el.clientHeight+1)),'guidance must not be clipped '+width);
+   await overflow(page,'case-study answer '+width);
+   if(process.env.CC_QA_SCREENSHOTS)await page.screenshot({path:path.join(process.env.CC_QA_SCREENSHOTS,'case-study-'+width+'.png'),fullPage:true});
+   const detail=page.locator('.cc252-detail-toggle');await detail.click();assert.equal(await detail.getAttribute('aria-expanded'),'true');
+   assert(await page.locator('.cc217-result').isVisible());await overflow(page,'case-study detail '+width);
+   await detail.click();assert.equal(await detail.getAttribute('aria-expanded'),'false');
+  }
+  await search('운수시설 중간설계 사례를 조사하래요');assert.equal(await page.locator('.cc252-answer h3').innerText(),'운수시설 · 중간설계 · 사례조사');
+  await search('병원 평면 사례 찾아오래');assert.match(await page.locator('.cc252-action-grid').innerText(),/공간 관계·운영 동선/);
+  await search('물류센터인지 공장인지 모르겠는데 중간설계 입면 사례');
+  assert.equal(await page.locator('#searchResult [data-search-query]').count(),2);
+  const choice=page.getByRole('button',{name:'공장·FAB 사례 보기'});await choice.focus();await choice.press('Enter');
+  assert.equal(await page.locator('.cc252-answer h3').innerText(),'공장·FAB · 중간설계 · 입면 사례조사');
+  await search('입면 사례 말고 도면 고치래');assert.match(await page.locator('.cc252-answer h3').innerText(),/^도면 수정/);
+  await search('알 수 없는 새로운 업무');assert(await page.locator('#cc230SearchProject').isVisible(),'saved-project indicator retained for other existing search providers');assert(await page.locator('.cc21-choices').isVisible(),'unsupported instructions retain clarification');
+  await search('<img src=x onerror="window.qaXss=1"> 물류센터 입면사례');assert.equal(await page.locator('#searchResult img').count(),0);assert.equal(await page.evaluate(()=>window.qaXss),undefined);
+  assert.deepEqual(await page.evaluate(()=>['task','project','phase','meta'].map(id=>document.getElementById(id).value)),selections,'search must not mutate home context');
+  assert.deepEqual(await page.evaluate(()=>Object.fromEntries(Object.entries(localStorage).filter(([key])=>key.startsWith('pc_')||key.startsWith('cc_')))),saved,'search and context reading preserve saved records');
+  assert.deepEqual(errors,[]);assert(requests.every(request=>new URL(request).origin===new URL(url).origin));
+  console.log('PASS stage 4: 390/768/1024/1280/1440/1920 alignment, natural queries, ambiguity/keyboard, detail, no clipping, storage/context isolation, XSS and no external requests');
+ }finally{await context.close();}
+}
 async function failures(browser,url){
  for(const mode of ['missing-css','blocked-storage','corrupt-storage']){
   const context=await browser.newContext();
@@ -153,6 +207,6 @@ async function failures(browser,url){
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const url='http://127.0.0.1:'+server.address().port+'/current/';browser=await chromium.launch(launch);
   for(const width of [390,768,1440])await flows(browser,url,width,'reduce');
-  await flows(browser,url,390,'no-preference');await failures(browser,url);
+  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await failures(browser,url);
  }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

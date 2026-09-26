@@ -595,6 +595,7 @@ body{font-size:14px!important}
   #searchResult .cc252-source-card>.cc242-toggle{display:none!important}
   .cc252-answer{padding:24px;border:1px solid #DCE5F1;border-radius:18px;background:#fff;box-shadow:0 8px 26px rgba(15,23,42,.045)}
   .cc252-answer-head small{display:block;color:#2D6FE9;font-size:9px;font-weight:950;letter-spacing:.08em}
+  .cc252-answer-context{margin:10px 0 0;color:#626C78;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
   .cc252-answer-head h3{max-width:820px;margin:7px 0 0!important;color:#142A4D;font-size:22px!important;line-height:1.4!important;letter-spacing:-.5px}
   .cc252-action-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:18px}
   .cc252-action-grid>div{min-height:112px;padding:14px;border:1px solid #E6EBF3;border-radius:13px;background:#F8FAFD}
@@ -659,6 +660,19 @@ body{font-size:14px!important}
     #contextResult .actions.cc252-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
     .cc252-brief-head{align-items:flex-start}
   }
+  /* Independent research never presents a saved project's conditions as input. */
+  #view-search:has(.cc217-result) #cc230SearchProject{display:none!important}
+  /* Case-study guidance keeps the first action readable at every width. */
+  #searchResult .cc217-answer .cc259-icon,#searchResult .cc217-answer .cc252-action-grid>div:after{display:none!important}
+  #searchResult .cc217-answer .cc252-answer-head>small{color:#596471!important}
+  #searchResult .cc217-answer .cc252-action-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px!important}
+  #searchResult .cc217-answer .cc252-action-grid>div{min-height:0!important;padding:0!important;border:0;border-radius:0;background:none!important;box-shadow:none!important}
+  #searchResult .cc217-answer .cc252-action-grid>div:first-child{grid-column:1/-1;padding:20px!important;border-radius:10px;background:#F1F3F5!important}
+  #searchResult .cc217-answer .cc252-action-grid small{color:#596471!important;font-size:12px!important}
+  #searchResult .cc217-answer .cc252-action-grid p{display:block!important;overflow:visible!important;font-weight:450!important;font-size:14px!important;line-height:1.7!important;color:#34414E!important;word-break:keep-all;overflow-wrap:anywhere}
+  #searchResult .cc217-answer .cc252-action-grid>div:first-child p{font-size:20px!important;font-weight:650!important;color:#172431!important}
+  #searchResult .cc217-answer .cc252-detail-toggle{min-height:44px;font-size:13px}
+  @media(max-width:620px){#searchResult .cc217-answer .cc252-action-grid{grid-template-columns:1fr}}
 /* END v250_result_action_focus.js */
 
 /* BEGIN v251_search_reliability.js */
@@ -805,10 +819,11 @@ body{font-size:14px!important}
 
 /* BEGIN v254_information_hierarchy.js */
 /* Stable context: one task heading, visible orientation, one primary action. */
+  #view-context{max-width:1100px;margin-inline:auto}
   #view-context .back-row{margin-bottom:24px;gap:16px}
   #view-context .back-row button{min-height:44px;padding:10px 14px;font-size:13px}
   #view-context .back-row b{color:#626C78;font-size:13px;font-weight:500}
-  #contextResult.cc-context-clear{max-width:1100px;margin:0 auto;color:#202A35}
+  #contextResult.cc-context-clear{color:#202A35}
   #contextResult.cc-context-clear .stage-banner{display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:8px 0 28px;border:0;border-radius:0;background:none;box-shadow:none}
   #contextResult.cc-context-clear .stage-badge{display:none}
   #contextResult.cc-context-clear .stage-copy{display:contents}

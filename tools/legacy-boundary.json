@@ -15,10 +15,10 @@
     },
     {
       "file": "app-components.css",
-      "sha256": "b176d933d0881486f4cad2a16554a3975f00ae95bf6248d1212b1dadb8557f51",
+      "sha256": "bf91c97462c3fba231cdc2a8328c7880d190f1b8e2c1ee1b0fa1fa4ee5fe2a0e",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-27 stable context stage 3: scoped hierarchy, neutral reading surfaces, visible stage rail and one primary action in the existing v254-owned section; shared search styles retained."
+      "review": "2026-09-26 stable search stage 4: Scope PC alignment to the whole context view; make case-study summary first action readable without clipping across device widths. Existing owner sections only."
     },
     {
       "file": "app-runtime.js",
@@ -66,10 +66,10 @@
     },
     {
       "file": "index.html",
-      "sha256": "d168b4d60f10c31299d17ddbc962ca73c0f3e1ec6960f66a6a59cd3d5fcbfd80",
+      "sha256": "63fdf6645843ea002a3ab0371378657bc494da510ae2841bf56d8a39d638018b",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-27 stable context stage 3: cache versions for the three reviewed runtime assets only; stable default and development entry retained."
+      "review": "2026-09-26 stable search stage 4: Cache revisions for the five changed runtime assets; public and development entry points preserved."
     },
     {
       "file": "judgement-data.js",
@@ -169,9 +169,10 @@
     },
     {
       "file": "search-answer.js",
-      "sha256": "df2f4f5badaf539d387fbcec141cce347c52043a2c2012857225462927723409",
+      "sha256": "2e41241dfd5c10e92ab088672af73803bba833bb3ad5521e8b4c446e0356bc54",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-26 stable search stage 4: Optional plain context string on the existing immutable answer model; existing producer contracts and WeakMap ownership retained."
     },
     {
       "file": "ui-resilience.css",
@@ -253,9 +254,10 @@
     },
     {
       "file": "v217_precedent_search.js",
-      "sha256": "051621b56f6c6d1e6c68efd02706be120b78b34e3135d68289b7babc6a949147",
+      "sha256": "172f7428434a9bc05a9596f28757557324172905721abe707ee43501dc9362be",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-26 stable search stage 4: Existing precedent route now handles natural research phrases and explicit scope/phase; clarify multiple facilities and remove implicit home/project borrowing."
     },
     {
       "file": "v218_lv2_context.js",
@@ -391,9 +393,10 @@
     },
     {
       "file": "v240_specific_intent_priority.js",
-      "sha256": "79e1275be6c0503c279c78bc3cc2496b30202a00fa1fff946fb7f6e6267a1f63",
+      "sha256": "4589bff269f88c3fc5b09b96401dd54afa7cd2685ed492be4d036bfc4102b848",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-26 stable search stage 4: Existing specific matcher accepts spaced work instructions, drawing revision verbs and explicit contrast. Existing content and WHO owner retained."
     },
     {
       "file": "v241_permit_workflow.js",
@@ -452,9 +455,10 @@
     },
     {
       "file": "v250_result_action_focus.js",
-      "sha256": "693996f4f063ea9a364b1cbfca48aa642f8962738d84bc91de23c05771ae8ad2",
+      "sha256": "52e47e855afeac11bd08d035202cab2abff91bb222e83d8aaca619d630be8074",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-26 stable search stage 4: Render producer-provided plain context and style only case-study summaries; existing detailed answer toggle retained."
     },
     {
       "file": "v251_search_reliability.js",

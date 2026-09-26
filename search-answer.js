@@ -4,10 +4,10 @@
 // participates in deciding the answer. Ownership follows the rendered node.
 const answers=new WeakMap();
 const clean=value=>String(value??'').replace(/\s+/g,' ').trim();
-function model(title,items=[]){
+function model(title,items=[],context=''){
   const rows=items.filter(x=>x&&clean(x[1])).slice(0,3).map(([label,body])=>
     Object.freeze({label:clean(label).replace(/^\d+\s*[·.\-]?\s*/,''),body:clean(body)}));
-  return Object.freeze({title:clean(title),items:Object.freeze(rows)});
+  return Object.freeze({title:clean(title),items:Object.freeze(rows),context:clean(context)});
 }
 function comparison(title,left,right,first,caution){
   const base=model(title,[['핵심 구분',left.join(' · ')+' / '+right.join(' · ')],['먼저 확인',first],['주의',caution]]);
