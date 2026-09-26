@@ -1,7 +1,7 @@
 # 척척 — 건축 실무, 물으면 척척
 
-정적 웹앱이다. 운영 진입점은 `index.html`(v2.1.75), 리디자인 검토 진입점은 `docs/redesign/preview/index.html`이다.
-현재 리디자인은 **8단계 로컬 통합 검수·배포본 준비까지 완료**했다. 새 진입점은 `app/index.html`이다. GitHub 업로드·운영 전환은 별도 승인 대기이며 전체 콘텐츠 이전은 아직 하지 않았다.
+정적 웹앱이다. 기본 사용자 화면은 기존 척척(`index.html`, 배포본에서는 `legacy.html`)이고, 새 척척은 `app/index.html`에 개발 버전으로 보존한다. 시안은 `docs/redesign/preview/index.html`에 별도로 남아 있다.
+기존 척척의 홈 또는 검색창에 `관리자 모드로 이동해줘`를 입력하면 개발 버전으로 이동한다. 개발 버전 상단에서 기존 척척으로 돌아올 수 있다. 이 명령은 페이지 이동일 뿐 관리자 권한이나 승급을 부여하지 않는다. 두 버전의 저장 기록은 각각 유지하며 자동으로 합치지 않는다.
 
 ## 시작과 검사
 
@@ -48,12 +48,11 @@ python -m http.server 8765 --bind 127.0.0.1
 3. 화면이나 공통 모듈 변경은 브라우저 검사와 육안 검토도 진행한다. 여백을 줄여 콘텐츠를 억지로 넣지 않는다.
 4. 검사 예외를 자동 재생성해 통과시키지 않는다. 기존 운영 파일을 이관할 때는 기능별 대체와 회귀 근거를 남긴다.
 
-`npm run build:site`는 기존 index와 필요한 정적 자산·모듈 의존성만 `dist/`에 복사한다. 새 앱 진입점·저장소 전체·테스트·시안·옛 HTML은 포함하지 않는다.
-CI와 수동 Pages 릴리스 경로는 작성돼 있지만 **GitHub에 아직 반영하지 않았고, 기존 Pages 자동 배포 차단도 활성화하지 않았다.**
-실제 릴리스 전 Pages Source를 GitHub Actions로 전환하고 브랜치 보호의 필수 검사를 설정해야 한다. 도메인 변경은 필요하지 않다.
+`npm run build:site`는 기존 index와 별도의 개발 버전을 `dist/`에 복사한다. 필요한 정적 자산·모듈 의존성만 포함하며 저장소 전체·테스트·시안·옛 HTML 스냅샷은 제외한다. 패키지에 두 버전이 있어도 접속한 화면의 코드만 로드한다.
+GitHub Actions의 검증을 거친 `main` 릴리스는 `dist-release/`를 Pages에 배포한다. 현재 배포 단위는 두 버전을 포함한 하나의 검증된 산출물이다. 완전히 독립된 개발 버전 배포 파이프라인은 이번 단계에 포함하지 않는다.
 
 상세: [5단계 구현·검증 기록](docs/redesign/stage-5.md) · [4단계 구현·검증 기록](docs/redesign/stage-4.md) · [3단계 구현·검증 기록](docs/redesign/stage-3.md) · [2단계 기록](docs/redesign/stage-2.md) · [설계 합의](docs/redesign/decisions.md) · [보안 원칙](SECURITY.md)
 
-## 새 화면 배포 준비
+## 기본 화면과 개발 버전 배포
 
-`npm run build:release`는 `dist-release/`에 새 화면과 기존 정보 호환 페이지를 만든다. 루트 주소는 새 앱으로 연결되고, 기존 프로젝트·성적·상세 정보는 보존한다. 개발 파일과 시안은 포함하지 않는다. 기존 운영 빌드는 `npm run build:site`의 `dist/`에 별도로 만든다. [8단계 검증·배포 절차](docs/redesign/stage-8.md)를 확인한다. 실제 GitHub 업로드·배포는 아직 하지 않았다.
+`npm run build:release`는 `dist-release/`에 두 버전과 진입 페이지를 만든다. 기본 루트 주소와 `https://cheokkcheokk.github.io/`는 기존 척척으로 연결된다. `app/` 주소와 유효한 개발 화면 해시 링크는 계속 사용할 수 있다. 기존 프로젝트·성적·상세 안내 링크도 유지한다. 저장소의 개발 도구와 시안은 포함하지 않는다. [기존 척척 전환 1단계](docs/redesign/stable-entry-stage-1.md)에 범위와 검증을 기록한다.

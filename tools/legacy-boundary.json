@@ -21,9 +21,10 @@
     },
     {
       "file": "app-runtime.js",
-      "sha256": "a82808522b0c22f3f1aa69b4c36ef8974f21262200ab36046fa43e64d66d9bc5",
+      "sha256": "277dfb0c9b4d2936a28309706d8d383e398cd41bc8be4fb2832a68c0dceff942",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-26 stable entry stage 1: reserve one exact development-navigation route before search providers. Registered by app/legacy-entry.mjs; no new event owner or storage mutation. Verified by release browser transitions and existing search regression."
     },
     {
       "file": "app-start.js",
@@ -63,10 +64,10 @@
     },
     {
       "file": "index.html",
-      "sha256": "7d45086bd12dbb4371855a85b2cc305ad6dd0349cb972e1d258431afe119cb00",
+      "sha256": "33d16bad11864fb09be62983498d7680a5663cc37c94d5affb8a84a804fc58ff",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "Stage 3: add a single module adapter before app-start for allowlisted task/projects/quiz deep links. Existing runtime and storage unchanged."
+      "review": "2026-09-26 stable entry stage 1: bump only the search runtime and entry adapter asset versions together so cached modules cannot mix old routing with the new navigation registration. Markup, controls and storage unchanged."
     },
     {
       "file": "judgement-data.js",

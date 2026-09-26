@@ -134,7 +134,7 @@ function render(moveFocus = false) {
   else if (['learn', 'quiz', 'practice'].includes(route.name))
     renderLearning(main, route, learning, workDialog);
   else renderNavigation(main, route, startInstruction);
-  document.title = `${main.querySelector('h1')?.textContent ?? '척척'} · 척척`;
+  document.title = `${main.querySelector('h1')?.textContent ?? '척척'} · 척척 개발 버전`;
   if (moveFocus) {
     window.scrollTo({ top: 0, behavior: 'instant' });
     main.querySelector('h1')?.focus();
