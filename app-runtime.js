@@ -2,7 +2,7 @@
 'use strict';
 
 // This is the only owner of search dispatch and context composition order.
-const SEARCH_ORDER=['comparison','concept-comparison','ask','definition','judgement','permit-workflow','change',
+const SEARCH_ORDER=['development','comparison','concept-comparison','ask','definition','judgement','permit-workflow','change',
   'glossary','public','reviews','bim','precedent','specific','common','tools','expanded','fallback'];
 const CONTEXT_ORDER=['why','tools','how','public-use','facility-use','public-flow',
   'focus','phase','phase-fit','project-route','project-label','bim','reviews','depth','hierarchy','drawings','judgement','visual','feedback'];

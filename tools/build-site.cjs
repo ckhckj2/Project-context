@@ -12,13 +12,11 @@ if (process.argv.slice(2).some((value) => value !== '--redesign'))
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const assets = new Set([
   'index.html',
+  'app/index.html',
+  'app/release-entry.mjs',
   'mascot_v2112.svg',
   ...[...html.matchAll(/(?:src|href)="\.\/([^?"#]+)[^"]*"/g)].map((match) => match[1]),
 ]);
-if (redesign) {
-  assets.add('app/index.html');
-  assets.add('app/release-entry.mjs');
-}
 fs.rmSync(destination, { recursive: true, force: true });
 fs.mkdirSync(destination);
 for (const file of assets) {
@@ -57,9 +55,9 @@ fs.writeFileSync(path.join(destination, '.nojekyll'), '');
 if (redesign) {
   const landing = fs
     .readFileSync(path.join(root, 'app/release.html'), 'utf8')
-    .replace('src="release-entry.mjs"', 'src="./app/release-entry.mjs"');
+    .replace('src="release-entry.mjs', 'src="./app/release-entry.mjs');
   fs.writeFileSync(path.join(destination, 'index.html'), landing);
 }
 console.log(
-  `Built ${assets.size + (redesign ? 1 : 0)} files in ${path.basename(destination)} (${redesign ? 'new app with legacy compatibility' : 'legacy release'}).`,
+  `Built ${assets.size + (redesign ? 1 : 0)} files in ${path.basename(destination)} (established app with separate development entry).`,
 );

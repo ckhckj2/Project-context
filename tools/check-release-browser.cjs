@@ -57,12 +57,14 @@ const server = http.createServer((req, res) => {
       }),
       errors = [],
       failures = [],
-      external = [];
+      external = [],
+      requested = [];
     page.on('pageerror', (error) => errors.push(error.message));
     page.on('response', (response) => {
       if (response.status() >= 400) failures.push(response.url());
     });
     page.on('request', (request) => {
+      requested.push(request.url());
       if (!request.url().startsWith(base)) external.push(request.url());
     });
     const click = async (name) => page.getByRole('button', { name, exact: true }).click();
@@ -81,9 +83,62 @@ const server = http.createServer((req, res) => {
       await page.evaluate(() => document.fonts.ready);
       await page.screenshot({ path: path.join(out, name + '.png'), fullPage: true });
     };
+    await page.addInitScript(() => {
+      if (localStorage.getItem('qa-stable-entry')) return;
+      localStorage.setItem('qa-stable-entry', '1');
+      localStorage.setItem('pc_progress_level', '2');
+      localStorage.setItem('pc_level', '2');
+      localStorage.setItem(
+        'cc_projects_v1',
+        JSON.stringify([
+          {
+            id: 'qa-stable',
+            name: '기존 프로젝트',
+            typeId: 'multi',
+            phase: '실시설계',
+            memo: '유지할 메모',
+          },
+        ]),
+      );
+    });
+    const legacyReady = () =>
+      page.waitForFunction(() => window.CC_BOOT?.diagnostics().state === 'ready');
+    const legacyStorage = () =>
+      page.evaluate(() =>
+        Object.fromEntries(
+          Object.entries(localStorage).filter(
+            ([key]) => key.startsWith('pc_') || /^cc_(projects|active_project)_v1$/.test(key),
+          ),
+        ),
+      );
     await page.goto(base);
+    await page.waitForURL(base + 'legacy.html');
+    await legacyReady();
+    assert.ok(await page.locator('#view-home.active').isVisible());
+    assert.equal(
+      requested.some((url) => /\/app\/main\.mjs|\/src\/(ui|styles)\//.test(url)),
+      false,
+      'the default app must not download the development UI',
+    );
+    const originalLegacy = await legacyStorage();
+    await capture('stable-home-desktop');
+    await page.locator('#homeSearch').fill('관리자 모드가 뭐야?');
+    await page.locator('#homeSearchBtn').click();
+    assert.ok(page.url().endsWith('legacy.html'));
+    await page.locator('#searchInput').fill('관리자 모드로 이동해줘 라는 문장은 무슨 뜻이야?');
+    await page.locator('#searchGo').click();
+    assert.ok(page.url().endsWith('legacy.html'), 'a mention of the command must remain a search');
+    await page.locator('#searchInput').fill('관리자 모드로 이동해줘');
+    await page.locator('#searchGo').click();
     await page.waitForURL(base + 'app/');
     await page.locator('main h1').waitFor();
+    assert.ok(await page.getByRole('complementary', { name: '개발 버전 안내' }).isVisible());
+    assert.match(await page.title(), /척척 개발 버전/);
+    assert.deepEqual(
+      await legacyStorage(),
+      originalLegacy,
+      'navigation does not grant levels or alter projects',
+    );
     assert.equal(await page.locator('main h1').count(), 1);
     await capture('home-desktop');
     await page.keyboard.press('Tab');
@@ -131,6 +186,28 @@ const server = http.createServer((req, res) => {
     await click('이 깊이로 보기');
     await saved();
     await capture('workflow-desktop');
+    const developmentSaved = await page.evaluate(() =>
+      localStorage.getItem('cc_redesign_progress_v1'),
+    );
+    await page.getByRole('link', { name: '기존 척척으로 돌아가기 →', exact: true }).click();
+    await page.waitForURL(base + 'legacy.html');
+    await legacyReady();
+    assert.deepEqual(await legacyStorage(), originalLegacy);
+    assert.equal(
+      await page.evaluate(() => localStorage.getItem('cc_redesign_progress_v1')),
+      developmentSaved,
+    );
+    await page.setViewportSize({ width: 390, height: 844 });
+    await capture('stable-home-mobile');
+    await page.locator('#homeSearch').fill('  관리자모드로   이동해줘  ');
+    await page.locator('#homeSearch').press('Enter');
+    await page.waitForURL(base + 'app/');
+    await page.locator('main h1').waitFor();
+    assert.equal(
+      await page.evaluate(() => localStorage.getItem('cc_redesign_progress_v1')),
+      developmentSaved,
+    );
+    assert.deepEqual(await legacyStorage(), originalLegacy);
     await page.setViewportSize({ width: 390, height: 844 });
     await go('#/saved');
     await capture('saved-mobile');
@@ -164,12 +241,21 @@ const server = http.createServer((req, res) => {
         await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
         true,
       );
+      assert.ok(
+        await page.getByRole('link', { name: '기존 척척으로 돌아가기 →', exact: true }).isVisible(),
+      );
     }
+    await page.goto(base + '?entry=https://example.com/#/unknown');
+    await page.waitForURL(base + 'legacy.html');
+    await legacyReady();
+    await page.locator('#homeSearch').fill('');
+    await page.locator('#homeSearchBtn').click();
+    assert.ok(page.url().endsWith('legacy.html'), 'empty input must not switch versions');
     assert.deepEqual(errors, []);
     assert.deepEqual(failures, []);
     assert.deepEqual(external, []);
     console.log(
-      'PASS release artifact: subpath landing, home/work/save/quiz/promotion/depth/reload integration, legacy links, hostile entry handling, keyboard skip, responsive layouts, no broken assets or external requests',
+      'PASS release artifact: stable default, exact command on both search inputs, version return, independent storage, separate UI loading, home/work/save/quiz/promotion/depth/reload integration, legacy links, hostile entry handling, keyboard skip, responsive layouts, no broken assets or external requests',
     );
   } finally {
     if (browser) await browser.close();
