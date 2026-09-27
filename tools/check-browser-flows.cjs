@@ -38,6 +38,9 @@ async function flows(browser,url,width,motion){
    assert(await page.locator('.cc-context-position').isVisible(),'orientation must not require opening details');
    const first=page.locator('#contextResult .actions>button').first();
    assert.equal(await first.getAttribute('data-drawer'),'how');
+   // The previous click can leave the pointer over this button after layout changes.
+   await page.mouse.move(0,0);
+   await page.waitForFunction(()=>getComputedStyle(document.querySelector('#contextResult .actions>button')).backgroundColor==='rgb(53, 89, 218)');
    const primaryColor=await first.evaluate(el=>getComputedStyle(el).backgroundColor);
    assert.equal(primaryColor,'rgb(53, 89, 218)','one solid primary action');
    for(const pane of ['context','why','how','caution']){
@@ -182,6 +185,70 @@ async function searchAndAlignment(browser,url){
   console.log('PASS stage 4: 390/768/1024/1280/1440/1920 alignment, natural queries, ambiguity/keyboard, detail, no clipping, storage/context isolation, XSS and no external requests');
  }finally{await context.close();}
 }
+async function permitGuide(browser,url){
+ const context=await browser.newContext({viewport:{width:1440,height:1100},reducedMotion:'reduce',locale:'ko-KR'});
+ await context.addInitScript(legacy=>{localStorage.setItem('cc_projects_v1',JSON.stringify([legacy]));localStorage.setItem('cc_active_project_v1',legacy.id);},legacy);
+ const page=await context.newPage(),errors=[],requests=[];
+ page.on('pageerror',error=>errors.push(error.message));page.on('request',request=>requests.push(request.url()));
+ try{
+  await ready(page,url);
+  const before=await page.evaluate(()=>({...localStorage}));
+  const selections=await page.evaluate(()=>['task','project','phase','meta'].map(id=>document.getElementById(id).value));
+  await page.fill('#homeSearch','인허가');await page.click('#homeSearchBtn');
+  assert(await page.locator('.cc235-guide').isVisible());
+  assert.equal(await page.locator('.cc235-guide .cc242-toggle,.cc252-answer').count(),0,'guide must not be hidden behind another summary');
+  assert.equal(await page.locator('#cc230SearchProject').isVisible(),false,'manual guide must not imply saved-project applicability');
+  assert.equal(await page.locator('.cc235-guide .cc234-bim-search').count(),0,'manual guide must not inherit unrelated BIM tasks');
+  assert.equal(await page.locator('.cc235-guide-topic').count(),9);
+  assert.equal(await page.locator('.cc235-guide-topic:visible').count(),3);
+  assert.equal(await page.locator('.cc235-guide-topic[open]').count(),0);
+  await page.selectOption('#cc235GuideType','logistics');
+  assert.match(await page.locator('.cc235-guide-first h4').innerText(),/개별 창고/);
+  assert.equal(await page.locator('.cc235-guide-topic:visible').first().getAttribute('data-permit-topic'),'traffic');
+  await page.locator('.cc235-guide-scale>summary').click();assert.match(await page.locator('.cc235-guide-scale').innerText(),/대지·개발면적/);
+  await page.selectOption('#cc235GuideStage','early');
+  assert.equal(await page.locator('.cc235-guide-topic:visible').first().getAttribute('data-permit-topic'),'environment');
+  await page.selectOption('#cc235GuideStage','middle');
+  assert.equal(await page.locator('.cc235-guide-topic:visible').first().getAttribute('data-permit-topic'),'fire');
+  for(const width of [390,768,1024,1280,1440,1920]){
+   await page.setViewportSize({width,height:1100});
+   const summary=page.locator('[data-permit-topic="fire"]>summary');
+   await summary.focus();await page.keyboard.press('Enter');
+   assert(await page.locator('[data-permit-topic="fire"][open]').isVisible());
+   assert(await page.locator('.cc235-guide-scope').isVisible(),'scope must remain visible at LV1');
+   await overflow(page,'permit guide '+width);
+   const alignment=await page.locator('.cc235-guide header,.cc235-guide-filters,.cc235-guide-first,.cc235-guide-candidates').evaluateAll(els=>els.map(el=>el.getBoundingClientRect().left));
+   assert(Math.max(...alignment)-Math.min(...alignment)<=1,'guide column alignment '+width);
+   assert(await page.locator('.cc235-guide-topic-body dd').evaluateAll(els=>els.every(el=>!el.getClientRects().length||el.scrollWidth<=el.clientWidth+1)),'no clipped criteria '+width);
+   if(process.env.CC_PERMIT_SCREENSHOT_DIR){
+    fs.mkdirSync(process.env.CC_PERMIT_SCREENSHOT_DIR,{recursive:true});
+    await page.screenshot({path:path.join(process.env.CC_PERMIT_SCREENSHOT_DIR,'permit-'+width+'.png'),fullPage:true});
+   }
+   await summary.click();assert.equal(await page.locator('[data-permit-topic="fire"][open]').count(),0);
+  }
+  await page.locator('.cc235-guide-more>summary').click();assert.equal(await page.locator('.cc235-guide-topic:visible').count(),9,'other candidates remain available');
+  for(const key of ['building','landscape','fire','traffic','environment','education','disaster','bf','zeb']){
+   if(!await page.locator('[data-permit-topic="'+key+'"]>summary').isVisible())await page.locator('.cc235-guide-more>summary').click();
+   await page.locator('[data-permit-topic="'+key+'"]>summary').click();
+   await page.locator('[data-permit-topic="'+key+'"] [data-cc235-go]').click();
+   assert(await page.locator('.cc252-answer').isVisible(),'existing detail summary retained '+key);
+   const detail=page.locator('.cc252-detail-toggle');await detail.click();
+   assert(await page.locator('.cc235-review-card .cc235-sources a').isVisible());
+   assert.equal(await page.locator('.cc235-review-card .cc235-sources a').getAttribute('rel'),'noopener noreferrer');
+   await page.locator('.cc235-guide-back').click();
+   assert.equal(await page.locator('#cc235GuideType').inputValue(),'logistics');assert.equal(await page.locator('#cc235GuideStage').inputValue(),'middle');
+  }
+  await page.locator('.cc235-guide-first [data-cc235-go]').click();assert.match(await page.locator('.cc252-answer h3').innerText(),/원 승인|제출목록/);
+  await page.locator('.cc235-guide-back').click();
+  await page.fill('#searchInput','<img src=x onerror="window.qaPermitXss=1"> 인허가');await page.locator('#searchInput').press('Enter');
+  assert(await page.locator('.cc235-guide').isVisible());assert.equal(await page.locator('#searchResult img').count(),0);
+  assert.equal(await page.evaluate(()=>window.qaPermitXss),undefined);
+  assert.deepEqual(await page.evaluate(()=>({...localStorage})),before,'reading must preserve project and level storage');
+  assert.deepEqual(await page.evaluate(()=>['task','project','phase','meta'].map(id=>document.getElementById(id).value)),selections,'manual guide must not mutate work context');
+  assert.deepEqual(errors,[]);assert(requests.every(request=>new URL(request).origin===new URL(url).origin),'no external requests');
+  console.log('PASS permit stage 1: six widths, column alignment, LV1 scope, reading priorities, all nine detail/return paths, keyboard, storage/context preservation and no external requests');
+ }finally{await context.close();}
+}
 async function failures(browser,url){
  for(const mode of ['missing-css','blocked-storage','corrupt-storage']){
   const context=await browser.newContext();
@@ -207,6 +274,6 @@ async function failures(browser,url){
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const url='http://127.0.0.1:'+server.address().port+'/current/';browser=await chromium.launch(launch);
   for(const width of [390,768,1440])await flows(browser,url,width,'reduce');
-  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await failures(browser,url);
+  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await permitGuide(browser,url);await failures(browser,url);
  }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

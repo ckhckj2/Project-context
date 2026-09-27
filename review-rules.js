@@ -26,12 +26,53 @@ const REVIEWS={
   zeb:{name:'ZEB · 제로에너지건축물 인증',tag:'에너지',summary:'건축물의 에너지 성능을 높이고 신재생에너지 등을 활용해 에너지소요량을 낮추는 인증제도예요. 대상·의무 범위는 용도·규모·공공성 등 현재 법령을 확인해야 합니다.',apply:'녹색건축물 조성 지원법과 시행령·공동부령에서 프로젝트 용도와 규모가 인증·의무 대상인지 확인하세요.',when:'외피·창호·단열·설비·신재생 계획이 함께 움직이므로 중간설계 이후에 붙이는 업무가 아니라 초기 에너지 목표부터 잡는 게 좋습니다.',materials:['건축물 용도·면적·공공/민간 구분','외피·창호·단열 계획','기계·전기 에너지 시스템','신재생에너지 계획 및 에너지 모델링 자료'],who:'에너지/ZEB 컨설턴트 → 건축·기계·전기 담당 → 인증기관/관계기관',after:'설계인증 조건을 실시설계·시공·준공 단계까지 추적하고 변경으로 성능값이 달라졌는지 확인하세요.',caution:'“공공건축이면 무조건 같은 ZEB 등급”처럼 고정 규칙으로 보지 말고 최신 시행령·고시의 대상과 요구수준을 확인하세요.',law:'zeb'}
 };
 
+// Reading priorities, never legal applicability rules. All nine existing topics
+// remain available for every selection; no numeric threshold or saved project is inferred.
+const GUIDE={
+  edited:'2026.09.27',
+  types:{
+    general:{label:'공통 안내',first:'사업의 승인경로부터 확인하세요',why:'건축허가·신고인지, 사업계획승인이나 특별법 사업인지에 따라 연결할 절차와 담당기관이 달라져요.',scale:'대지면적·개발면적·연면적·용도별 면적을 구분하고, 층수·높이를 함께 준비하세요.',priority:['building','traffic','landscape']},
+    housing:{label:'공동주택·주거복합',first:'주택사업의 승인경로와 복합용도를 확인하세요',why:'건축허가, 주택법 사업계획승인, 정비사업 등 어느 경로인지 먼저 확인해요. 주거와 비주거 부분의 조건도 구분해야 해요.',scale:'세대수, 주거·비주거별 면적, 층수·높이, 사업구역 면적을 구분하세요.',priority:['building','traffic','education']},
+    logistics:{label:'물류센터·창고',first:'개별 창고인지, 물류단지 사업인지 확인하세요',why:'건축물의 허가와 단지·개발사업의 승인을 구분해요. 차량 진출입·하역, 피난·방화, 부지조성 조건을 함께 검토할 수 있어요.',scale:'창고와 부속용도별 면적, 대지·개발면적, 층수·높이, 저장물·운영조건을 준비하세요.',priority:['traffic','fire','environment']},
+    factory:{label:'공장·산업시설',first:'공장설립·산업단지와 건축 절차의 관계를 확인하세요',why:'건축허가 외에 사업·입지와 생산공정에 따른 검토가 있을 수 있어요. 산업단지계획과 기존 승인 조건도 함께 확인해요.',scale:'부지·개발면적, 용도별 면적, 층수·높이, 생산공정·취급물 조건을 구분하세요.',priority:['environment','fire','disaster']},
+    transport:{label:'운수시설·공항',first:'시설 운영과 특별법 승인경로를 먼저 확인하세요',why:'공항·철도 등 시설의 사업경로와 운영기관 협의가 건축 절차에 연결될 수 있어요. 운수시설이라는 이름만으로 경로를 정하지 않아요.',scale:'사업구역·개발면적, 시설별 면적, 층수·높이, 여객·차량 운영조건을 준비하세요.',priority:['traffic','fire','bf']},
+    public:{label:'공공건축',first:'발주기관의 사업절차와 인증 요구를 확인하세요',why:'시설 용도에 따른 검토와 함께 공공사업 절차·과업지시서·접근성·에너지 목표를 확인해요. 공공건축이라고 모두 같은 대상은 아니에요.',scale:'시설 용도·면적, 신축·증축 등 공사유형, 발주·소유 주체와 사업비 등 요구자료를 구분하세요.',priority:['building','bf','zeb']},
+    other:{label:'그 밖의 시설·아직 모름',first:'법정 용도와 사업방식부터 정리하세요',why:'병원·학교·숙박·판매시설 등은 개별 시설법과 운영 관련 절차도 확인해야 해요. 아래 목록만으로 필요한 인허가를 모두 확인한 것은 아니에요.',scale:'법정 용도, 용도별 면적, 층수·높이와 병상·객실 등 해당 시설의 규모 항목을 준비하세요.',priority:['building','fire','traffic']}
+  },
+  stages:{
+    all:{label:'전체 흐름',action:'초기에 대상 여부와 선행 절차를 확인하고, 설계·허가·시공에서 조건 반영을 이어가세요.',priority:[]},
+    early:{label:'사전기획 / 사업검토',action:'대지·개발범위와 사업경로를 확인하고, 계획을 바꿀 수 있는 입지 조건부터 검토하세요.',priority:['environment','disaster','education']},
+    basic:{label:'기본계획',action:'배치·진출입·높이·면적이 굳기 전에 관련 검토와 담당자를 확인하세요.',priority:['traffic','building','landscape']},
+    plan:{label:'계획설계',action:'계획안에 영향을 줄 심의·평가의 대상 여부와 제출 시점을 확인하세요.',priority:['building','traffic','landscape']},
+    middle:{label:'중간설계',action:'받은 심의·협의 의견을 건축·소방·설비 도면에 함께 반영하고, 아직 확인하지 않은 절차를 점검하세요.',priority:['fire','building','bf']},
+    detail:{label:'실시설계',action:'허가·승인·인증 조건이 최종 도면과 사양에 반영됐는지 대조하고, 변경 절차가 필요한지 확인하세요.',priority:['fire','bf','zeb']},
+    site:{label:'시공·준공',action:'기존 승인 조건의 이행과 변경사항을 추적하고, 해당하는 사용승인·완공·본인증 자료를 확인하세요.',priority:['bf','zeb','fire']}
+  },
+  topics:{
+    building:{kind:'심의',why:'배치·규모·주요 계획의 검토 결과가 허가도서와 설계안에 영향을 줄 수 있어요.',check:'건축물 용도·규모·공사유형, 관할 건축조례와 심의 운영기준',scale:'연면적·용도별 면적·층수·높이 등 해당 기준이 요구하는 수치',timing:'계획을 정할 때 대상과 일정을 확인 → 해당 심의 의견을 허가·승인 도서에 반영'},
+    landscape:{kind:'심의',why:'매스·높이·입면·색채와 외부공간의 조정이 설계안에 영향을 줄 수 있어요.',check:'경관지구·중점경관관리구역 등 입지, 사업·시설 유형, 관할 경관조례',scale:'높이·층수·연면적·사업 규모 등 해당 조례가 요구하는 수치',timing:'초기 매스·입면 검토 때 대상 확인 → 해당 의결조건을 설계·허가도서에 반영'},
+    fire:{kind:'검토·평가 등',why:'피난·방화·제연·소방설비 조건이 코어와 공간 계획을 바꿀 수 있어요.',check:'성능위주설계 등 실제 절차명, 용도·높이·특수성, 관할 소방기관 기준',scale:'용도별 면적·층수·높이와 저장물·운영조건 등 소방설계 검토자료',timing:'기본계획부터 소방설계자와 대상 확인 → 설계 반영 → 해당 완공 절차까지 추적'},
+    traffic:{kind:'평가',why:'차량 출입구·주차·하역·보행 개선사항이 배치에 영향을 줄 수 있어요.',check:'대상지역, 사업 또는 건축물의 종류, 법령·지자체 조례의 기준',scale:'용도별 연면적·사업면적·세대수 등 적용 기준에 맞는 규모',timing:'진출입·배치 계획 때 대상과 제출 시점 확인 → 협의조건을 허가·승인 도서에 반영'},
+    environment:{kind:'평가·협의',why:'입지·개발범위·환경 보전 조건이 사업계획과 부지조성을 바꿀 수 있어요.',check:'전략·환경·소규모 환경영향평가의 구분, 사업종류·입지·원 승인경로',scale:'대지면적과 개발·사업면적을 구분하고, 변경·누적 범위도 확인',timing:'사업·토지이용계획 초기 확인 → 해당 승인 전 협의 → 설계·시공에서 조건 이행'},
+    education:{kind:'평가·승인',why:'학교와의 관계, 일조·소음·통학 안전 등이 배치와 높이에 영향을 줄 수 있어요.',check:'대상 사업·행위와 학교·교육환경보호구역의 관계',scale:'높이·층수·사업범위·학교와의 위치관계 등 해당 기준의 자료',timing:'초기 배치 검토 때 대상 확인 → 해당 승인조건을 설계·공사계획에 반영'},
+    disaster:{kind:'평가·협의',why:'배수·저류·절성토·침수 대응이 부지조성과 건축 배치에 영향을 줄 수 있어요.',check:'대상 행정계획·개발사업인지, 원 승인경로와 협의 시점',scale:'사업·개발면적, 사업 길이 등 해당 사업 기준의 규모와 지형·유역 조건',timing:'개발범위·토목계획 초기 확인 → 해당 승인 전 협의 → 시공에서 조건 이행'},
+    bf:{kind:'인증',why:'접근 동선·경사로·출입구·화장실 치수를 초기에 맞추면 뒤늦은 평면 수정을 줄일 수 있어요.',check:'시설주체·용도·공사유형별 의무 여부와 발주 요구, 편의시설 기준과의 구분',scale:'시설별 규모와 접근로·주차·출입구·승강기 등 계획 치수',timing:'초기 동선·평면 검토 → 해당 예비인증 조건 반영 → 시공·본인증 확인'},
+    zeb:{kind:'인증',why:'외피·설비·신재생에너지 목표가 입면·옥상·설비공간에 함께 영향을 줘요.',check:'용도·규모·공공성·공사유형·적용 시점별 인증 의무와 발주 요구',scale:'용도별 면적과 에너지 평가 범위·외피·설비 조건',timing:'초기 에너지 목표 검토 → 해당 예비인증 조건 반영 → 시공·본인증 확인'}
+  }
+};
+function guideView(type='general',stage='all'){
+  type=Object.hasOwn(GUIDE.types,type)?type:'general';
+  stage=Object.hasOwn(GUIDE.stages,stage)?stage:'all';
+  const priority=stage==='all'?GUIDE.types[type].priority:GUIDE.stages[stage].priority;
+  return {type,stage,priority,others:Object.keys(GUIDE.topics).filter(key=>!priority.includes(key))};
+}
+
 function topic(q){
   const s=String(q||'').trim();
   if(!s||COMPARE.test(s))return null;
   if(/건축\s*심의|건축위원회/i.test(s))return {kind:'review',key:'building'};
   if(/경관\s*심의|경관위원회/i.test(s))return {kind:'review',key:'landscape'};
-  if(/소방\s*심의|성능위주설계|성능\s*위주/i.test(s))return {kind:'review',key:'fire'};
+  if(/소방\s*(?:관련\s*)?심의|성능위주설계|성능\s*위주/i.test(s))return {kind:'review',key:'fire'};
   if(/교통\s*영향\s*평가|교통영향평가/i.test(s))return {kind:'review',key:'traffic'};
   if(/교육\s*환경\s*평가|교육환경평가/i.test(s))return {kind:'review',key:'education'};
   if(/재해\s*영향|재해영향/i.test(s))return {kind:'review',key:'disaster'};
@@ -39,6 +80,7 @@ function topic(q){
   if(/\bBF\b|비에프|장애물\s*없는\s*생활환경/i.test(s))return {kind:'review',key:'bf'};
   if(/\bZEB\b|제로\s*에너지|제로에너지/i.test(s))return {kind:'review',key:'zeb'};
   if(/심의\s*(종류|뭐|무엇|어떤)|어떤\s*심의|심의.*확인|심의.*대상.*한번|주요\s*심의/i.test(s))return {kind:'overview'};
+  if(/인\s*허가/.test(s)&&!/(실무|패키지|접수|신청|제출|도서|서류|자료|취합|작성|회신|협력|세움터|변경|뭐부터|무엇부터|절차|순서|흐름|뭐야|뭐예|뭔지|뜻|정의|무엇인가)/.test(s))return {kind:'guide'};
   if(/인허가\s*(실무|업무|절차|패키지|뭐부터|무엇부터|시작)|심의\s*업무.*뭐부터/i.test(s))return {kind:'permit'};
   return null;
 }
@@ -104,5 +146,5 @@ const practice={
   ]
 };
 const supportsTask=task=>/(인허가|허가|심의|승인|착공|사용승인|사용검사)/.test(task);
-window.CC_REVIEW_RULES=freeze({LAW,REVIEWS,topic,flows,practice,supportsTask});
+window.CC_REVIEW_RULES=freeze({LAW,REVIEWS,GUIDE,guideView,topic,flows,practice,supportsTask});
 })();

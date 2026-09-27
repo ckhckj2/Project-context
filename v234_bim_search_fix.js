@@ -12,7 +12,7 @@ const {hasBim,modeLabel,isExplicitBim,isWorkQuery,taskKey,EXTRA,modeInfo}=window
 function renderAdjustment(q){
  const p=activeProject(),root=$('searchResult');if(!root)return;
  root.querySelectorAll('.cc233-bim-search,.cc234-bim-search').forEach(x=>x.remove());
- if(!hasBim(p)||!q||isExplicitBim(q)||!isWorkQuery(q)||root.querySelector('.cc232-bim-card,.cc235-review-card,.cc235-overview,.cc235-permit'))return;
+ if(!hasBim(p)||!q||isExplicitBim(q)||!isWorkQuery(q)||root.querySelector('.cc232-bim-card,.cc235-review-card,.cc235-overview,.cc235-permit,.cc235-guide'))return;
  const card=root.querySelector('.result-card')||root.firstElementChild;if(!card)return;
  const [title,checks]=EXTRA[taskKey(q)]||EXTRA.general;const [focus,where,who]=modeInfo(p.bimMode);
  const box=document.createElement('div');box.className='cc234-bim-search';

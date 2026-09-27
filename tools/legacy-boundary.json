@@ -15,10 +15,10 @@
     },
     {
       "file": "app-components.css",
-      "sha256": "bf91c97462c3fba231cdc2a8328c7880d190f1b8e2c1ee1b0fa1fa4ee5fe2a0e",
+      "sha256": "b75b728c9c4db95ed62b290abbe624bff2d4e5f8fb4629cc927ee04a9e1ef5ae",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-26 stable search stage 4: Scope PC alignment to the whole context view; make case-study summary first action readable without clipping across device widths. Existing owner sections only."
+      "review": "2026-09-27 permit guide stage 1: Scoped permit guide styles in its existing owner section, responsive aligned reading column and independent-selection banner handling."
     },
     {
       "file": "app-runtime.js",
@@ -66,10 +66,10 @@
     },
     {
       "file": "index.html",
-      "sha256": "63fdf6645843ea002a3ab0371378657bc494da510ae2841bf56d8a39d638018b",
+      "sha256": "76818e4c0aa15d81fb754864dab0e066265035d850077ed835d1b596a97d16a1",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-26 stable search stage 4: Cache revisions for the five changed runtime assets; public and development entry points preserved."
+      "review": "2026-09-27 permit guide stage 1: Cache-bust only changed permit guide assets; public and development entrypoints unchanged."
     },
     {
       "file": "judgement-data.js",
@@ -163,9 +163,10 @@
     },
     {
       "file": "review-rules.js",
-      "sha256": "390ee60feb469e5a9daa174db0745b500a8f99c5635c05ac1172eec8409a0d3f",
+      "sha256": "ebe565df86c82d142bce869bacac09b64f73f16c456657e50e895b9f0043b63b",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-27 permit guide stage 1: Pure reading guide for seven project categories and seven stage views; all nine topics remain available. No statutory thresholds, automatic applicability or browser state."
     },
     {
       "file": "search-answer.js",
@@ -345,9 +346,10 @@
     },
     {
       "file": "v229_glossary.js",
-      "sha256": "112d042838bd916264193c8f66b41f44a7f04286ba201fb04d1a592837650140",
+      "sha256": "33342930635ec022d90a430de75ae17111eaefafb049c4f68fb79160df2dfff1",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-27 permit guide stage 1: Defer permit guide intents to the existing reviews owner; definition and other glossary routes remain unchanged."
     },
     {
       "file": "v230_projects.js",
@@ -375,15 +377,17 @@
     },
     {
       "file": "v234_bim_search_fix.js",
-      "sha256": "c20e216503fe3caf9d2dc43e6050189938d01221d9aecd45d07d300ecb750334",
+      "sha256": "830ec1e3a0b211294f9858fa45f1aca5dfdecdc63ee45e038378c1ec12aa3c46",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-27 permit guide stage 1: Preserve existing permit exclusions for the new manual guide; do not append unrelated saved-project BIM tasks."
     },
     {
       "file": "v235_permit_reviews.js",
-      "sha256": "07fb20981f05c822b88a1555b4cb770a6af8913548289f1e5301617e43476194",
+      "sha256": "3635b77389f5717f38c135e0004f3471a036410d98f88a0feb2d3453dfd84682",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-27 permit guide stage 1: Owns permit reading guide, native selectors/disclosures and detail-return navigation. Existing detail/practice data and levels retained; no new storage or network."
     },
     {
       "file": "v237_answer_readability_nav.js",
@@ -400,15 +404,17 @@
     },
     {
       "file": "v241_permit_workflow.js",
-      "sha256": "2681d67ef195beab75adbc0940c48f95e190d9f6e6e9e813de511712095fb56c",
+      "sha256": "20d0f0f6b0c675e5331c5c323845f1dcdf25708d4eb08681c82c0a1736721aa1",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-27 permit guide stage 1: Defer guide intents while retaining execution, collection and preflight routes."
     },
     {
       "file": "v242_compact_search_ui.js",
-      "sha256": "0ef96b6d70e2fdfee76659ff8feb264c5f53515e90b1161947a204442a78b008",
+      "sha256": "38afc8291601157bb49eb8ff4d73ea8bb33ff07de407fd760a22ba189fc9e07f",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-27 permit guide stage 1: Respect the permit guide native disclosures instead of wrapping it in a second summary."
     },
     {
       "file": "v243_change_workflow.js",

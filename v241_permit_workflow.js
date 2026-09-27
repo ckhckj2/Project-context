@@ -55,6 +55,7 @@ function selectedContext(){
   return [$('#project')?.selectedOptions?.[0]?.textContent,$('#phase')?.selectedOptions?.[0]?.textContent].filter(x=>x&&x!=='잘 모르겠습니다').join(' · ');
 }
 function classify(q){
+  if(window.CC_REVIEW_RULES.topic(q)?.kind==='guide')return null;
   if(!PERMIT.test(q)||!EXECUTE.test(q)||DEFINITION.test(q)||WHO_ONLY.test(q))return null;
   if(/협력|구조|기계|전기|소방|토목|조경|자료\s*(?:요청|취합|모아)|회신|분야별/i.test(q))return 'collect';
   if(/제출\s*전|접수\s*전|최종\s*(?:검토|체크)|누락|정합|버전|체크리스트/i.test(q))return 'preflight';

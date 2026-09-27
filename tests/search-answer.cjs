@@ -4,13 +4,13 @@ const routes=new Map();
 function element(){
  const classes=new Set();
  return {value:'',dataset:{},children:[],classList:{remove(...xs){xs.forEach(x=>classes.delete(x))},add(...xs){xs.forEach(x=>classes.add(x))},contains:x=>classes.has(x)},
- querySelector(){return null},querySelectorAll(){return []},addEventListener(){},prepend(){},append(){},scrollIntoView(){},
+ querySelector(){return null},querySelectorAll(){return []},addEventListener(){},prepend(){},append(){},scrollIntoView(){},insertAdjacentHTML(where){assert.equal(where,'beforeend','guide navigation must preserve answer ownership')},
  set innerHTML(value){this.html=value;this.firstElementChild={};this.children=[this.firstElementChild]},get innerHTML(){return this.html||''}};
 }
-const output=element(),input=element();
+const output=element(),input=element(),guideType=element(),guideStage=element();
 const window={CC_BOOT:{register(){}},CC_PROJECT_STORE:{active:()=>null},CC_LEVEL_STORE:{state:()=>({view:1})},
  CC_RUNTIME:{registerSearch:(id,match,render)=>routes.set(id,{match,render})}};
-const sandbox={window,document:{readyState:'loading',addEventListener(){},createElement:element,getElementById:id=>({searchResult:output,searchInput:input}[id]||null),querySelector(){return null},querySelectorAll(){return []}},console,viewLevel:()=>1};
+const sandbox={window,document:{readyState:'loading',addEventListener(){},createElement:element,getElementById:id=>({searchResult:output,searchInput:input,cc235GuideType:guideType,cc235GuideStage:guideStage}[id]||null),querySelector(){return null},querySelectorAll(){return []}},console,viewLevel:()=>1};
 vm.createContext(sandbox);
 for(const f of ['level-policy.js','work-rules.js','bim-rules.js','review-rules.js','public-rules.js','search-answer.js','judgement-data.js','judgement-engine.js'])vm.runInContext(fs.readFileSync(f,'utf8'),sandbox,{filename:f});
 const answer=window.CC_SEARCH_ANSWER;
@@ -46,7 +46,8 @@ const cases=[
  ['glossary','QGIS가 뭐야?',true],
  ['public','공공건축심의 흐름',true],
  ['reviews','건축심의는 언제 확인해?',true],
- ['reviews','주요 심의 종류',true],
+ ['reviews','주요 심의 종류',false],
+ ['reviews','인허가',false],
  ['reviews','인허가 실무 패키지',true],
  ['bim','Revit 중앙파일 작업',true],
  ['precedent','입면 사례 조사',true],
