@@ -21,6 +21,8 @@ function closeDetails(card){
   card.querySelectorAll('details[open]').forEach(d=>d.open=false);
 }
 function prepare(card){
+  // The permit guide owns its native disclosures and labelled selectors.
+  if(card?.classList.contains('cc235-guide'))return;
   if(!card||card.dataset.cc242==='1')return;
   card.dataset.cc242='1';
   card.classList.add('cc242-card');

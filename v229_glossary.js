@@ -62,7 +62,7 @@ function installExamples(){
 
 function install(){
   installExamples();
-  window.CC_RUNTIME.registerSearch('glossary',q=>/(?:무엇|뭐)부터|언제|어떻게|업무|요청|검토|작성|흐름|확인/.test(q)&&!/(?:뭐야|뭔지|정의|뜻)/.test(q)?null:findTerm(q),render);
+  window.CC_RUNTIME.registerSearch('glossary',q=>window.CC_REVIEW_RULES.topic(q)?.kind==='guide'||/(?:무엇|뭐)부터|언제|어떻게|업무|요청|검토|작성|흐름|확인/.test(q)&&!/(?:뭐야|뭔지|정의|뜻)/.test(q)?null:findTerm(q),render);
 }
 window.CC_BOOT.register('v229_glossary',install);
 })();
