@@ -66,7 +66,7 @@
     },
     {
       "file": "index.html",
-      "sha256": "526fcc2e133bf97b3ecec70b0544c9b87e36360743375cc52db4297190f2167e",
+      "sha256": "76818e4c0aa15d81fb754864dab0e066265035d850077ed835d1b596a97d16a1",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
       "review": "2026-09-27 permit guide stage 1: Cache-bust only changed permit guide assets; public and development entrypoints unchanged."
@@ -377,9 +377,10 @@
     },
     {
       "file": "v234_bim_search_fix.js",
-      "sha256": "c20e216503fe3caf9d2dc43e6050189938d01221d9aecd45d07d300ecb750334",
+      "sha256": "830ec1e3a0b211294f9858fa45f1aca5dfdecdc63ee45e038378c1ec12aa3c46",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-27 permit guide stage 1: Preserve existing permit exclusions for the new manual guide; do not append unrelated saved-project BIM tasks."
     },
     {
       "file": "v235_permit_reviews.js",

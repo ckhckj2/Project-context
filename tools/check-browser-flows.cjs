@@ -198,6 +198,7 @@ async function permitGuide(browser,url){
   assert(await page.locator('.cc235-guide').isVisible());
   assert.equal(await page.locator('.cc235-guide .cc242-toggle,.cc252-answer').count(),0,'guide must not be hidden behind another summary');
   assert.equal(await page.locator('#cc230SearchProject').isVisible(),false,'manual guide must not imply saved-project applicability');
+  assert.equal(await page.locator('.cc235-guide .cc234-bim-search').count(),0,'manual guide must not inherit unrelated BIM tasks');
   assert.equal(await page.locator('.cc235-guide-topic').count(),9);
   assert.equal(await page.locator('.cc235-guide-topic:visible').count(),3);
   assert.equal(await page.locator('.cc235-guide-topic[open]').count(),0);
