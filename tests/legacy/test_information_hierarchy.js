@@ -11,8 +11,8 @@ assert(src.includes('brief.after(actions)'),'actions must follow the current-tas
 assert(src.includes("const paneSlot=map.querySelector(':scope>.cc259-active-pane-slot')"),'hierarchy must detect the stable response slot');
 assert(src.includes('actions.after(paneSlot)'),'the response slot must remain directly below its button row');
 assert(src.includes('const guideAnchor=paneSlot||openPane||actions'),'collapsed level depth must follow opened content or the action row');
-assert(src.includes('guide.after(flow)'),'optional project flow must follow the main hierarchy');
-assert(src.includes('repeat(5,minmax(0,1fr))'),'desktop context actions must use one five-item row');
+assert(src.includes('position.append(flow)'),'project flow stays visible with orientation');
+assert(src.includes('only two main actions'),'reduce competing context actions');
 assert(src.includes('button[data-drawer="how"]'),'HOW must have explicit visual priority');
 assert(src.includes("answer.comparison&&comparisonPreview(summary,source)"),'comparison preview must use explicit answer data');
 assert(src.includes("index?'right':'left'")&&src.includes('.cc258-compare-right'),'comparison must retain distinct left and right sides');

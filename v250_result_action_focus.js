@@ -67,9 +67,10 @@ function bindDrawer(button,pane){
 function foldProjectFlow(map){
   const flow=map?.querySelector(':scope>.flow');
   if(!flow||flow.closest('.cc252-context-flow'))return;
-  const fold=document.createElement('details');
+  const fold=document.createElement('section');
   fold.className='cc252-context-flow';
-  fold.innerHTML='<summary><span><b>프로젝트 전체 흐름 보기</b><small>현재 단계의 앞뒤 업무 확인</small></span><i aria-hidden="true"></i></summary>';
+  fold.setAttribute('aria-label','프로젝트 전체 흐름');
+  fold.innerHTML='<h2>프로젝트 전체 흐름 <small>설계 단계의 참고 위치</small></h2>';
   const head=map.querySelector(':scope>.map-head');
   (head||map.firstChild)?.after(fold);
   fold.append(flow);

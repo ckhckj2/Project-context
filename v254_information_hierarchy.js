@@ -51,7 +51,6 @@ function arrangeContext(){
   if(!map||!brief||!actions)return;
 
   const guide=compactDepthGuide(map.querySelector(':scope>.cc254-depth-guide'));
-  const flow=map.querySelector(':scope>.cc252-context-flow');
   const mapHead=map.querySelector(':scope>.map-head');
 
   if(mapHead){
@@ -66,7 +65,9 @@ function arrangeContext(){
   if(openPane&&!paneSlot&&actions.nextElementSibling!==openPane)actions.after(openPane);
   const guideAnchor=paneSlot||openPane||actions;
   if(guide&&guideAnchor.nextElementSibling!==guide)guideAnchor.after(guide);
-  if(flow&&guide&&guide.nextElementSibling!==flow)guide.after(flow);
+  const caution=map.querySelector('.cc-context-caution');
+  if(caution&&guideAnchor.nextElementSibling!==caution)guideAnchor.after(caution);
+  if(guide&&caution) caution.after(guide);
 
   clarifyContext(root,map,brief,actions);
 
@@ -91,7 +92,8 @@ function clarifyContext(root,map,brief,actions){
     position.setAttribute('aria-label','설계 단계의 앞뒤');
     banner?.after(position);
   }
-  position.replaceChildren(node('h2','','설계 단계의 앞뒤'));
+  const flow=root.querySelector('.cc252-context-flow');
+  position.replaceChildren(node('h2','','설계 단계'));
   const phases=window.CC_WORK_RULES.phase.PHASE_ORDER;
   const index=phases.indexOf(phase);
   if(index<0){
@@ -108,6 +110,7 @@ function clarifyContext(root,map,brief,actions){
     });
     position.append(list);
   }
+  if(flow)position.append(flow);
   const head=brief.querySelector('.cc252-brief-head');
   if(head){head.querySelector('small').textContent='지금 먼저 할 일';head.querySelector('b').textContent=task;}
   const cells=brief.querySelectorAll('.cc252-brief-grid>div');
@@ -117,11 +120,18 @@ function clarifyContext(root,map,brief,actions){
     cell.querySelector('small').textContent=labels[i];
     cell.querySelector('p').textContent=values[i]||'';
   });
-  const buttons=[['[data-drawer="how"]','수행 순서 보기 →'],['[data-drawer="context"]','앞뒤 단계 보기'],['[data-drawer="why"]','목적·자료 보기'],['[data-ask-context]','담당자 질문하기'],['[data-drawer="caution"]','주의사항 보기']];
+  const buttons=[['[data-drawer="how"]','수행 순서 보기 →'],['[data-drawer="why"]','목적·자료 자세히']];
   buttons.forEach(([selector,label])=>{
     const button=actions.querySelector(selector);
     if(button){button.textContent=label;button.setAttribute('aria-label',label);actions.append(button);}
   });
+  const ask=root.querySelector('[data-ask-context]');
+  if(ask&&cells[2]){
+    ask.textContent='질문할 내용 보기 →';
+    ask.className='cc-context-inline-link';
+    ask.hidden=Boolean(root.querySelector('.cc247-fit-gate:not(.resolved)'));
+    cells[2].append(ask);
+  }
   // Legal classification remains readable, below the work guidance it qualifies.
   const legal=root.querySelector('.cc226-legal,.cc225-legal');
   if(legal&&map.nextElementSibling!==legal)map.after(legal);

@@ -28,33 +28,21 @@ const sidebarContext={window:{CC_BOOT:{register(id,fn){fn()}}},document:{readySt
 vm.createContext(sidebarContext);vm.runInContext(read('v212_sidebar.js'),sidebarContext);
 assert.equal(preservedBadge,releaseBadge,'sidebar must preserve the index release badge node');
 
-// Exercise the real delegated handler and renderer with a small DOM fixture.
-let install,clickHandler,writes=0;
+// Exercise the standalone drawing view renderer without changing home fields.
+let install,viewHandler,writes=0;
 const extra={open:true};
-const body={contains:()=>false,querySelector:()=>extra};
+const body={querySelector:()=>extra};
 Object.defineProperty(body,'innerHTML',{set(){writes++}});
-const guide={dataset:{cc257SelectedStage:'middle'},querySelector:()=>body};
-guide.closest=()=>guide;
-const result={innerHTML:'',addEventListener(type,callback){if(type==='click')clickHandler=callback}};
-const elements={contextResult:result,cc264DrawingStyle:{},miniLevel:{textContent:'LV.MAX · 건축 마스터'},phase:{value:'중간설계'},project:{selectedOptions:[{textContent:'공동주택'}]}};
-const sandbox={window:{CC_BOOT:{register(id,fn){install=fn}},CC_RUNTIME:{registerContext(){}}},document:{readyState:'loading',activeElement:null,getElementById:id=>elements[id],addEventListener(type,callback){if(type==='DOMContentLoaded')install=callback}},setTimeout:()=>1,clearTimeout(){},MutationObserver:class{observe(){}}};
-vm.createContext(sandbox);
-vm.runInContext(read('v257_stage_drawing_guide.js'),sandbox);
-install();
-const summary={closest:selector=>selector==='[data-cc257-stage]'?guide:null};
-clickHandler({target:summary});
-assert.equal(writes,0,'nested summary click must never replace its own DOM');
-const tab={dataset:{cc257Stage:'middle'},closest:()=>guide};
-clickHandler({target:{closest:()=>tab}});
-assert.equal(writes,1);
-assert.equal(extra.open,true,'preserve expanded additional checks');
-assert.equal(JSON.parse(guide.dataset.cc257Key)[2],4,'master sees deepest content, not LV1');
-clickHandler({target:{closest:()=>tab}});
-assert.equal(writes,1,'same selection must not rerender');
-tab.dataset.cc257Stage='detail';clickHandler({target:{closest:()=>tab}});
-assert.equal(writes,2,'new stage must update');
-tab.dataset.cc257Stage='__proto__';clickHandler({target:{closest:()=>tab}});
-assert.equal(writes,2,'reject invalid stage keys');
+const guide={dataset:{},querySelector:()=>body};
+const elements={drawingGuideContent:guide,drawingStage:{value:'middle',addEventListener(){}},drawingProject:{value:'multi',selectedOptions:[{textContent:'공동주택'}],addEventListener(){}},miniLevel:{textContent:'LV.MAX · 건축 마스터'}};
+const sandbox={window:{CC_BOOT:{register(id,fn){install=fn}},CC_RUNTIME:{registerContext(){},registerView(id,fn){viewHandler=fn}}},document:{getElementById:id=>elements[id]}};
+vm.createContext(sandbox);vm.runInContext(read('v257_stage_drawing_guide.js'),sandbox);install();
+viewHandler('home');assert.equal(writes,0,'other views do not render the library');
+viewHandler('drawings');assert.equal(writes,1);assert.equal(extra.open,true,'retain additional-check disclosure');
+assert.equal(JSON.parse(guide.dataset.cc257Key)[2],4,'master retains depth');
+viewHandler('drawings');assert.equal(writes,1,'same selection is stable');
+elements.drawingStage.value='detail';viewHandler('drawings');assert.equal(writes,2);
+elements.drawingStage.value='__proto__';viewHandler('drawings');assert.equal(writes,2,'reject invalid stage');
 
 // Test URL policy at its boundary, including same-tab and middle-click paths.
 const handlers={};

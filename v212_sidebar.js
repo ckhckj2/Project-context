@@ -31,6 +31,7 @@ function install(){
       ${navButton('search','search','검색')}
       ${navButton('quiz','quiz','퀴즈')}
       ${navButton('level','level','내 레벨')}
+      ${navButton('drawings','quiz','도면 가이드')}
     </nav>
     <div class="cc212-divider"></div>
     <nav class="cc212-sub-nav">
