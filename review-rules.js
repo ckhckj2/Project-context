@@ -67,6 +67,14 @@ function guideView(type='general',stage='all'){
   return {type,stage,priority,others:Object.keys(GUIDE.topics).filter(key=>!priority.includes(key))};
 }
 
+// Saved facility IDs select a reading category, never a legal approval route.
+function guideProject(project){
+  const types={multi:'housing',logistics:'logistics',fab:'factory',transport:'transport',airport:'transport',court:'public',publicoffice:'public'};
+  const stages={'사전기획 / 사업검토':'early','기본계획':'basic','계획설계':'plan','중간설계':'middle','실시설계':'detail','시공·현장 대응':'site'};
+  if(!project)return {type:'general',stage:'all'};
+  return {type:Object.hasOwn(types,project.typeId)?types[project.typeId]:'other',stage:Object.hasOwn(stages,project.phase)?stages[project.phase]:'all'};
+}
+
 function topic(q){
   const s=String(q||'').trim();
   if(!s||COMPARE.test(s))return null;
@@ -146,5 +154,5 @@ const practice={
   ]
 };
 const supportsTask=task=>/(인허가|허가|심의|승인|착공|사용승인|사용검사)/.test(task);
-window.CC_REVIEW_RULES=freeze({LAW,REVIEWS,GUIDE,guideView,topic,flows,practice,supportsTask});
+window.CC_REVIEW_RULES=freeze({LAW,REVIEWS,GUIDE,guideView,guideProject,topic,flows,practice,supportsTask});
 })();

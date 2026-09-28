@@ -2,7 +2,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const sandbox={window:{}};vm.createContext(sandbox);
 vm.runInContext(fs.readFileSync('review-rules.js','utf8'),sandbox);
-const {GUIDE,REVIEWS,guideView,topic}=sandbox.window.CC_REVIEW_RULES;
+const {GUIDE,REVIEWS,guideView,guideProject,topic}=sandbox.window.CC_REVIEW_RULES;
 const keys=Object.keys(REVIEWS).sort();
 // Reading priority must never turn an unselected topic into a non-applicable one.
 for(const type of Object.keys(GUIDE.types))for(const stage of Object.keys(GUIDE.stages)){
@@ -25,3 +25,14 @@ for(const key of keys){
 for(const q of ['인허가','인 허가','필요한 인허가 확인','물류센터 인허가 검토'])assert.equal(topic(q)?.kind,'guide');
 assert.equal(topic('인허가와 건축심의 차이'),null,'comparison keeps its owner');
 console.log('PASS permit guide: all topics retained across reading selections, safe unknown values, immutable content and working detail destinations');
+
+for(const [typeId,type] of [['multi','housing'],['logistics','logistics'],['fab','factory'],['airport','transport'],['transport','transport'],['court','public'],['publicoffice','public'],['mixed','other'],['dorm','other'],['publicmuseum','other'],['__proto__','other']]){
+ const project={typeId,phase:'중간설계',location:'미확인',scale:'3만㎡',approvalRoute:'housing'};
+ const before=JSON.stringify(project),result=guideProject(project);
+ assert.equal(result.type,type);assert.equal(result.stage,'middle');assert.equal(JSON.stringify(project),before);
+}
+assert.equal(guideProject({typeId:'airport',phase:'잘 모르겠습니다'}).stage,'all');
+assert.equal(guideProject({typeId:'airport',phase:'__proto__'}).stage,'all');
+assert.equal(guideProject({typeId:'airport',phase:'시공·현장 대응'}).stage,'site');
+assert.equal(guideProject(null).type,'general');
+console.log('PASS permit project mapping: explicit category/stage, safe unknowns, mixed uses and immutable input');
