@@ -15,17 +15,17 @@
     },
     {
       "file": "app-components.css",
-      "sha256": "b75b728c9c4db95ed62b290abbe624bff2d4e5f8fb4629cc927ee04a9e1ef5ae",
+      "sha256": "e926ce795f8916ce55df4531dc146608b812f9c09fff439c1a77c33a2f90efdb",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-27 permit guide stage 1: Scoped permit guide styles in its existing owner section, responsive aligned reading column and independent-selection banner handling."
+      "review": "2026-09-28 context simplification: Compact permanent orientation, two primary actions and a separate shared drawing library; scoped owner styles."
     },
     {
       "file": "app-runtime.js",
-      "sha256": "277dfb0c9b4d2936a28309706d8d383e398cd41bc8be4fb2832a68c0dceff942",
+      "sha256": "d23fce605fe863d2f6447d55113f614479eb0a5c259ece76adbfe14c5a496e99",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-26 stable entry stage 1: reserve one exact development-navigation route before search providers. Registered by app/legacy-entry.mjs; no new event owner or storage mutation. Verified by release browser transitions and existing search regression."
+      "review": "2026-09-28 context simplification: Register drawing page in the existing view lifecycle; no new listeners or observers."
     },
     {
       "file": "app-start.js",
@@ -47,10 +47,10 @@
     },
     {
       "file": "context-renderer.js",
-      "sha256": "0cb91c35e45aa8b6638330564f5733b73eb895a36d8d279d9f6093a5be0b82f6",
+      "sha256": "fe5b6b0ddd3a2c273b5e43b6f2baa9b3889520e171cc40694741a6e56e6c3e87",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-27 stable context stage 3: change the existing task label from div to h1; escaped text and all legacy pane hooks retained."
+      "review": "2026-09-28 context simplification: Remove redundant context and caution buttons; preserve project caution as visible reading content."
     },
     {
       "file": "context-view.js",
@@ -66,10 +66,10 @@
     },
     {
       "file": "index.html",
-      "sha256": "76818e4c0aa15d81fb754864dab0e066265035d850077ed835d1b596a97d16a1",
+      "sha256": "033d037df1db9c28ab388b063f64b5109b9961782f9b897f8788c6554514d7f5",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-27 permit guide stage 1: Cache-bust only changed permit guide assets; public and development entrypoints unchanged."
+      "review": "2026-09-28 context simplification: Add the drawing view and mobile entry; refresh changed asset caches."
     },
     {
       "file": "judgement-data.js",
@@ -207,9 +207,10 @@
     },
     {
       "file": "v212_sidebar.js",
-      "sha256": "7e40c7770cb87c2eb364241cdfa1df36297925ebb03c8e11145cbe4c3181cf05",
+      "sha256": "f135637f381b23e260ab67c8cc32adc78142b9540df8ac38603a08c378496ad1",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-28 context simplification: Add drawing guide entry to existing navigation."
     },
     {
       "file": "v213_logo.css",
@@ -461,10 +462,10 @@
     },
     {
       "file": "v250_result_action_focus.js",
-      "sha256": "52e47e855afeac11bd08d035202cab2abff91bb222e83d8aaca619d630be8074",
+      "sha256": "6cfeb42f9fd1f08bb56a974fb4f981d89ef5261f21bc830ddd6883dbef87c0c8",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-26 stable search stage 4: Render producer-provided plain context and style only case-study summaries; existing detailed answer toggle retained."
+      "review": "2026-09-28 context simplification: Render project flow as a permanent section instead of a disclosure."
     },
     {
       "file": "v251_search_reliability.js",
@@ -486,10 +487,10 @@
     },
     {
       "file": "v254_information_hierarchy.js",
-      "sha256": "b0dea50e16c9180796c1d5cb2c0dde4b6d622de4a3bad335e8225779cd7dfa9d",
+      "sha256": "f91a200bb898d8eaba0b66b8b49c175aecfa6420c49f68da80cc73bd77018a98",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-27 stable context stage 3: visible truthful phase orientation, task title and model-backed first action, explicit button labels; existing detail controller, levels and storage retained."
+      "review": "2026-09-28 context simplification: Combine orientation rails, move the question link next to the person and retain visible caution."
     },
     {
       "file": "v255_visual_language.js",
@@ -505,9 +506,10 @@
     },
     {
       "file": "v257_stage_drawing_guide.js",
-      "sha256": "ec136a6e80333fc29e1502cb7b793c3e34800a3b9218e0d59ce47075af2b798f",
+      "sha256": "76516667955a2e9a17e04e2a09beff0450fd6c9cb941575d2c06ca3df4255802",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-28 context simplification: Reuse drawing content in an independent view with optional contextual handoff and isolated selections."
     },
     {
       "file": "v2_brand.css",

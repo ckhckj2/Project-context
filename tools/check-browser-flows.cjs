@@ -36,6 +36,9 @@ async function flows(browser,url,width,motion){
    assert.equal(await page.locator('#contextResult h1').innerText(),'도면 수정');
    assert.equal(await page.locator('.cc-context-position [aria-current="step"] b').innerText(),'실시설계');
    assert(await page.locator('.cc-context-position').isVisible(),'orientation must not require opening details');
+   assert(await page.locator('.cc252-context-flow .flow').isVisible(),'whole project flow is visible without a click');
+   assert.equal(await page.locator('#contextResult .actions>button').count(),2,'two main actions');
+   assert(await page.locator('.cc-context-caution').isVisible(),'essential project caution stays visible');
    const first=page.locator('#contextResult .actions>button').first();
    assert.equal(await first.getAttribute('data-drawer'),'how');
    // The previous click can leave the pointer over this button after layout changes.
@@ -43,7 +46,7 @@ async function flows(browser,url,width,motion){
    await page.waitForFunction(()=>getComputedStyle(document.querySelector('#contextResult .actions>button')).backgroundColor==='rgb(53, 89, 218)');
    const primaryColor=await first.evaluate(el=>getComputedStyle(el).backgroundColor);
    assert.equal(primaryColor,'rgb(53, 89, 218)','one solid primary action');
-   for(const pane of ['context','why','how','caution']){
+   for(const pane of ['why','how']){
     const button=page.locator('#contextResult [data-drawer="'+pane+'"]');
     for(let repeat=0;repeat<2;repeat++){
      await button.click();assert.equal(await button.getAttribute('aria-expanded'),'true');
@@ -185,6 +188,53 @@ async function searchAndAlignment(browser,url){
   console.log('PASS stage 4: 390/768/1024/1280/1440/1920 alignment, natural queries, ambiguity/keyboard, detail, no clipping, storage/context isolation, XSS and no external requests');
  }finally{await context.close();}
 }
+async function drawingLibrary(browser,url){
+ const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce',locale:'ko-KR'});
+ const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ try{
+  await ready(page,url);
+  const saved=await page.evaluate(()=>({...localStorage}));
+  await page.locator('#sideNav [data-view="drawings"]').click();
+  assert(await page.locator('#view-drawings.active').isVisible(),'library can open before a task');
+  assert.equal(await page.locator('#drawingProject').inputValue(),'','global entry does not borrow a home project');
+  assert.equal(await page.locator('#drawingGuideBack').isVisible(),false);
+  for(const [stage,label] of [['plan','계획설계'],['middle','중간설계'],['detail','실시설계']]){
+   await page.selectOption('#drawingStage',stage);
+   assert((await page.locator('.cc257-stage-head h3').innerText()).startsWith(label));
+   assert.equal(await page.locator('.cc257-group').count(),4);
+  }
+  await page.locator('.cc257-more>summary').click();
+  for(const [type,text] of [['multi','단위세대'],['airport','공정·물류']]){
+   await page.selectOption('#drawingProject',type);
+   assert((await page.locator('.cc257-project-extra').innerText()).includes(text));
+   assert(await page.locator('.cc257-more[open]').isVisible(),'preserve additional checks when browsing');
+  }
+  await page.evaluate(()=>showView('home'));await page.selectOption('#task','도면 수정');await page.selectOption('#project','airport');await page.selectOption('#phase','중간설계');await page.click('#analyze');
+  assert.equal(await page.locator('#contextResult .cc257-drawing-guide').count(),0,'no shared-library card inside context');
+  assert(await page.locator('#contextResult .cc-context-caution').isVisible());
+  assert.equal(await page.locator('#contextResult .actions>button').count(),2);
+  assert(await page.locator('.cc252-context-flow .flow').isVisible());
+  const fields=await page.evaluate(()=>['task','project','phase','meta'].map(id=>document.getElementById(id).value));
+  await page.locator('[data-cc257-open]').click();
+  assert.equal(await page.locator('#drawingStage').inputValue(),'middle');assert.equal(await page.locator('#drawingProject').inputValue(),'airport');
+  await page.selectOption('#drawingStage','detail');await page.selectOption('#drawingProject','multi');
+  for(const width of [390,768,1024,1280,1440,1920]){
+   await page.setViewportSize({width,height:1000});await overflow(page,'drawing library '+width);
+   if(process.env.CC_CONTEXT_SCREENSHOT_DIR){fs.mkdirSync(process.env.CC_CONTEXT_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.CC_CONTEXT_SCREENSHOT_DIR,'drawings-'+width+'.png'),fullPage:true});}
+   await page.click('#drawingGuideBack');
+   assert.deepEqual(await page.evaluate(()=>['task','project','phase','meta'].map(id=>document.getElementById(id).value)),fields);
+   await overflow(page,'compact context '+width);
+   const bounds=await page.locator('.cc-context-position,.cc252-context-brief,#contextResult .actions').evaluateAll(els=>els.map(el=>el.getBoundingClientRect().left));assert(Math.max(...bounds)-Math.min(...bounds)<=1,'aligned context '+width);
+   if(process.env.CC_CONTEXT_SCREENSHOT_DIR)await page.screenshot({path:path.join(process.env.CC_CONTEXT_SCREENSHOT_DIR,'context-'+width+'.png'),fullPage:true});
+   await page.locator('[data-cc257-open]').focus();await page.keyboard.press('Enter');
+  }
+  await page.click('#drawingGuideBack');await page.locator('.cc252-brief-grid [data-ask-context]').click();
+  assert(await page.locator('#view-search.active').isVisible(),'question action remains next to person');
+  assert.deepEqual(await page.evaluate(()=>({...localStorage})),saved,'library and context reading do not write storage');
+  assert.deepEqual(errors,[]);
+  console.log('PASS context/library: permanent flow, two actions, six widths, global entry, stage/type choices, contextual return, keyboard, storage and errors');
+ }finally{await context.close();}
+}
 async function permitGuide(browser,url){
  const context=await browser.newContext({viewport:{width:1440,height:1100},reducedMotion:'reduce',locale:'ko-KR'});
  await context.addInitScript(legacy=>{localStorage.setItem('cc_projects_v1',JSON.stringify([legacy]));localStorage.setItem('cc_active_project_v1',legacy.id);},legacy);
@@ -274,6 +324,6 @@ async function failures(browser,url){
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const url='http://127.0.0.1:'+server.address().port+'/current/';browser=await chromium.launch(launch);
   for(const width of [390,768,1440])await flows(browser,url,width,'reduce');
-  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await permitGuide(browser,url);await failures(browser,url);
+  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await permitGuide(browser,url);await drawingLibrary(browser,url);await failures(browser,url);
  }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

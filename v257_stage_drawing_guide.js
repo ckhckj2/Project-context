@@ -101,11 +101,8 @@ function groupMarkup(group){
 function bodyMarkup(stageKey,phase,project){
   const stage=STAGES[stageKey];
   const depth=DEPTH[level()];
-  const extras=projectExtras(project);
+  const extras=project?projectExtras(project):[];
   return `
-    <div class="cc257-tabs" role="tablist" aria-label="설계단계 선택">
-      ${Object.entries(STAGES).map(([key,item])=>`<button type="button" role="tab" data-cc257-stage="${key}" aria-selected="${key===stageKey}" class="${key===stageKey?'is-active':''}"><small>${esc(item.code)}</small>${esc(item.label)}</button>`).join('')}
-    </div>
     <div class="cc257-stage-head">
       <span>${esc(phaseRelation(phase,stageKey))}</span>
       <h3>${esc(stage.label)}에서 보통 준비하는 대표 도면군</h3>
@@ -118,7 +115,7 @@ function bodyMarkup(stageKey,phase,project){
     <details class="cc257-more">
       <summary><span><small>MORE</small><b>프로젝트별·제출 전 추가 확인</b></span><em>필요할 때 보기</em></summary>
       <section class="cc257-project-extra">
-        <div><small>PROJECT CHECK</small><b>${esc(project||'선택한 프로젝트')}에서 추가로 확인</b></div>
+        <div><small>유형별 추가 확인</small><b>${esc(project||'프로젝트 유형을 고르면 추가 항목을 볼 수 있어요')}</b></div>
         <ul>${extras.map(item=>`<li>${esc(item)}</li>`).join('')}</ul>
       </section>
       <section class="cc257-confirm">
@@ -130,61 +127,60 @@ function bodyMarkup(stageKey,phase,project){
     `;
 }
 
-function shellMarkup(phase,stageKey){
-  return `<summary><span class="cc257-summary-icon" aria-hidden="true">▤</span><span><small>DRAWING GUIDE</small><b>단계별 도면 가이드</b><em>${esc(phaseRelation(phase,stageKey))}</em></span><strong>목록 보기</strong></summary><div class="cc257-body"></div>`;
-}
-
-function renderGuide(guide,stageKey,phase,project){
-  if(!guide||!Object.hasOwn(STAGES,stageKey))return;
+function renderPage(){
+  const guide=$('drawingGuideContent'),stageSelect=$('drawingStage'),projectSelect=$('drawingProject');
+  if(!guide||!stageSelect||!projectSelect)return;
+  const stageKey=stageSelect.value;
+  if(!Object.hasOwn(STAGES,stageKey))return;
+  const project=projectSelect.value?clean(projectSelect.selectedOptions[0]?.textContent):'';
   const body=guide.querySelector('.cc257-body');
-  if(!body)return;
-  const key=JSON.stringify([phase,project,level(),stageKey]);
+  const key=JSON.stringify([stageKey,project,level()]);
   if(guide.dataset.cc257Key===key)return;
   const expanded=body.querySelector('.cc257-more')?.open||false;
-  const focusedStage=body.contains(document.activeElement)?document.activeElement.dataset.cc257Stage:null;
-  body.innerHTML=bodyMarkup(stageKey,phase,project);
+  body.innerHTML=bodyMarkup(stageKey,STAGES[stageKey].label,project);
   body.querySelector('.cc257-more').open=expanded;
-  guide.dataset.cc257SelectedStage=stageKey;
   guide.dataset.cc257Key=key;
-  if(focusedStage&&Object.hasOwn(STAGES,focusedStage))body.querySelector(`button[data-cc257-stage="${focusedStage}"]`)?.focus();
 }
 
 function enhance(){
+  if($('view-drawings')?.classList.contains('active'))renderPage();
   const root=$('contextResult');
   if(!root||!root.innerHTML.trim())return;
-  const map=root.querySelector('.map');
-  const actions=map?.querySelector(':scope>.actions');
-  if(!map||!actions)return;
-  const phase=clean($('phase')?.value);
-  const project=clean($('project')?.selectedOptions?.[0]?.textContent||$('project')?.value);
-  const stageKey=stageFromPhase(phase);
-  let guide=map.querySelector(':scope>.cc257-drawing-guide');
-  if(!guide){
-    guide=document.createElement('details');
-    guide.className='cc257-drawing-guide';
-    guide.innerHTML=shellMarkup(phase,stageKey);
-    map.append(guide);
-  }
-  renderGuide(guide,guide.dataset.cc257SelectedStage||stageKey,phase,project);
+  root.querySelector('.cc257-drawing-guide')?.remove();
+  const task=clean($('task')?.value);
+  const material=root.querySelector('.cc252-brief-grid>div:nth-child(2)');
+  const existing=material?.querySelector('[data-cc257-open]');
+  if(!/도면|모델링|입면|심의|인허가|협력업체/.test(task)){existing?.remove();return;}
+  if(!material||existing)return;
+  const link=document.createElement('button');
+  link.type='button';link.className='cc-context-inline-link';link.dataset.cc257Open='1';
+  link.textContent='이 단계의 도면 목록 보기 →';material.append(link);
+}
 
+function openFromContext(){
+  const phase=clean($('phase')?.value),project=$('project');
+  $('drawingStage').value=stageFromPhase(phase);
+  $('drawingProject').value=project?.value||'';
+  $('drawingGuideOrigin').textContent=clean(project?.selectedOptions?.[0]?.textContent)+' · '+(phase||'단계 미정')+' 업무에서 열었어요. 여기서 목록을 바꿔도 업무 설정은 유지돼요.';
+  $('drawingGuideBack').hidden=false;
+  window.showView('drawings');
 }
 
 function install(){
-
-  const root=$('contextResult');
   window.CC_RUNTIME.registerContext('drawings',enhance);
-  root?.addEventListener('click',event=>{
-    const tab=event.target.closest('button[data-cc257-stage]');
-    if(tab){
-      const guide=tab.closest('.cc257-drawing-guide');
-      const phase=clean($('phase')?.value);
-      const project=clean($('project')?.selectedOptions?.[0]?.textContent||$('project')?.value);
-      renderGuide(guide,tab.dataset.cc257Stage,phase,project);
-
-      return;
+  window.CC_RUNTIME.registerView('drawings',name=>{if(name==='drawings')renderPage();});
+  const select=$('drawingProject');
+  if(select&&$('project')){
+    for(const source of $('project').options){
+      const option=document.createElement('option');option.value=source.value;option.textContent=source.textContent;select.append(option);
     }
+    select.addEventListener('change',renderPage);
+  }
+  $('drawingStage')?.addEventListener('change',renderPage);
+  $('drawingGuideBack')?.addEventListener('click',()=>window.showView('context'));
+  $('contextResult')?.addEventListener('click',event=>{
+    if(event.target.closest('[data-cc257-open]'))openFromContext();
   });
-
 }
 
 window.CC_STAGE_DRAWING_GUIDE={

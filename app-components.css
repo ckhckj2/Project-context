@@ -672,7 +672,7 @@ body{font-size:14px!important}
   .cc252-context-flow>summary i:before,.cc252-context-flow>summary i:after{content:"";position:absolute;left:6px;top:9px;width:8px;height:1.5px;background:#62748E}
   .cc252-context-flow>summary i:after{transform:rotate(90deg)}
   .cc252-context-flow[open]>summary i:after{transform:none}
-  .cc252-context-flow:not([open])>:not(summary){display:none!important}
+  details.cc252-context-flow:not([open])>:not(summary){display:none!important}
   .cc252-context-flow>.flow{margin:0!important;padding:14px!important;border-top:1px solid #EBEFF5}
 
   .cc252-context-brief{margin:0 0 10px;padding:16px;border:1px solid #D9E5F6;border-radius:15px;background:linear-gradient(145deg,#F8FBFF,#F2F7FF)}
@@ -1018,6 +1018,43 @@ body{font-size:14px!important}
     .cc258-comparison-answer .cc258-compare-first{grid-column:auto;grid-template-columns:1fr}
   }
   @media(prefers-reduced-motion:reduce){.cc258-depth-chevron:after{transition:none}}
+
+/* Compact context: orientation stays visible; only two main actions. */
+#contextResult.cc-context-clear .stage-banner{padding-bottom:18px}
+#contextResult.cc-context-clear .cc-context-position{padding:12px 0 14px;margin:0 0 20px;border-top:1px solid #E0E4E8;border-bottom:1px solid #E0E4E8}
+#contextResult.cc-context-clear .cc-context-position h2{font-size:12px;font-weight:500;margin:0 0 8px;color:#606C77}
+#contextResult.cc-context-clear .cc-context-position ol{display:flex;gap:22px;flex-wrap:wrap}
+#contextResult.cc-context-clear .cc-context-position li{padding:0;border:0}
+#contextResult.cc-context-clear .cc-context-position li:after{top:1px;right:-17px;font-size:12px}
+#contextResult.cc-context-clear .cc-context-position li small{display:inline;font-size:11px;margin:0 7px 0 0}
+#contextResult.cc-context-clear .cc-context-position li b{display:inline;font-size:13px;line-height:1.5}
+#contextResult.cc-context-clear .cc-context-position p{font-size:13px;margin-bottom:8px}
+#contextResult.cc-context-clear .cc-context-position .cc252-context-flow{padding:12px 0 0!important;margin-top:12px!important;border:0!important;border-top:1px solid #E5E8EC!important}
+#contextResult.cc-context-clear .cc252-context-flow h2 small{font-size:11px;font-weight:400;margin-left:8px}
+#contextResult.cc-context-clear .cc-context-position .flow{display:flex;flex-wrap:wrap;gap:4px 8px;margin:0!important;padding:0!important;border:0;background:none;overflow:visible}
+#contextResult.cc-context-clear .cc-context-position .flow .node{flex:none;width:auto;min-width:0;min-height:0;margin:0;padding:2px 0;border:0!important;border-radius:0;background:none!important;color:#626D78!important;font-size:12px!important;font-weight:400;line-height:1.6}
+#contextResult.cc-context-clear .cc-context-position .flow .node.now{color:#283642!important;font-weight:700}
+#contextResult.cc-context-clear .cc-context-position .flow .node:after{display:none!important}
+#contextResult.cc-context-clear .cc-context-position .flow .arrow{display:block;font-size:11px;color:#89939C;margin:0;padding:2px 0}
+#contextResult.cc-context-clear .actions.cc252-actions{display:flex!important;flex-wrap:wrap;gap:10px!important}
+#contextResult.cc-context-clear .actions.cc247-pending{display:none!important}
+#contextResult.cc-context-clear .actions.cc252-actions>button{flex:0 1 auto;min-width:180px!important;padding-inline:22px!important}
+.cc-context-inline-link{display:inline-block;min-height:44px;padding:10px 0;border:0;background:transparent;color:#3F5264;font:inherit;font-size:13px;font-weight:500;text-align:left;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.cc-context-inline-link:hover{color:#1F3143}
+.cc-context-inline-link[hidden]{display:none!important}
+#contextResult.cc-context-clear .cc-context-caution{margin:0 0 24px;padding:12px 0 12px 14px;border-left:2px solid #9AA7B3;color:#4F5D6B}
+#contextResult.cc-context-clear .cc-context-caution b{font-size:12px;font-weight:650}
+#contextResult.cc-context-clear .cc-context-caution p{margin:6px 0 0;font-size:13px;line-height:1.7;word-break:keep-all;overflow-wrap:anywhere}
+#contextResult.cc-context-clear .cc247-fit-gate.resolved{padding:0 0 0 12px;margin-bottom:18px;border:0;border-left:2px solid #BCC5CE;border-radius:0;background:transparent}
+#contextResult.cc-context-clear .cc247-fit-gate.resolved .cc247-fit-copy>small{display:none}
+#contextResult.cc-context-clear .cc247-fit-gate.resolved .cc247-title{font-size:13px;font-weight:500;color:#596675}
+#contextResult.cc-context-clear .cc247-fit-gate.resolved .cc247-body{font-size:12px;margin:3px 0 0}
+@media(max-width:620px){
+ #contextResult.cc-context-clear .actions.cc252-actions>button{flex:1 1 150px;min-width:0!important}
+ #contextResult.cc-context-clear .cc-context-position ol{gap:16px}
+ #contextResult.cc-context-clear .cc-context-position li:after{right:-13px}
+ #contextResult.cc-context-clear .cc-context-position li small{display:block;margin-bottom:3px}
+}
 /* END v254_information_hierarchy.js */
 
 /* BEGIN v255_visual_language.js */
@@ -1158,6 +1195,41 @@ body{font-size:14px!important}
   @media(max-width:700px){.cc257-groups{grid-template-columns:1fr}.cc257-group:nth-child(odd){border-right:0}.cc257-group:nth-child(-n+3){border-bottom:1px solid #E7ECF3}.cc257-project-extra,.cc257-complete,.cc257-depth{grid-template-columns:1fr;gap:5px}.cc257-confirm ol{grid-template-columns:1fr}}
   @media(max-width:430px){.cc257-drawing-guide>summary{grid-template-columns:34px 1fr;padding:12px}.cc257-drawing-guide>summary strong{grid-column:2;justify-self:start}.cc257-body{padding:12px}.cc257-tabs button{padding:7px 4px;font-size:10px}.cc257-stage-head h3{font-size:15px}}
   @media(prefers-reduced-motion:reduce){.cc257-tabs button{transition:none!important}}
+
+/* Shared drawing library; selections never change the current work context. */
+#view-drawings{max-width:1100px;margin-inline:auto;color:#263440}
+.cc-drawing-page>header{margin-bottom:28px}
+.cc-drawing-page>header h1{font-size:32px;line-height:1.35;margin:6px 0 12px;color:#1E2B37}
+.cc-drawing-page>header p{font-size:15px;line-height:1.7;margin:0;color:#5B6874}
+.cc-drawing-page>header p:first-child{font-size:12px}
+.cc-drawing-controls{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:14px}
+.cc-drawing-controls label{display:block;font-size:13px;font-weight:600;margin-bottom:8px}
+.cc-drawing-controls select{width:100%;min-width:0;min-height:48px;padding:10px 12px;border:1px solid #ADB9C4;border-radius:7px;background:#fff;color:#293B4A;font-size:15px}
+.cc-drawing-controls>div{min-width:0}
+.cc-drawing-origin{font-size:12px;color:#64717C;line-height:1.65;margin:0 0 24px}
+#view-drawings .cc257-drawing-guide{border:0;border-radius:0;background:none;overflow:visible}
+#view-drawings .cc257-body{padding:0;border:0}
+#view-drawings .cc257-stage-head>span{display:none}
+#view-drawings .cc257-stage-head h3{font-size:21px;color:#243645;margin:24px 0 10px}
+#view-drawings .cc257-stage-head p{font-size:14px;color:#536575}
+#view-drawings .cc257-groups{margin-top:24px;border-radius:0;border:0;gap:24px 32px;background:transparent}
+#view-drawings .cc257-group{padding:18px 0;border:0;border-top:1px solid #D9E0E7;background:transparent}
+#view-drawings .cc257-group h4{font-size:16px;color:#253846;margin-bottom:12px}
+#view-drawings .cc257-group li{font-size:14px;line-height:1.75;padding-block:4px}
+#view-drawings .cc257-complete{background:#EDF1F4;color:#3D4E5E;border-radius:6px;margin:12px 0 24px}
+#view-drawings .cc257-complete small,#view-drawings .cc257-complete b{color:#405462;font-size:13px;line-height:1.7}
+#view-drawings .cc257-more{border:0;border-top:1px solid #DCE2E8;border-radius:0;background:none}
+#view-drawings .cc257-more>summary{min-height:48px;padding:14px 0;background:none;text-decoration:underline;text-underline-offset:4px}
+#view-drawings .cc257-more>summary b{font-size:14px}
+#view-drawings .cc257-more>summary small{display:none}
+#view-drawings .cc257-project-extra li,#view-drawings .cc257-confirm p{font-size:13px;line-height:1.7}
+#bottomNav{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media(max-width:700px){
+ .cc-drawing-controls{grid-template-columns:1fr;gap:14px}
+ .cc-drawing-page>header h1{font-size:27px}
+ #view-drawings .cc257-groups{grid-template-columns:1fr;gap:0}
+ #view-drawings .cc257-complete{grid-template-columns:1fr;gap:5px}
+}
 /* END v257_stage_drawing_guide.js */
 
 /* BEGIN judgement-ui.js */
