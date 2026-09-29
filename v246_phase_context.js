@@ -7,9 +7,7 @@ const {PHASE_ORDER,PHASE_RULES,CHANGE_RULES,phaseRule}=window.CC_WORK_RULES.phas
 
 function level(){return window.CC_LEVEL_STORE.state().view}
 function selected(){return {task:$('task')?.value||'',phase:$('phase')?.value||'',project:$('project')?.selectedOptions?.[0]?.textContent?.trim()||''}}
-function updateFlow(root,phase){
-  const now=root.querySelector('.flow .node.now');
-  if(now){const original=now.dataset.cc246Original||now.textContent.trim();now.dataset.cc246Original=original;now.textContent=`${phase} · ${original}`;}
+function updateIntro(root){
   const copy=root.querySelector('.stage-copy p');const {task}=selected();
   if(copy)copy.textContent=`이 단계에서 ${task}의 목적·확인자료·실행순서를 나눠 봅니다.`;
 }
@@ -35,7 +33,7 @@ function enhance(){
   const root=$('contextResult');if(!root||!root.innerHTML.trim())return;
   const {task,phase}=selected();const model=window.CC_WORK_CONTEXT.resolve();const data=model.phase;if(!data)return;
   const rule={...data,how:()=>data.howTitle};
-  updateFlow(root,phase);updateContext(root,phase,task);updateWhy(root,task,phase,rule);updateHow(root,task,phase,rule);
+  updateIntro(root);updateContext(root,phase,task);updateWhy(root,task,phase,rule);updateHow(root,task,phase,rule);
   root.dataset.cc246Phase=phase;
 }
 

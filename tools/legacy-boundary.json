@@ -66,10 +66,10 @@
     },
     {
       "file": "index.html",
-      "sha256": "b851c8ec25a14cf1ab5d8955c470633b5e41aefc3a5ba246e0cd10c9e5e15f05",
+      "sha256": "649809988ccc81da5c8e0f083bd3dad89fba257a5aec042fc1508fb4886840b9",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-28 permit stage 2: Cache-bust the reviewed permit project assets."
+      "review": "2026-09-29 flow position: Cache-bust the corrected flow matching assets."
     },
     {
       "file": "judgement-data.js",
@@ -275,9 +275,10 @@
     },
     {
       "file": "v219_ask_mascot.js",
-      "sha256": "44b19fb95d2235238e47e554db6bde4cc760538e31317e82cf81ddeb29713884",
+      "sha256": "f6b7ed9a874371db6901806b2256d7cd181f0dc2d090807a86a272d87632bee3",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-29 flow position: Only explicit stage labels anchor the project flow; remove positional and unrelated-design fallbacks."
     },
     {
       "file": "v219_lv2_tools.js",
@@ -437,9 +438,10 @@
     },
     {
       "file": "v246_phase_context.js",
-      "sha256": "0c2eaf086f643f5bfb79ab3c0cd9fcfaac7254f85abf01db46246f635ecf81cd",
+      "sha256": "396f6e572a98d0da0a2c809e04a9d54eb96c2c57b55e52cd5f1ffa05049e7dc3",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-29 flow position: Keep original flow labels instead of prepending a chosen phase to an unrelated node."
     },
     {
       "file": "v247_task_phase_fit.js",
@@ -462,10 +464,10 @@
     },
     {
       "file": "v250_result_action_focus.js",
-      "sha256": "6cfeb42f9fd1f08bb56a974fb4f981d89ef5261f21bc830ddd6883dbef87c0c8",
+      "sha256": "f2f3a0bf70b68a6ef309b270e4575a87442a76af5abf9ba3c4224dce861a12ab",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-28 context simplification: Render project flow as a permanent section instead of a disclosure."
+      "review": "2026-09-29 flow position: Describe the whole flow as approximate work order; missing design stages are not fabricated."
     },
     {
       "file": "v251_search_reliability.js",
@@ -500,9 +502,10 @@
     },
     {
       "file": "v256_interaction_feedback.js",
-      "sha256": "6d228adb4153ff34e17f818e5deb0ad72a8135a88d0d75ca4db7ead8687ece47",
+      "sha256": "35e5799ae18e453d6b47df869d06c9e94c52745a3e094d4ca43a1a7521d94dc0",
       "owner": "legacy runtime (ARCHITECTURE.md)",
-      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7"
+      "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
+      "review": "2026-09-29 flow position: Use the renderer stage match for highlighting, including combined middle/detail labels."
     },
     {
       "file": "v257_stage_drawing_guide.js",

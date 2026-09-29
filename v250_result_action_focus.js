@@ -70,7 +70,7 @@ function foldProjectFlow(map){
   const fold=document.createElement('section');
   fold.className='cc252-context-flow';
   fold.setAttribute('aria-label','프로젝트 전체 흐름');
-  fold.innerHTML='<h2>프로젝트 전체 흐름 <small>설계 단계의 참고 위치</small></h2>';
+  fold.innerHTML='<h2>프로젝트 전체 흐름 <small>개략적인 업무 순서</small></h2>';
   const head=map.querySelector(':scope>.map-head');
   (head||map.firstChild)?.after(fold);
   fold.append(flow);

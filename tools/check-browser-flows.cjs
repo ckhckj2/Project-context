@@ -349,6 +349,32 @@ async function permitProjects(browser,url){
  }
  console.log('PASS permit stage 2: saved conditions, explicit manual mode, restore, project switch, XSS, no record writes, empty/corrupt/blocked storage');
 }
+async function flowPositions(browser,url){
+ const context=await browser.newContext({viewport:{width:1024,height:1000},reducedMotion:'reduce',locale:'ko-KR'});
+ const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ try{
+  await ready(page,url);
+  for(const [project,phase,label] of [['logistics','중간설계',null],['logistics','계획설계','계획설계'],['logistics','실시설계',null],['airport','중간설계','중간·실시설계'],['multi','실시설계','중간·실시설계'],['multi','잘 모르겠습니다',null]]){
+   await page.evaluate(()=>showView('home'));
+   await page.selectOption('#task','도면 수정');await page.selectOption('#project',project);await page.selectOption('#phase',phase);await page.click('#analyze');
+   const current=page.locator('.cc252-context-flow .node.now');
+   assert.equal(await current.count(),label?1:0,project+' '+phase+' match');
+   assert.equal(await page.locator('.cc252-context-flow .cc260-current-phase').count(),label?1:0,'shared highlight');
+   if(label)assert.equal(await current.innerText(),label,'keep the original flow label');
+   const originals=await page.evaluate(()=>project(document.getElementById('project').value).flow);
+   assert.deepEqual(await page.locator('.cc252-context-flow .node').allTextContents(),originals,'no synthetic phase labels');
+   if(phase!=='잘 모르겠습니다')assert.equal(await page.locator('.cc-context-position [aria-current="step"] b').innerText(),phase);
+   if(phase==='중간설계'&&project==='logistics'){
+    await page.locator('[data-drawer="how"]').click();await page.locator('[data-drawer="how"]').click();
+    assert.equal(await current.count(),0,'opening details cannot create a false position');
+    await overflow(page,'honest whole-project flow');
+    if(process.env.CC_CONTEXT_SCREENSHOT_DIR){fs.mkdirSync(process.env.CC_CONTEXT_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.CC_CONTEXT_SCREENSHOT_DIR,'logistics-flow-1024.png'),fullPage:true});}
+   }
+  }
+  assert.deepEqual(errors,[]);
+  console.log('PASS flow positions: omitted stages, explicit combined stages, original labels, repeated detail use, unknown stage and current-stage rail');
+ }finally{await context.close();}
+}
 async function failures(browser,url){
  for(const mode of ['missing-css','blocked-storage','corrupt-storage']){
   const context=await browser.newContext();
@@ -374,6 +400,6 @@ async function failures(browser,url){
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const url='http://127.0.0.1:'+server.address().port+'/current/';browser=await chromium.launch(launch);
   for(const width of [390,768,1440])await flows(browser,url,width,'reduce');
-  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await permitGuide(browser,url);await permitProjects(browser,url);await drawingLibrary(browser,url);await failures(browser,url);
+  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await permitGuide(browser,url);await permitProjects(browser,url);await drawingLibrary(browser,url);await flowPositions(browser,url);await failures(browser,url);
  }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});
