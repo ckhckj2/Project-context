@@ -252,6 +252,15 @@ async function permitGuide(browser,url){
   assert.equal(await page.locator('.cc235-guide-topic').count(),9);
   assert.equal(await page.locator('.cc235-guide-topic:visible').count(),3);
   assert.equal(await page.locator('.cc235-guide-topic[open]').count(),0);
+  assert.equal(await page.locator('#cc235GuideType').inputValue(),'housing','read stored type instead of home defaults');
+  assert.equal(await page.locator('#cc235GuideStage').inputValue(),'detail');
+  await page.locator('.cc235-guide-source summary').click();
+  assert.match(await page.locator('.cc235-guide-source').innerText(),/미입력: 위치·규모/);
+  await page.selectOption('#cc235GuideStage','all');
+  assert.match(await page.locator('.cc235-guide-source').innerText(),/직접 선택한/);
+  await page.locator('#cc235UseProject').click();
+  assert.equal(await page.locator('#cc235GuideStage').inputValue(),'detail');
+  await page.selectOption('#cc235GuideStage','all');
   await page.selectOption('#cc235GuideType','logistics');
   assert.match(await page.locator('.cc235-guide-first h4').innerText(),/개별 창고/);
   assert.equal(await page.locator('.cc235-guide-topic:visible').first().getAttribute('data-permit-topic'),'traffic');
@@ -299,6 +308,47 @@ async function permitGuide(browser,url){
   console.log('PASS permit stage 1: six widths, column alignment, LV1 scope, reading priorities, all nine detail/return paths, keyboard, storage/context preservation and no external requests');
  }finally{await context.close();}
 }
+async function permitProjects(browser,url){
+ const records=[{...legacy,location:'서울 <img src=x onerror="window.qaPermitXss=1">',scale:'연면적 3만㎡ / 지상 4층'},{id:'qa-other',name:'물류 프로젝트',typeId:'logistics',phase:'계획설계',location:'인천',scale:'미정'}];
+ const context=await browser.newContext({viewport:{width:390,height:950},reducedMotion:'reduce'});
+ await context.addInitScript(records=>{localStorage.setItem('cc_projects_v1',JSON.stringify(records));localStorage.setItem('cc_active_project_v1',records[0].id);},records);
+ const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ try{
+  await ready(page,url);
+  const original=await page.evaluate(()=>localStorage.getItem('cc_projects_v1'));
+  await page.selectOption('#task','인허가 자료 작성');await page.selectOption('#project','airport');await page.selectOption('#phase','기본계획');
+  await page.fill('#homeSearch','인허가');await page.click('#homeSearchBtn');
+  assert.equal(await page.locator('#cc235GuideType').inputValue(),'housing','home edits never replace saved conditions');
+  await page.locator('.cc235-guide-source summary').click();
+  assert.match(await page.locator('.cc235-guide-source dd').allTextContents().then(x=>x.join(' ')),/3만㎡/);
+  assert.equal(await page.locator('.cc235-guide-source img').count(),0);assert.equal(await page.evaluate(()=>window.qaPermitXss),undefined);
+  await overflow(page,'saved project source');
+  if(process.env.CC_PERMIT_SCREENSHOT_DIR){fs.mkdirSync(process.env.CC_PERMIT_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.CC_PERMIT_SCREENSHOT_DIR,'project-source-390.png'),fullPage:true});}
+  await page.selectOption('#cc235GuideType','transport');
+  await page.locator('.cc235-guide-topic>summary').first().click();
+  await page.locator('.cc235-guide-topic[open] [data-cc235-go]').click();await page.locator('.cc235-guide-back').click();
+  assert.equal(await page.locator('#cc235GuideType').inputValue(),'transport','detail return preserves manual selection');
+  await page.evaluate(()=>showView('projects'));await page.locator('[data-pid="qa-other"] [data-use]').click();
+  await page.evaluate(()=>showView('search'));
+  assert.equal(await page.locator('#cc235GuideType').inputValue(),'logistics','switching saved project refreshes an existing guide');
+  assert.equal(await page.locator('#cc235GuideStage').inputValue(),'plan');
+  assert.match(await page.locator('.cc235-guide-source').innerText(),/물류 프로젝트/);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('cc_projects_v1')),original,'reading and activating do not rewrite records');
+  assert.deepEqual(errors,[]);
+ }finally{await context.close();}
+ for(const mode of ['empty','corrupt','blocked']){
+  const context=await browser.newContext();
+  if(mode==='corrupt')await context.addInitScript(()=>localStorage.setItem('cc_projects_v1','{invalid'));
+  if(mode==='blocked')await context.addInitScript(()=>Object.defineProperty(Storage.prototype,'getItem',{value(){throw new DOMException('Blocked','SecurityError')}}));
+  const page=await context.newPage();await ready(page,url);
+  await page.fill('#homeSearch','인허가');await page.click('#homeSearchBtn');
+  assert.equal(await page.locator('#cc235GuideType').inputValue(),'general');assert.match(await page.locator('.cc235-guide-source').innerText(),/저장 프로젝트 없이/);
+  await page.selectOption('#cc235GuideType','logistics');assert.match(await page.locator('.cc235-guide-first h4').innerText(),/개별 창고/);
+  if(mode==='corrupt')assert.equal(await page.evaluate(()=>localStorage.getItem('cc_projects_v1')),'{invalid');
+  await context.close();
+ }
+ console.log('PASS permit stage 2: saved conditions, explicit manual mode, restore, project switch, XSS, no record writes, empty/corrupt/blocked storage');
+}
 async function failures(browser,url){
  for(const mode of ['missing-css','blocked-storage','corrupt-storage']){
   const context=await browser.newContext();
@@ -324,6 +374,6 @@ async function failures(browser,url){
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const url='http://127.0.0.1:'+server.address().port+'/current/';browser=await chromium.launch(launch);
   for(const width of [390,768,1440])await flows(browser,url,width,'reduce');
-  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await permitGuide(browser,url);await drawingLibrary(browser,url);await failures(browser,url);
+  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await permitGuide(browser,url);await permitProjects(browser,url);await drawingLibrary(browser,url);await failures(browser,url);
  }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -15,17 +15,17 @@
     },
     {
       "file": "app-components.css",
-      "sha256": "e926ce795f8916ce55df4531dc146608b812f9c09fff439c1a77c33a2f90efdb",
+      "sha256": "1aa83fc5a890a521970132caca53823941eb9b8f2060065abe21a555db4aa4a3",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-28 context simplification: Compact permanent orientation, two primary actions and a separate shared drawing library; scoped owner styles."
+      "review": "2026-09-28 permit stage 2: Compact project source and readable stored conditions inside the permit guide owner."
     },
     {
       "file": "app-runtime.js",
-      "sha256": "d23fce605fe863d2f6447d55113f614479eb0a5c259ece76adbfe14c5a496e99",
+      "sha256": "3449da569ba47596fb078701eb4cdb534cd540e4c00215e31cbf70295fec41a9",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-28 context simplification: Register drawing page in the existing view lifecycle; no new listeners or observers."
+      "review": "2026-09-28 permit stage 2: Permit guide refresh uses the existing view lifecycle when a saved project changes."
     },
     {
       "file": "app-start.js",
@@ -66,10 +66,10 @@
     },
     {
       "file": "index.html",
-      "sha256": "033d037df1db9c28ab388b063f64b5109b9961782f9b897f8788c6554514d7f5",
+      "sha256": "b851c8ec25a14cf1ab5d8955c470633b5e41aefc3a5ba246e0cd10c9e5e15f05",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-28 context simplification: Add the drawing view and mobile entry; refresh changed asset caches."
+      "review": "2026-09-28 permit stage 2: Cache-bust the reviewed permit project assets."
     },
     {
       "file": "judgement-data.js",
@@ -163,10 +163,10 @@
     },
     {
       "file": "review-rules.js",
-      "sha256": "ebe565df86c82d142bce869bacac09b64f73f16c456657e50e895b9f0043b63b",
+      "sha256": "6be221f90c57acd8ba659612cc95a7e710a61797242453881162e4395a7da1dc",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-27 permit guide stage 1: Pure reading guide for seven project categories and seven stage views; all nine topics remain available. No statutory thresholds, automatic applicability or browser state."
+      "review": "2026-09-28 permit stage 2: Exact saved type/stage mapping to reading categories; no approval-route inference or numeric eligibility."
     },
     {
       "file": "search-answer.js",
@@ -385,10 +385,10 @@
     },
     {
       "file": "v235_permit_reviews.js",
-      "sha256": "3635b77389f5717f38c135e0004f3471a036410d98f88a0feb2d3453dfd84682",
+      "sha256": "0e1342e25b1e6fcb6ccc56453b57e313361c7d85017a104fabb8f2976e85b3aa",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-27 permit guide stage 1: Owns permit reading guide, native selectors/disclosures and detail-return navigation. Existing detail/practice data and levels retained; no new storage or network."
+      "review": "2026-09-28 permit stage 2: Read saved project conditions, explicit manual selection and restore; no storage writes."
     },
     {
       "file": "v237_answer_readability_nav.js",

@@ -138,6 +138,14 @@
   #searchResult .cc235-guide-topic>summary b{font-size:16px}
 }
 @media(prefers-reduced-motion:reduce){#searchResult .cc235-guide-disclosure i{transition:none}}
+/* Saved-project context stays secondary to the candidate reading list. */
+#searchResult .cc235-guide-source{margin:0 0 22px;padding:0 0 16px;border-bottom:1px solid #DCE1E6}
+#searchResult .cc235-guide-source p{font-size:13px!important;margin:4px 0}
+#searchResult .cc235-guide-source summary,#searchResult .cc235-guide-text-link{min-height:44px;padding:10px 0;border:0;border-radius:0;background:none;color:#485C6C;font-size:13px;text-align:left;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+#searchResult .cc235-guide-source dl{display:grid;gap:8px;margin:8px 0 12px}
+#searchResult .cc235-guide-source dl>div{display:grid;grid-template-columns:90px minmax(0,1fr);gap:12px}
+#searchResult .cc235-guide-source dt{font-size:12px;color:#697682}
+#searchResult .cc235-guide-source dd{font-size:14px;margin:0;line-height:1.6;overflow-wrap:anywhere}
 /* END v235_permit_reviews.js */
 
 /* BEGIN v236_ui_readability.js */
