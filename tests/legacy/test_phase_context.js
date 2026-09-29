@@ -29,3 +29,24 @@ for(const task of tasks){
 const changeRows=PHASE_ORDER.map(phase=>phaseRule('변경업무 검토',phase));
 if(!changeRows.every(x=>x.howSteps.length===3))throw new Error('change-work HOW steps missing');
 console.log(`PASS: ${tasks.length} tasks × ${PHASE_ORDER.length} phases = ${tasks.length*PHASE_ORDER.length} phase-aware combinations`);
+
+// A project flow may omit the selected design stage; never relabel another job.
+const assert=require('node:assert/strict');
+const flowWindow={CC_BOOT:{register(){}}};
+vm.runInNewContext(fs.readFileSync('v219_ask_mascot.js','utf8'),{window:flowWindow});
+const match=flowWindow.phaseIndex;
+const logistics=['사업성격 확인','입지·차량동선 검토','규모·법규 검토','계획설계','소방·교통 협의','허가/승인','공사','사용·준공'];
+assert.equal(match(logistics,'계획설계'),3);
+assert.equal(match(logistics,'중간설계'),-1);
+assert.equal(match(logistics,'실시설계'),-1);
+assert.equal(match(logistics,'잘 모르겠습니다'),-1);
+assert.equal(match(['사업계획승인','실시계획승인','공사'],'실시설계'),-1);
+assert.equal(match(['기본·계획설계','심의','중간·실시설계'],'기본계획'),0);
+assert.equal(match(['기본·계획설계','심의','중간·실시설계'],'중간설계'),2);
+assert.equal(match(['기본·계획설계','심의','중간·실시설계'],'실시설계'),2);
+assert.equal(match(['중간설계','실시설계'],'중간설계'),0);
+assert.equal(match(['중간설계','실시설계'],'실시설계'),1);
+assert.equal(match(['입지·차량동선 검토','소방·교통 협의'],'계획설계'),-1);
+for(const phase of ['__proto__','constructor','',null])assert.equal(match(logistics,phase),-1);
+assert.equal(match([], '중간설계'),-1);
+console.log('PASS flow matching: omitted stages remain unmatched; approval plans are not design stages');

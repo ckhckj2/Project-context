@@ -22,7 +22,7 @@ function decorateContext(){
   if(!root||!root.innerHTML.trim())return;
   const phase=clean($('phase')?.selectedOptions?.[0]?.textContent);
   root.querySelectorAll('.flow .node,.cc252-context-flow .node').forEach(node=>{
-    const current=Boolean(phase&&phase!=='잘 모르겠습니다'&&clean(node.textContent).includes(phase));
+    const current=Boolean(phase&&phase!=='잘 모르겠습니다'&&node.classList.contains('now'));
     if(node.classList.contains('cc260-current-phase')!==current)node.classList.toggle('cc260-current-phase',current);
   });
 
