@@ -15,10 +15,10 @@
     },
     {
       "file": "app-components.css",
-      "sha256": "1aa83fc5a890a521970132caca53823941eb9b8f2060065abe21a555db4aa4a3",
+      "sha256": "49e62be1153c8eb5747c1b667f3050314d99e35798dc8ff782beb8076094651e",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-28 permit stage 2: Compact project source and readable stored conditions inside the permit guide owner."
+      "review": "2026-09-30 permit stage 3: Scoped subordinate source panel, aligned rows and touch targets."
     },
     {
       "file": "app-runtime.js",
@@ -66,10 +66,10 @@
     },
     {
       "file": "index.html",
-      "sha256": "649809988ccc81da5c8e0f083bd3dad89fba257a5aec042fc1508fb4886840b9",
+      "sha256": "78f720d84e9a87a020b7a4b5259ccd7199550278861c9f88e4091ba1dec901ac",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-29 flow position: Cache-bust the corrected flow matching assets."
+      "review": "2026-09-30 permit stage 3: Cache-bust only the reviewed regional guide assets."
     },
     {
       "file": "judgement-data.js",
@@ -163,10 +163,10 @@
     },
     {
       "file": "review-rules.js",
-      "sha256": "6be221f90c57acd8ba659612cc95a7e710a61797242453881162e4395a7da1dc",
+      "sha256": "84538b06942151cddaef4a9c41501a0056baa7561fc0892088758c3eab10f8ce",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-28 permit stage 2: Exact saved type/stage mapping to reading categories; no approval-route inference or numeric eligibility."
+      "review": "2026-09-30 permit stage 3: Fixed official regional source catalogue; no region or applicability inference."
     },
     {
       "file": "search-answer.js",
@@ -386,10 +386,10 @@
     },
     {
       "file": "v235_permit_reviews.js",
-      "sha256": "0e1342e25b1e6fcb6ccc56453b57e313361c7d85017a104fabb8f2976e85b3aa",
+      "sha256": "5e8564f34734dc39d76e0c22244bade23350121bf2aabe839bd9f9dbc1b4f440",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-28 permit stage 2: Read saved project conditions, explicit manual selection and restore; no storage writes."
+      "review": "2026-09-30 permit stage 3: One collapsed regional reference panel with escaped saved location and safe fixed external links."
     },
     {
       "file": "v237_answer_readability_nav.js",

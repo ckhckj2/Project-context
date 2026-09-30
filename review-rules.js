@@ -60,6 +60,15 @@ const GUIDE={
     zeb:{kind:'인증',why:'외피·설비·신재생에너지 목표가 입면·옥상·설비공간에 함께 영향을 줘요.',check:'용도·규모·공공성·공사유형·적용 시점별 인증 의무와 발주 요구',scale:'용도별 면적과 에너지 평가 범위·외피·설비 조건',timing:'초기 에너지 목표 검토 → 해당 예비인증 조건 반영 → 시공·본인증 확인'}
   }
 };
+// Fixed official entry points: project names/addresses never become URL parameters.
+const LOCAL_GUIDE={
+  linksChecked:'2026-09-30',
+  steps:[
+    {id:'land',title:'대상 필지와 구역 확인',body:'토지이용계획·도시계획에서 주소나 지번으로 대상지를 찾고, 용도지역·지구와 계획구역을 확인하세요.',label:'토지이용계획 열기',provider:'토지이음',url:'https://www.eum.go.kr/web/am/amMain.jsp'},
+    {id:'ordinance',title:'관할 지역의 조례 확인',body:'시·도와 시·군·구를 선택해 건축·도시계획·경관·주차장 등 관련 조례를 찾아보세요. 본청과 기초지자체 기준을 함께 확인하세요.',label:'조례 검색 열기',provider:'자치법규정보시스템',url:'https://www.elis.go.kr/main'},
+    {id:'notice',title:'지구단위계획·특별계획구역 확인',body:'지역과 구역명으로 결정·변경 고시를 찾으세요. 고시문뿐 아니라 결정도·시행지침·세부개발계획의 대상 필지와 변경 범위도 확인하세요.',label:'결정·변경 고시 찾기',provider:'토지이음 고시정보',url:'https://www.eum.go.kr/web/gs/gv/gvGosiList.jsp'}
+  ]
+};
 function guideView(type='general',stage='all'){
   type=Object.hasOwn(GUIDE.types,type)?type:'general';
   stage=Object.hasOwn(GUIDE.stages,stage)?stage:'all';
@@ -154,5 +163,5 @@ const practice={
   ]
 };
 const supportsTask=task=>/(인허가|허가|심의|승인|착공|사용승인|사용검사)/.test(task);
-window.CC_REVIEW_RULES=freeze({LAW,REVIEWS,GUIDE,guideView,guideProject,topic,flows,practice,supportsTask});
+window.CC_REVIEW_RULES=freeze({LAW,REVIEWS,GUIDE,LOCAL_GUIDE,guideView,guideProject,topic,flows,practice,supportsTask});
 })();
