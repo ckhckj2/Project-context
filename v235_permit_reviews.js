@@ -8,14 +8,15 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&
 function level(){return window.CC_LEVEL_STORE.state().view}
 const activeProject=()=>store.active();
 
-const {LAW,REVIEWS,GUIDE,guideView,guideProject,topic}=window.CC_REVIEW_RULES;
+const {LAW,REVIEWS,GUIDE,LOCAL_GUIDE,guideView,guideProject,topic}=window.CC_REVIEW_RULES;
 let guideSelection={type:'general',stage:'all'};
 let guideProjectKey=null,guideSource=null,guideManual=false;
+let guideLocalOpen=false;
 function syncGuideProject(force=false){
   const p=activeProject();
   const key=JSON.stringify(p?[p.id,p.name,p.typeId,p.phase,p.location,p.scale]:null);
   if(!force&&key===guideProjectKey)return false;
-  guideProjectKey=key;guideSource=p;guideManual=false;
+  guideProjectKey=key;guideSource=p;guideManual=false;guideLocalOpen=false;
   guideSelection=guideProject(p);
   return true;
 }
@@ -30,6 +31,13 @@ function guideConditions(){
 }
 
 
+function guideLocal(){
+  const location=typeof guideSource?.location==='string'?guideSource.location.trim():'';
+  const locationNote=location
+    ?`<p class="cc235-local-location"><small>저장 프로젝트 위치 · 참고</small><b>${esc(location)}</b></p>`
+    :'<p class="cc235-local-location">저장된 위치가 없어요. 아래 공식 사이트에서 지역·지번을 직접 선택해도 돼요.</p>';
+  return `<details class="cc235-guide-local"${guideLocalOpen?' open':''}><summary><span><b>지역 기준 확인하기</b><small>조례 · 지구단위계획 · 특별계획구역</small></span><i aria-hidden="true">＋</i></summary><div class="cc235-local-body">${locationNote}<p class="cc235-local-note">국내 프로젝트용 확인처예요. 지역·지번은 공식 사이트에서 직접 선택하며, 저장된 주소는 자동 전송하지 않아요.</p><ol>${LOCAL_GUIDE.steps.map((step,i)=>`<li><span class="cc235-local-number" aria-hidden="true">0${i+1}</span><div><h5>${esc(step.title)}</h5><p>${esc(step.body)}</p><a data-local-source="${esc(step.id)}" href="${esc(step.url)}" target="_blank" rel="noopener noreferrer">${esc(step.label)} ↗<span class="cc235-local-provider">${esc(step.provider)} · 새 창</span></a></div></li>`).join('')}</ol><div class="cc235-local-time"><b>확인 시점도 함께 보세요</b><p>접수·승인 예정일과 원문의 시행일·적용례·경과조치를 대조하세요. 검색 결과가 없다고 비대상은 아니에요. 결정도서가 없거나 적용이 불명확하면 관할청 도시계획·건축 담당부서에 확인하세요.</p></div><small class="cc235-local-checked">링크 확인 ${esc(LOCAL_GUIDE.linksChecked)} · 개별 지역의 적용 기준을 검증한 날짜는 아니에요. 해외 사업은 현지 기준을 확인하세요.</small></div></details>`;
+}
 function guideTopic(key){
   const d=REVIEWS[key],g=GUIDE.topics[key];
   return `<details class="cc235-guide-topic" data-permit-topic="${esc(key)}"><summary><span><small>${esc(g.kind)}</small><b>${esc(d.name)}</b></span><span class="cc235-guide-disclosure" aria-hidden="true">확인할 내용 <i>＋</i></span></summary><div class="cc235-guide-topic-body"><p class="cc235-guide-why">${esc(g.why)}</p><dl><div><dt>대상 확인 조건</dt><dd>${esc(g.check)}</dd></div><div><dt>확인할 수치·자료</dt><dd>${esc(g.scale)}</dd></div><div><dt>준비와 후속 업무</dt><dd>${esc(g.timing)}</dd></div></dl><p class="cc235-guide-caution">${esc(d.caution)}</p><button type="button" class="cc235-guide-link" data-cc235-go="${esc(d.name)}">${esc(d.name)} 상세 안내 보기 →</button></div></details>`;
@@ -41,8 +49,10 @@ function renderGuide(focusId){
   guideSelection={type:view.type,stage:view.stage};
   const type=GUIDE.types[view.type],stage=GUIDE.stages[view.stage];
   const options=(items,selected)=>Object.entries(items).map(([key,item])=>`<option value="${esc(key)}"${key===selected?' selected':''}>${esc(item.label)}</option>`).join('');
-  window.CC_SEARCH_ANSWER.write(out,`<article class="result-card cc235-guide" data-cc221="1"><header><small class="cc235-guide-eyebrow">인허가 검토 안내</small><h3>어떤 절차를 확인해야 할까요?</h3><p>프로젝트 유형과 시점을 골라, 검토할 이유와 준비할 내용을 살펴보세요.</p></header><p class="cc235-guide-scope"><b>검토 후보 안내</b> 대상 여부를 확정한 목록은 아니에요. 위치·규모·적용 시점과 관할 기준을 함께 확인하세요.</p>${guideConditions()}<div class="cc235-guide-filters"><div><label for="cc235GuideType">프로젝트 유형</label><select id="cc235GuideType">${options(GUIDE.types,view.type)}</select></div><div><label for="cc235GuideStage">확인할 시점</label><select id="cc235GuideStage">${options(GUIDE.stages,view.stage)}</select></div></div><section class="cc235-guide-first"><small>먼저 확인할 일</small><h4>${esc(type.first)}</h4><p>${esc(type.why)}</p><details class="cc235-guide-scale"><summary>규모에서 확인할 항목 보기</summary><p>${esc(type.scale)}</p><p>‘3만㎡’처럼 면적 하나만으로는 대상 여부를 판단할 수 없어요. 어떤 면적인지와 해당 기준의 산정 범위를 함께 확인하세요.</p></details><button type="button" class="cc235-guide-link" data-cc235-go="인허가 실무 패키지">승인경로·준비 순서 보기 →</button></section><section class="cc235-guide-candidates" aria-labelledby="cc235GuideCandidates"><div class="cc235-guide-section-head"><h4 id="cc235GuideCandidates">${view.stage==='all'?'먼저 살펴볼 검토 후보':esc(stage.label)+'에서 살펴볼 검토 후보'}</h4><p>${esc(stage.action)}</p></div><p class="cc235-guide-stage-note">읽는 순서를 제안해요. 법정 접수기한이나 확정된 선후행 순서는 아니며, 이전에 놓친 절차도 확인하세요.</p><div>${view.priority.map(guideTopic).join('')}</div><details class="cc235-guide-more"><summary>그 밖의 검토 후보 ${view.others.length}개 보기</summary><p>선택한 유형·시점과 관계없이 적용 가능성을 확인할 항목이에요.</p>${view.others.map(guideTopic).join('')}</details></section><footer class="cc235-guide-footer"><p>주요 심의·평가·인증 9종을 안내해요. 개발행위·농지·산지·개별 시설법상 절차 등은 이 목록에 모두 포함되어 있지 않아요.</p><p>확인할 원문: 최신 법령·시행일·적용례·경과조치 / 시·군·구 조례 / 지구단위계획·특별계획구역 결정도서 / 관할기관 안내</p><small>안내 정리일 ${esc(GUIDE.edited)} · 개별 법령·조례의 최신 적용 기준을 검증한 날짜는 아니에요.</small></footer></article>`);
+  window.CC_SEARCH_ANSWER.write(out,`<article class="result-card cc235-guide" data-cc221="1"><header><small class="cc235-guide-eyebrow">인허가 검토 안내</small><h3>어떤 절차를 확인해야 할까요?</h3><p>프로젝트 유형과 시점을 골라, 검토할 이유와 준비할 내용을 살펴보세요.</p></header><p class="cc235-guide-scope"><b>검토 후보 안내</b> 대상 여부를 확정한 목록은 아니에요. 위치·규모·적용 시점과 관할 기준을 함께 확인하세요.</p>${guideConditions()}<div class="cc235-guide-filters"><div><label for="cc235GuideType">프로젝트 유형</label><select id="cc235GuideType">${options(GUIDE.types,view.type)}</select></div><div><label for="cc235GuideStage">확인할 시점</label><select id="cc235GuideStage">${options(GUIDE.stages,view.stage)}</select></div></div><section class="cc235-guide-first"><small>먼저 확인할 일</small><h4>${esc(type.first)}</h4><p>${esc(type.why)}</p><details class="cc235-guide-scale"><summary>규모에서 확인할 항목 보기</summary><p>${esc(type.scale)}</p><p>‘3만㎡’처럼 면적 하나만으로는 대상 여부를 판단할 수 없어요. 어떤 면적인지와 해당 기준의 산정 범위를 함께 확인하세요.</p></details><button type="button" class="cc235-guide-link" data-cc235-go="인허가 실무 패키지">승인경로·준비 순서 보기 →</button></section>${guideLocal()}<section class="cc235-guide-candidates" aria-labelledby="cc235GuideCandidates"><div class="cc235-guide-section-head"><h4 id="cc235GuideCandidates">${view.stage==='all'?'먼저 살펴볼 검토 후보':esc(stage.label)+'에서 살펴볼 검토 후보'}</h4><p>${esc(stage.action)}</p></div><p class="cc235-guide-stage-note">읽는 순서를 제안해요. 법정 접수기한이나 확정된 선후행 순서는 아니며, 이전에 놓친 절차도 확인하세요.</p><div>${view.priority.map(guideTopic).join('')}</div><details class="cc235-guide-more"><summary>그 밖의 검토 후보 ${view.others.length}개 보기</summary><p>선택한 유형·시점과 관계없이 적용 가능성을 확인할 항목이에요.</p>${view.others.map(guideTopic).join('')}</details></section><footer class="cc235-guide-footer"><p>주요 심의·평가·인증 9종을 안내해요. 개발행위·농지·산지·개별 시설법상 절차 등은 이 목록에 모두 포함되어 있지 않아요.</p><p>확인할 원문: 최신 법령·시행일·적용례·경과조치 / 시·군·구 조례 / 지구단위계획·특별계획구역 결정도서 / 관할기관 안내</p><small>안내 정리일 ${esc(GUIDE.edited)} · 개별 법령·조례의 최신 적용 기준을 검증한 날짜는 아니에요.</small></footer></article>`);
   wireGo();
+  const local=$('searchResult').querySelector('.cc235-guide-local');
+  local?.addEventListener('toggle',()=>{if(local.isConnected)guideLocalOpen=local.open;});
   $('cc235UseProject')?.addEventListener('click',()=>{syncGuideProject(true);renderGuide('cc235GuideType');});
   for(const [id,key] of [['cc235GuideType','type'],['cc235GuideStage','stage']])$(id).addEventListener('change',event=>{
     guideManual=true;guideSelection={...guideSelection,[key]:event.target.value};renderGuide(id);

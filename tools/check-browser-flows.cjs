@@ -349,6 +349,49 @@ async function permitProjects(browser,url){
  }
  console.log('PASS permit stage 2: saved conditions, explicit manual mode, restore, project switch, XSS, no record writes, empty/corrupt/blocked storage');
 }
+async function permitLocalSources(browser,url){
+ const records=[{...legacy,location:'서울특별시 강서구'},{...legacy,id:'qa-overseas',name:'해외 프로젝트',location:'베트남 동나이'},{...legacy,id:'qa-no-location',name:'위치 미정',location:''},{...legacy,id:'qa-location-xss',location:'<img src=x onerror="window.qaLocalXss=1">'}];
+ const context=await browser.newContext({viewport:{width:1024,height:1100},reducedMotion:'reduce',locale:'ko-KR'});
+ await context.addInitScript(records=>{localStorage.setItem('cc_projects_v1',JSON.stringify(records));localStorage.setItem('cc_active_project_v1',records[0].id);},records);
+ const page=await context.newPage(),errors=[],requests=[];
+ page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>requests.push(r.url()));
+ try{
+  await ready(page,url);const original=await page.evaluate(()=>({...localStorage}));
+  await page.fill('#homeSearch','인허가');await page.click('#homeSearchBtn');
+  const panel=page.locator('.cc235-guide-local'),summary=panel.locator('summary');
+  assert.equal(await panel.getAttribute('open'),null,'regional references start compact');
+  await summary.focus();await page.keyboard.press('Enter');
+  assert(await panel.locator('.cc235-local-location').isVisible());
+  assert.match(await panel.locator('.cc235-local-location').innerText(),/서울특별시 강서구/);
+  assert.equal(await panel.locator('img').count(),0);assert.equal(await page.evaluate(()=>window.qaLocalXss),undefined);
+  assert.match(await panel.innerText(),/국내 프로젝트용/);assert.match(await panel.innerText(),/자동 전송하지/);
+  const links=await panel.locator('a').evaluateAll(els=>els.map(a=>({href:a.getAttribute('href'),target:a.target,rel:a.rel})));
+  assert.deepEqual(links.map(x=>x.href),['https://www.eum.go.kr/web/am/amMain.jsp','https://www.elis.go.kr/main','https://www.eum.go.kr/web/gs/gv/gvGosiList.jsp']);
+  assert(links.every(x=>x.target==='_blank'&&x.rel==='noopener noreferrer'&&!new URL(x.href).search),'fixed official links do not expose project data');
+  for(const width of [390,768,1024,1280,1440,1920]){
+   await page.setViewportSize({width,height:1100});await overflow(page,'regional sources '+width);
+   assert(await panel.locator('a').evaluateAll(els=>els.every(el=>el.scrollWidth<=el.clientWidth+1&&el.getBoundingClientRect().height>=44)),'readable/tappable source links '+width);
+   const bounds=await page.locator('.cc235-guide-first,.cc235-guide-local,.cc235-guide-candidates').evaluateAll(els=>els.map(el=>el.getBoundingClientRect().left));
+   assert(Math.max(...bounds)-Math.min(...bounds)<=1,'regional column alignment '+width);
+   if(process.env.CC_PERMIT_LOCAL_SCREENSHOT_DIR){fs.mkdirSync(process.env.CC_PERMIT_LOCAL_SCREENSHOT_DIR,{recursive:true});await panel.scrollIntoViewIfNeeded();await page.screenshot({path:path.join(process.env.CC_PERMIT_LOCAL_SCREENSHOT_DIR,'regional-'+width+'.png'),fullPage:true});}
+  }
+  await page.selectOption('#cc235GuideStage','plan');assert.equal(await panel.getAttribute('open'),'','reading selection retains disclosure');
+  await page.locator('.cc235-guide-first [data-cc235-go]').click();await page.locator('.cc235-guide-back').click();
+  assert.equal(await panel.getAttribute('open'),'','detail return retains disclosure');
+  assert.deepEqual(await page.evaluate(()=>({...localStorage})),original,'regional reading never writes storage');
+  for(const id of ['qa-overseas','qa-no-location','qa-location-xss']){
+   await page.evaluate(()=>showView('projects'));await page.locator('[data-pid="'+id+'"] [data-use]').click();await page.evaluate(()=>showView('search'));
+   assert.equal(await panel.getAttribute('open'),null,'changed project resets regional panel');await summary.click();
+   assert.match(await panel.locator('.cc235-local-location').innerText(),id==='qa-overseas'?/베트남 동나이/:id==='qa-no-location'?/저장된 위치가 없어요/:/<img src=/);
+   assert.match(await panel.innerText(),/해외 사업은 현지 기준/);
+   assert.doesNotMatch(await panel.locator('.cc235-local-location').innerText(),/서울특별시/);
+   assert.equal(await panel.locator('img').count(),0);assert.equal(await page.evaluate(()=>window.qaLocalXss),undefined);
+  }
+  assert.equal(await page.evaluate(()=>localStorage.getItem('cc_projects_v1')),original.cc_projects_v1);
+  assert.deepEqual(errors,[]);assert(requests.every(r=>new URL(r).origin===new URL(url).origin),'reading does not contact external sources');
+  console.log('PASS permit stage 3: compact references, six widths, keyboard, fixed safe links, escaped locations, detail/selection state, project switch, missing/overseas location, no writes or external requests');
+ }finally{await context.close();}
+}
 async function flowPositions(browser,url){
  const context=await browser.newContext({viewport:{width:1024,height:1000},reducedMotion:'reduce',locale:'ko-KR'});
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -400,6 +443,6 @@ async function failures(browser,url){
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const url='http://127.0.0.1:'+server.address().port+'/current/';browser=await chromium.launch(launch);
   for(const width of [390,768,1440])await flows(browser,url,width,'reduce');
-  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await permitGuide(browser,url);await permitProjects(browser,url);await drawingLibrary(browser,url);await flowPositions(browser,url);await failures(browser,url);
+  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await permitGuide(browser,url);await permitProjects(browser,url);await permitLocalSources(browser,url);await drawingLibrary(browser,url);await flowPositions(browser,url);await failures(browser,url);
  }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});
