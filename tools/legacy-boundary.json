@@ -15,17 +15,17 @@
     },
     {
       "file": "app-components.css",
-      "sha256": "49e62be1153c8eb5747c1b667f3050314d99e35798dc8ff782beb8076094651e",
+      "sha256": "29083f3c8fd56baff4f1b9deedce01da0e8a668ab76cb2b09ef3a0cd2999fa17",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-30 permit stage 3: Scoped subordinate source panel, aligned rows and touch targets."
+      "review": "2026-10-05 permit stage 4: Suppress unrelated saved-project banner in context-origin permit details; stack adjacent subordinate material links."
     },
     {
       "file": "app-runtime.js",
-      "sha256": "3449da569ba47596fb078701eb4cdb534cd540e4c00215e31cbf70295fec41a9",
+      "sha256": "46909e0fbfb5bd240d82e731411a8f431f76992ab83b1df5c2e0c66f8740b203",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-28 permit stage 2: Permit guide refresh uses the existing view lifecycle when a saved project changes."
+      "review": "2026-10-05 permit stage 4: Distinguish a level refresh from an explicit query so a context-origin guide retains its conditions; existing provider order is unchanged."
     },
     {
       "file": "app-start.js",
@@ -66,10 +66,10 @@
     },
     {
       "file": "index.html",
-      "sha256": "78f720d84e9a87a020b7a4b5259ccd7199550278861c9f88e4091ba1dec901ac",
+      "sha256": "90316cf1bf9187b01acd947eba55651445791a0ac5d4fc3d629663aa1c058e67",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-30 permit stage 3: Cache-bust only the reviewed regional guide assets."
+      "review": "2026-10-05 permit stage 4: Cache-bust the three reviewed runtime and presentation owners."
     },
     {
       "file": "judgement-data.js",
@@ -386,10 +386,10 @@
     },
     {
       "file": "v235_permit_reviews.js",
-      "sha256": "5e8564f34734dc39d76e0c22244bade23350121bf2aabe839bd9f9dbc1b4f440",
+      "sha256": "87905a6ef1300a4afca945454d6f5c258af44742f6807b30516939855d5801d5",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-09-30 permit stage 3: One collapsed regional reference panel with escaped saved location and safe fixed external links."
+      "review": "2026-10-05 permit stage 4: Add a related-work inline entry with explicit context source, independent filters, existing return navigation and preserved LV3 content. No saved-data writes."
     },
     {
       "file": "v237_answer_readability_nav.js",
