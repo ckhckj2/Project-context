@@ -291,6 +291,8 @@ async function permitGuide(browser,url){
    await page.locator('[data-permit-topic="'+key+'"]>summary').click();
    await page.locator('[data-permit-topic="'+key+'"] [data-cc235-go]').click();
    assert(await page.locator('.cc252-answer').isVisible(),'existing detail summary retained '+key);
+   await page.evaluate(()=>CC_RUNTIME.refreshSearchForLevel());
+   assert.equal(await page.locator('.cc235-review-card').count(),1,'detail remains a review after level refresh '+key);
    const detail=page.locator('.cc252-detail-toggle');await detail.click();
    assert(await page.locator('.cc235-review-card .cc235-sources a').isVisible());
    assert.equal(await page.locator('.cc235-review-card .cc235-sources a').getAttribute('rel'),'noopener noreferrer');
@@ -392,6 +394,81 @@ async function permitLocalSources(browser,url){
   console.log('PASS permit stage 3: compact references, six widths, keyboard, fixed safe links, escaped locations, detail/selection state, project switch, missing/overseas location, no writes or external requests');
  }finally{await context.close();}
 }
+async function permitContext(browser,url){
+ const context=await browser.newContext({viewport:{width:1024,height:1100},reducedMotion:'reduce',locale:'ko-KR'});
+ await context.addInitScript(legacy=>{
+  localStorage.setItem('cc_projects_v1',JSON.stringify([{...legacy,location:'저장된 서울 주소',scale:'연면적 3만㎡'}]));
+  localStorage.setItem('cc_active_project_v1',legacy.id);
+  localStorage.setItem('pc_master_certified','1');localStorage.setItem('pc_master_preview_level','1');
+ },legacy);
+ const page=await context.newPage(),errors=[],requests=[];
+ page.on('pageerror',e=>errors.push(e.message));page.on('request',r=>requests.push(r.url()));
+ try{
+  await ready(page,url);
+  const original=await page.evaluate(()=>({...localStorage}));
+  await page.selectOption('#task','법규 검토');await page.selectOption('#project','logistics');await page.selectOption('#phase','중간설계');
+  await page.click('#analyze');
+  const entry=page.locator('[data-cc235-context-open]');
+  assert.equal(await entry.count(),1);assert(await entry.isVisible());
+  assert.equal(await page.locator('#contextResult .actions>button').count(),2,'no third primary action');
+  await page.locator('[data-drawer="why"]').click();
+  const beforeContext=await page.locator('#contextResult').innerHTML();
+  for(const width of [390,768,1024,1280,1440,1920]){
+   await page.setViewportSize({width,height:1100});await overflow(page,'permit context '+width);
+   assert(await entry.evaluate(el=>el.getBoundingClientRect().height>=44));
+   const aligned=await page.locator('.cc252-brief-grid>div:not(:first-child)').evaluateAll(els=>els.map(el=>el.getBoundingClientRect().top));
+   if(width>=1024)assert(Math.max(...aligned)-Math.min(...aligned)<=1,'context columns align '+width);
+   if(process.env.CC_PERMIT_CONTEXT_SCREENSHOT_DIR){fs.mkdirSync(process.env.CC_PERMIT_CONTEXT_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.CC_PERMIT_CONTEXT_SCREENSHOT_DIR,'context-'+width+'.png'),fullPage:true});}
+  }
+  await entry.focus();await page.keyboard.press('Enter');
+  assert(await page.locator('#cc237SearchBack').isVisible(),'reuse existing return navigation');
+  assert.equal(await page.locator('#cc235GuideType').inputValue(),'logistics');assert.equal(await page.locator('#cc235GuideStage').inputValue(),'middle');
+  assert.match(await page.locator('.cc235-guide-source').innerText(),/업무 맥락에서 가져온 조건/);
+  assert.match(await page.locator('.cc235-guide-source').innerText(),/법규 검토/);
+  assert.equal(await page.locator('#cc230SearchProject').isVisible(),false);
+  if(process.env.CC_PERMIT_CONTEXT_SCREENSHOT_DIR){await page.setViewportSize({width:1024,height:1100});await page.screenshot({path:path.join(process.env.CC_PERMIT_CONTEXT_SCREENSHOT_DIR,'guide-1024.png'),fullPage:true});}
+  await page.locator('.cc235-guide-local>summary').click();
+  assert.match(await page.locator('.cc235-local-location').innerText(),/위치가 연결되어 있지/);
+  assert(!/저장된 서울 주소|3만㎡/.test(await page.locator('.cc235-guide-source,.cc235-local-location').allTextContents().then(x=>x.join(' '))),'no unrelated saved details');
+  await page.selectOption('#cc235GuideStage','plan');
+  assert.match(await page.locator('.cc235-guide-source').innerText(),/직접 바꾼/);
+  await page.locator('.cc235-guide-topic>summary').first().click();
+  await page.locator('.cc235-guide-topic[open] [data-cc235-go]').click();
+  await page.locator('.cc252-detail-toggle').click();
+  assert.match(await page.locator('.cc235-project').innerText(),/돌아갈 업무.*물류센터.*중간설계.*법규 검토/);
+  assert(!/저장된 서울 주소/.test(await page.locator('#searchResult').innerText()));
+  await page.evaluate(()=>CC_RUNTIME.refreshSearchForLevel());
+  assert.equal(await page.locator('[data-cc235-context]').count(),1,'level refresh keeps context origin on detail');
+  await page.locator('.cc235-guide-back').click();
+  assert.equal(await page.locator('#cc235GuideStage').inputValue(),'plan');
+  assert.equal(await page.locator('.cc235-guide-local').getAttribute('open'),'');
+  await page.evaluate(()=>CC_RUNTIME.refreshSearchForLevel());
+  assert.equal(await page.locator('#cc235GuideStage').inputValue(),'plan','level refresh keeps manual conditions');
+  await page.locator('#cc235UseContext').click();
+  assert.equal(await page.locator('#cc235GuideStage').inputValue(),'middle');
+  await page.locator('#cc237SearchBack').click();
+  await page.waitForFunction(()=>document.activeElement?.hasAttribute('data-cc235-context-open'));
+  assert.equal(await page.locator('#contextResult').innerHTML(),beforeContext,'return keeps context and open detail pane');
+  assert.deepEqual(await page.evaluate(()=>({...localStorage})),original,'context reading never writes project or level data');
+  await entry.click();await page.fill('#searchInput','인허가');await page.locator('#searchInput').press('Enter');
+  assert.equal(await page.locator('#cc235GuideType').inputValue(),'housing','fresh search restores saved-project source');
+  assert.match(await page.locator('.cc235-guide-source').innerText(),/저장 프로젝트/);
+  for(const task of ['지구단위계획 조사','인허가 자료 작성','심의 보고자료 작성','변경업무 검토','사례조사']){
+   await page.evaluate(()=>showView('home'));await page.selectOption('#task',task);await page.selectOption('#phase','잘 모르겠습니다');await page.click('#analyze');
+   assert.equal(await entry.count(),task==='사례조사'?0:1,'link only on related work '+task);
+   if(task==='사례조사')continue;
+   await entry.click();assert.equal(await page.locator('#cc235GuideStage').inputValue(),'all','unknown stage is not guessed');await page.locator('#cc237SearchBack').click();
+  }
+  await page.evaluate(()=>showView('home'));await page.locator('#masterLevels [data-level="3"]').click();
+  await page.selectOption('#task','인허가 자료 작성');await page.selectOption('#phase','실시설계');await page.click('#analyze');
+  await page.locator('[data-drawer="how"]').click();await page.locator('[data-cc235-open]').click();
+  assert(await page.locator('#cc237SearchBack').isVisible());assert.equal(await page.locator('[data-cc235-context]').count(),1,'LV3 package keeps work origin');
+  await page.evaluate(()=>CC_RUNTIME.refreshSearchForLevel());assert.equal(await page.locator('[data-cc235-context]').count(),1);
+  await page.locator('.cc235-guide-back').click();assert.equal(await page.locator('#cc235GuideStage').inputValue(),'detail');
+  assert.deepEqual(errors,[]);assert(requests.every(r=>new URL(r).origin===new URL(url).origin),'no external requests');
+  console.log('PASS permit stage 4: related task entry, six widths/alignment, keyboard return, preserved context/details/storage, separate saved source, manual/unknown stage, LV refresh and LV3 package');
+ }finally{await context.close();}
+}
 async function flowPositions(browser,url){
  const context=await browser.newContext({viewport:{width:1024,height:1000},reducedMotion:'reduce',locale:'ko-KR'});
  const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -443,6 +520,6 @@ async function failures(browser,url){
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const url='http://127.0.0.1:'+server.address().port+'/current/';browser=await chromium.launch(launch);
   for(const width of [390,768,1440])await flows(browser,url,width,'reduce');
-  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await permitGuide(browser,url);await permitProjects(browser,url);await permitLocalSources(browser,url);await drawingLibrary(browser,url);await flowPositions(browser,url);await failures(browser,url);
+  await flows(browser,url,390,'no-preference');await searchAndAlignment(browser,url);await permitGuide(browser,url);await permitProjects(browser,url);await permitLocalSources(browser,url);await permitContext(browser,url);await drawingLibrary(browser,url);await flowPositions(browser,url);await failures(browser,url);
  }finally{if(browser)await browser.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

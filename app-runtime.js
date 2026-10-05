@@ -44,13 +44,13 @@ function resultWritten(){
   if(!renderingResult)lastQuery=$('searchInput')?.value||lastQuery;
   refreshResult();
 }
-function search(query){
+function search(query,{refresh=false}={}){
   const route=classify(query??$('searchInput')?.value);
   if(route.id==='empty')return false;
   const input=$('searchInput');if(input)input.value=route.query;
   renderingResult=true;
   try{
-    routes.get(route.id).render(route.data,route.query);
+    routes.get(route.id).render(route.data,route.query,{refresh});
     lastQuery=route.query;
     stats.searches++;
   }finally{renderingResult=false;}
@@ -60,7 +60,7 @@ function search(query){
 function refreshSearchForLevel(){
   if(!lastQuery)return;
   const input=$('searchInput'),draft=input?.value;
-  search(lastQuery);
+  search(lastQuery,{refresh:true});
   if(input)input.value=draft;
 }
 function renderContext(){
