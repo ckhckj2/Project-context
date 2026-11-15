@@ -1,0 +1,44 @@
+name: Desktop pet preview release
+on:
+  push:
+    branches: [main]
+    paths: ['desktop-pet/source/**', '.github/workflows/pet-release.yml']
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Restore reviewed source snapshot
+        run: |
+          cat desktop-pet/source/*.part > /tmp/pet-source.zip
+          echo '3ac092bd6908179e9c9f020664e6f5ba7886477645d7610345e62085e1da9771  /tmp/pet-source.zip' | sha256sum -c -
+          unzip -q /tmp/pet-source.zip -d /tmp/pet-build
+      - name: Check and package
+        working-directory: /tmp/pet-build/cheokcheokpet
+        run: |
+          npm ci --ignore-scripts
+          npm run check
+          npm run package:win
+          mkdir /tmp/pet-download
+          cp -r dist/CheokcheokPet-win32-x64 /tmp/pet-download/CheokcheokPet
+          cp README.md /tmp/pet-download/README.md
+          cp tools/export-projects.html /tmp/pet-download/export-projects.html
+          cd /tmp/pet-download
+          zip -qr /tmp/CheokcheokPet-0.8.0-windows-x64.zip .
+          cp /tmp/pet-source.zip /tmp/cheokcheokpet-0.8.0-source.zip
+          cd /tmp
+          sha256sum CheokcheokPet-0.8.0-windows-x64.zip cheokcheokpet-0.8.0-source.zip > SHA256SUMS.txt
+      - name: Publish preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release create pet-v0.8.0 /tmp/CheokcheokPet-0.8.0-windows-x64.zip /tmp/cheokcheokpet-0.8.0-source.zip /tmp/SHA256SUMS.txt --target "$GITHUB_SHA" --prerelease --title '척척펫 0.8.0 Windows 시안' --notes 'Windows x64 시안입니다. ZIP 전체를 풀고 CheokcheokPet.exe를 실행하세요. 53개 자동 검사 통과. 실제 Windows 실행, 전자서명 및 백신 검사는 미수행입니다. 회사 보안 정책을 따르세요. 자동 업데이트는 없습니다. 프로젝트 내보내기 안내는 ZIP 안의 export-projects.html에 있습니다.'
