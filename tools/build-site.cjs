@@ -12,6 +12,8 @@ if (process.argv.slice(2).some((value) => value !== '--redesign'))
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 const assets = new Set([
   'index.html',
+  'app/pet-download.html',
+  'src/styles/pet-download.css',
   'app/index.html',
   'app/release-entry.mjs',
   'mascot_v2112.svg',

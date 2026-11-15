@@ -6,6 +6,11 @@ import { legacyRequest } from '../src/application/task-navigation.mjs';
 const params = new URLSearchParams(location.search);
 const request = legacyRequest(params.get('entry'), params.get('task'));
 window.CC_BOOT.register('redesign-entry', () => {
+  const download = document.createElement('a');
+  download.href = './app/pet-download.html';
+  download.className = 'cc-help-btn';
+  download.textContent = '척척펫 내려받기';
+  document.querySelector('.cc-home-tools')?.append(download);
   // An exact navigation command, not an authorization or a general search keyword.
   window.CC_RUNTIME.registerSearch(
     'development',

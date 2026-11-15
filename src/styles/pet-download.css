@@ -1,0 +1,59 @@
+.cc-pet-download {
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: #f3b82f;
+  color: #24211b;
+  font: 700 14px/1.5 sans-serif;
+  text-decoration: none;
+}
+.cc-pet-download:hover {
+  background: #ffcc53;
+}
+.cc-pet-download:focus-visible {
+  outline: 3px solid #4c6fff;
+  outline-offset: 3px;
+}
+.pet-download-body {
+  margin: 0;
+  padding: 28px 18px;
+  background: #faf8f2;
+  color: #302b22;
+  font-family: 'Malgun Gothic', sans-serif;
+  line-height: 1.8;
+}
+.pet-download-card {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 28px;
+  background: #fff;
+  border: 1px solid #e4dcc7;
+  border-radius: 20px;
+}
+.pet-download-card h1 {
+  font-size: 28px;
+  line-height: 1.3;
+}
+.pet-download-card h2 {
+  font-size: 18px;
+  margin-top: 28px;
+}
+.pet-download-card p,
+.pet-download-card li {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.pet-download-card a {
+  color: #5d431a;
+}
+.pet-download-card .cc-pet-download {
+  color: #24211b;
+}
+@media (max-width: 480px) {
+  .pet-download-card {
+    padding: 20px;
+  }
+  .pet-download-card h1 {
+    font-size: 24px;
+  }
+}

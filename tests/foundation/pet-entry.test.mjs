@@ -57,7 +57,7 @@ test('entry opens selected context, reports missing project and isolates general
         window,
         document: {
           createElement: () => ({ setAttribute() {} }),
-          querySelector: () => ({ prepend: (n) => notes.push(n.textContent) }),
+          querySelector: () => ({ append() {}, prepend: (n) => notes.push(n.textContent) }),
           getElementById: (id) => fields[id],
         },
       },

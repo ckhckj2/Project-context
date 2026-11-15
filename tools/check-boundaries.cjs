@@ -179,7 +179,7 @@ function run() {
   for (const file of files(path.join(root, 'app')).map((absolute) =>
     path.relative(root, absolute).split(path.sep).join('/'),
   )) {
-    if (['app/index.html', 'app/release.html'].includes(file)) continue;
+    if (['app/index.html', 'app/release.html', 'app/pet-download.html'].includes(file)) continue;
     if (!['app/main.mjs', 'app/legacy-entry.mjs', 'app/release-entry.mjs'].includes(file))
       errors.push(`${file}: unregistered composition entry`);
     else errors.push(...inspect(file, fs.readFileSync(path.join(root, file), 'utf8')));

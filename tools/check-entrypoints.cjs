@@ -20,7 +20,7 @@ function inspect(html, file) {
       .map(([key, ...value]) => [key, value.join(' ')]),
   );
   for (const [name, value] of Object.entries({
-    'script-src': "'self'",
+    'script-src': file === 'app/pet-download.html' ? "'none'" : "'self'",
     'connect-src': "'none'",
     'object-src': "'none'",
     'base-uri': "'none'",
@@ -48,6 +48,7 @@ if (require.main === module) {
     'index.html',
     'app/index.html',
     'app/release.html',
+    'app/pet-download.html',
     'docs/redesign/preview/index.html',
     'docs/redesign/level-preview.html',
   ])
