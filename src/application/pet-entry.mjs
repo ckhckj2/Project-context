@@ -34,3 +34,13 @@ export function petRequest(hash) {
     return { error: true };
   }
 }
+
+export function restorePetProject(id, store, allowedTypes, allowedPhases) {
+  const state = store.read();
+  if (!state.ok) return { ok: false };
+  const project = state.items.find((item) => item.id === id);
+  if (!project || !allowedTypes.includes(project.typeId) || !allowedPhases.includes(project.phase))
+    return { ok: false };
+  if (!store.activate(id).ok) return { ok: false };
+  return { ok: true, phase: project.phase };
+}

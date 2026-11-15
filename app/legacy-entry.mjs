@@ -1,5 +1,4 @@
-import { petRequest } from '../src/application/pet-entry.mjs';
-import { restorePetProject } from '../src/ui/pet-project.mjs';
+import { petRequest, restorePetProject } from '../src/application/pet-entry.mjs';
 // Compatibility adapter for original projects, scores and unmigrated reference content.
 // Modules finish before DOMContentLoaded, so registration precedes CC_BOOT.run.
 import { legacyRequest } from '../src/application/task-navigation.mjs';
@@ -33,7 +32,12 @@ window.CC_BOOT.register('redesign-entry', () => {
       tell('프로젝트 조건을 적용하지 않은 일반 도움입니다.');
       return;
     }
-    const result = restorePetProject(pet.projectId, window, document);
+    const result = restorePetProject(
+      pet.projectId,
+      window.CC_PROJECT_STORE,
+      Array.from(document.getElementById('project').options, (option) => option.value),
+      Array.from(document.getElementById('phase').options, (option) => option.value),
+    );
     if (!result.ok) {
       window.showView('projects');
       tell(
@@ -41,6 +45,7 @@ window.CC_BOOT.register('redesign-entry', () => {
       );
       return;
     }
+    window.dispatchEvent(new window.StorageEvent('storage', { key: 'cc_active_project_v1' }));
     const task = document.getElementById('task');
     const phase = document.getElementById('phase');
     if (

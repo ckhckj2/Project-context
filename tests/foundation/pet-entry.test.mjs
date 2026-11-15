@@ -1,7 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { petRequest } from '../../src/application/pet-entry.mjs';
-import { restorePetProject } from '../../src/ui/pet-project.mjs';
+import { petRequest, restorePetProject } from '../../src/application/pet-entry.mjs';
 const hash = (p) => '#pet=' + encodeURIComponent(JSON.stringify(p));
 test('pet context validates fields without guessing tasks', () => {
   const p = { version: 1, projectId: 'p_한글', phase: '실시설계', taskId: 'drawing-revision' };
@@ -25,10 +24,13 @@ test('entry opens selected context, reports missing project and isolates general
     const calls = [],
       notes = [],
       fields = {
+        project: { options: [{ value: 'office' }] },
         task: { options: [{ value: '도면 수정' }] },
         phase: { options: [{ value: '실시설계' }] },
       };
     const window = {
+      StorageEvent: class {},
+      dispatchEvent() {},
       CC_BOOT: { register: (_id, f) => f() },
       CC_RUNTIME: { registerSearch() {}, search: (q) => calls.push(['search', q]) },
       showView: (v) => calls.push(['view', v]),
@@ -76,31 +78,14 @@ test('entry opens selected context, reports missing project and isolates general
 });
 
 test('project restore preserves data on missing, unsupported and activation errors', () => {
-  const project = { id: 'p', typeId: 'office', phase: '실시설계' },
-    events = [];
-  const document = {
-    getElementById: (id) => ({ options: [{ value: id === 'phase' ? '실시설계' : 'office' }] }),
-  };
-  const host = {
-    CC_PROJECT_STORE: {
-      read: () => ({ ok: true, items: [project] }),
-      activate: () => ({ ok: true }),
-    },
-    StorageEvent: class {
-      constructor(type, init) {
-        Object.assign(this, init);
-        this.type = type;
-      }
-    },
-    dispatchEvent: (e) => events.push(e),
-  };
-  assert.equal(restorePetProject('p', host, document).phase, '실시설계');
-  assert.equal(events[0].key, 'cc_active_project_v1');
-  assert.equal(restorePetProject('missing', host, document).ok, false);
+  const project = { id: 'p', typeId: 'office', phase: '실시설계' };
+  const store = { read: () => ({ ok: true, items: [project] }), activate: () => ({ ok: true }) };
+  const open = (id) => restorePetProject(id, store, ['office'], ['실시설계']);
+  assert.equal(open('p').phase, '실시설계');
+  assert.equal(open('missing').ok, false);
   project.typeId = 'unknown';
-  assert.equal(restorePetProject('p', host, document).ok, false);
-  assert.equal(events.length, 1);
+  assert.equal(open('p').ok, false);
   project.typeId = 'office';
-  host.CC_PROJECT_STORE.activate = () => ({ ok: false });
-  assert.equal(restorePetProject('p', host, document).ok, false);
+  store.activate = () => ({ ok: false });
+  assert.equal(open('p').ok, false);
 });
