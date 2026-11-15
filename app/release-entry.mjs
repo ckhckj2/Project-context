@@ -9,5 +9,5 @@ const destination = new URL(!request && developmentLink ? './' : '../legacy.html
 if (request) {
   destination.searchParams.set('entry', entry);
   if (entry === 'task') destination.searchParams.set('task', task);
-} else if (developmentLink) destination.hash = location.hash;
+} else if (developmentLink || location.hash.startsWith('#pet=')) destination.hash = location.hash;
 location.replace(destination.href);
