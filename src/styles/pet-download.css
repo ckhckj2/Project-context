@@ -101,17 +101,30 @@
 .pet-download-card .cc-pet-download {
   color: #24211b;
 }
-@media (max-width: 480px) {
+@media (max-width: 700px) {
   .cc-pet-banner {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-    margin-top: 8px;
+    min-height: 45px;
+    max-width: calc(100% - 100px);
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: transparent;
+  }
+  .cc-pet-banner-copy {
+    display: none;
   }
   .cc-pet-banner .cc-pet-download {
+    flex: 1;
+    padding: 12px;
     text-align: center;
   }
+  #view-home.cc-home-simple .cc-pet-banner + .cc-home-tools {
+    width: 90px;
+    height: 45px;
+    margin: -45px 0 0 auto;
+  }
+}
+@media (max-width: 480px) {
   .pet-download-card {
     padding: 20px;
   }

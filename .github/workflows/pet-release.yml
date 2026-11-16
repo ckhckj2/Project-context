@@ -36,6 +36,7 @@ jobs:
         env:
           NODE_PATH: ${{ github.workspace }}/node_modules
         run: |
+          test "$(node -p "require('./package.json').version")" = "$PET_VERSION"
           npm ci --ignore-scripts
           npm run check
           npm run check:browser
