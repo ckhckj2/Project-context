@@ -66,10 +66,10 @@
     },
     {
       "file": "index.html",
-      "sha256": "90316cf1bf9187b01acd947eba55651445791a0ac5d4fc3d629663aa1c058e67",
+      "sha256": "25e77298a86c738fc01e3dea5826647251210836202f3b40edf6f3308a6b586b",
       "owner": "legacy runtime (ARCHITECTURE.md)",
       "retireBy": "redesign-stage-8; replace feature by feature in stages 3–7",
-      "review": "2026-10-05 permit stage 4: Cache-bust the three reviewed runtime and presentation owners."
+      "review": "2026-11-16 pet visibility: reviewed static home download banner, its local scoped stylesheet and adapter cache version only; no form, storage, CSP or business logic changes."
     },
     {
       "file": "judgement-data.js",

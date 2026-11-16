@@ -7,6 +7,58 @@
   font: 700 14px/1.5 sans-serif;
   text-decoration: none;
 }
+.cc-pet-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  margin: 16px 0 8px;
+  border: 1px solid #e6d5a4;
+  border-radius: 14px;
+  background: #fff8e5;
+  color: #302b22;
+}
+.cc-pet-banner-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.cc-pet-banner-copy strong {
+  font-size: 17px;
+  line-height: 1.4;
+}
+.cc-pet-banner-copy > span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #655b45;
+}
+.cc-pet-banner .cc-pet-download {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.cc-pet-sidebar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  margin: 14px 0;
+  padding: 10px 12px;
+  border: 1px solid #e6d5a4;
+  border-radius: 10px;
+  background: #fff8e5;
+  color: #493b20;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.cc-pet-sidebar:hover {
+  background: #ffedbe;
+}
+.cc-pet-sidebar:focus-visible {
+  outline: 3px solid #4c6fff;
+  outline-offset: 3px;
+}
 .cc-pet-download:hover {
   background: #ffcc53;
 }
@@ -50,6 +102,16 @@
   color: #24211b;
 }
 @media (max-width: 480px) {
+  .cc-pet-banner {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    margin-top: 8px;
+  }
+  .cc-pet-banner .cc-pet-download {
+    text-align: center;
+  }
   .pet-download-card {
     padding: 20px;
   }

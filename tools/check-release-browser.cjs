@@ -34,6 +34,116 @@ const server = http.createServer((req, res) => {
   }
 });
 
+// Exercise the emitted release, including the root redirect, real project store,
+// project controls and context renderer. Unit mocks cannot verify that wiring.
+async function petLinks(browser, base) {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    reducedMotion: 'reduce',
+  });
+  // Exercise HTTPS navigation, matching production. The established security guard
+  // intentionally rejects HTTP links; serve only the local build through this route.
+  const localBase = base;
+  base = base.replace(/^http:/, 'https:');
+  await context.route(base + '**', async (route) => {
+    const response = await route.fetch({
+      url: localBase + route.request().url().slice(base.length),
+    });
+    await route.fulfill({ response });
+  });
+  const page = await context.newPage(),
+    errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  const projects = [
+    { id: 'qa-pet-other', name: '이전 프로젝트', typeId: 'multi', phase: '기본계획' },
+    {
+      id: 'qa-pet',
+      name: '펫 프로젝트',
+      typeId: 'airport',
+      phase: '실시설계',
+      approvalRoute: 'airport',
+      memo: '보존할 메모',
+    },
+  ];
+  await context.addInitScript((projects) => {
+    if (localStorage.getItem('qa-pet-seeded')) return;
+    localStorage.setItem('qa-pet-seeded', '1');
+    localStorage.setItem('cc_projects_v1', JSON.stringify(projects));
+    localStorage.setItem('cc_active_project_v1', projects[0].id);
+  }, projects);
+  const open = async (payload) => {
+    await page.goto(base + '#pet=' + encodeURIComponent(JSON.stringify(payload)));
+    await page.waitForURL(base + 'legacy.html');
+    await page.waitForFunction(() => CC_BOOT.diagnostics().state === 'ready');
+  };
+  const request = {
+    version: 1,
+    projectId: 'qa-pet',
+    phase: '기본계획',
+    taskId: 'drawing-revision',
+    general: '',
+  };
+  try {
+    await open(request);
+    assert.ok(await page.locator('#view-context.active').isVisible());
+    assert.equal(await page.locator('#project').inputValue(), 'airport');
+    assert.equal(await page.locator('#phase').inputValue(), '실시설계');
+    assert.equal(await page.evaluate(() => CC_ACTIVE_PROJECT.id), 'qa-pet');
+    assert.equal(await page.locator('.stage-task').innerText(), '도면 수정');
+    assert.match(await page.locator('#contextResult [role="status"]').innerText(), /최신/);
+    assert.deepEqual(await page.evaluate(() => CC_PROJECT_STORE.list()), projects);
+    await page.evaluate(() => showView('home'));
+    assert.equal(
+      await page.locator('[role="status"]').filter({ hasText: '최신 프로젝트' }).isVisible(),
+      false,
+    );
+    await open({ ...request, taskId: '' });
+    assert.ok(await page.locator('#view-home.active').isVisible());
+    assert.equal(await page.locator('#task').inputValue(), '');
+    assert.equal(await page.locator('#project').inputValue(), 'airport');
+    assert.match(await page.locator('#view-home [role="status"]').innerText(), /궁금한 업무/);
+    await open({ ...request, projectId: 'missing' });
+    assert.ok(await page.locator('#view-projects.active').isVisible());
+    assert.equal(await page.evaluate(() => CC_PROJECT_STORE.activeId()), 'qa-pet');
+    await open({ ...request, projectId: '', phase: 'general', taskId: '', general: '용어' });
+    assert.ok(await page.locator('#view-search.active').isVisible());
+    assert.match(await page.locator('#view-search [role="status"]').innerText(), /일반 도움/);
+    assert.equal(await page.evaluate(() => CC_PROJECT_STORE.activeId()), 'qa-pet');
+    assert.deepEqual(await page.evaluate(() => CC_PROJECT_STORE.list()), projects);
+    await page.evaluate(() => showView('home'));
+    const link = page.locator('.cc-pet-banner .cc-pet-download');
+    assert.equal(await link.count(), 1);
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      assert.ok(await link.isVisible(), `download visible at ${width}px`);
+      const bounds = await link.boundingBox();
+      assert.ok(bounds.y >= 0 && bounds.y + bounds.height < 900, 'download above fold');
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    }
+    const sidebarLink = page.locator('.cc-pet-sidebar');
+    assert.ok(await sidebarLink.isVisible());
+    await page.evaluate(() => showView('search'));
+    assert.ok(await sidebarLink.isVisible(), 'desktop download persists outside home');
+    await sidebarLink.click();
+    assert.equal(page.url(), base + 'app/pet-download.html');
+    await page.getByRole('link', { name: '← 척척으로 돌아가기' }).click();
+    await page.waitForURL(base + 'legacy.html');
+    await page.waitForFunction(() => CC_BOOT.diagnostics().state === 'ready');
+    await page.evaluate(() => showView('home'));
+    await link.click();
+    assert.equal(page.url(), base + 'app/pet-download.html');
+    assert.equal(await page.locator('script').count(), 0);
+    assert.ok(await page.locator('a[href$="windows-x64.zip"]').isVisible());
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    assert.deepEqual(errors, []);
+    console.log(
+      'PASS pet web handoff: root fragment, stored project, latest phase, no-task home, missing/general isolation, scoped notices and download page',
+    );
+  } finally {
+    await context.close();
+  }
+}
+
 (async () => {
   let browser;
   try {
@@ -333,6 +443,7 @@ const server = http.createServer((req, res) => {
     await page.locator('#homeSearch').fill('');
     await page.locator('#homeSearchBtn').click();
     assert.ok(page.url().endsWith('legacy.html'), 'empty input must not switch versions');
+    await petLinks(browser, base);
     assert.deepEqual(errors, []);
     assert.deepEqual(failures, []);
     assert.deepEqual(external, []);

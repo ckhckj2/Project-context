@@ -25,11 +25,12 @@ test('entry opens selected context, reports missing project and isolates general
       notes = [],
       fields = {
         project: { options: [{ value: 'office' }] },
-        task: { options: [{ value: '도면 수정' }] },
+        task: { options: [{ value: '도면 수정' }], dispatchEvent() {} },
         phase: { options: [{ value: '실시설계' }] },
       };
     const window = {
       StorageEvent: class {},
+      Event: class {},
       dispatchEvent() {},
       CC_BOOT: { register: (_id, f) => f() },
       CC_RUNTIME: { registerSearch() {}, search: (q) => calls.push(['search', q]) },
@@ -75,6 +76,11 @@ test('entry opens selected context, reports missing project and isolates general
   const general = run({ ...p, projectId: '', phase: 'general' });
   assert.ok(!general.calls.some((c) => c[0] === 'project'));
   assert.ok(general.calls.some((c) => c[0] === 'search'));
+  const withoutTask = run({ ...p, taskId: '' });
+  assert.ok(withoutTask.calls.some((c) => c[0] === 'view' && c[1] === 'home'));
+  assert.ok(!withoutTask.calls.some((c) => c[0] === 'context'));
+  assert.equal(withoutTask.fields.task.value, '');
+  assert.ok(withoutTask.notes[0].includes('궁금한 업무'));
 });
 
 test('project restore preserves data on missing, unsupported and activation errors', () => {

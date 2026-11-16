@@ -6,11 +6,12 @@ import { legacyRequest } from '../src/application/task-navigation.mjs';
 const params = new URLSearchParams(location.search);
 const request = legacyRequest(params.get('entry'), params.get('task'));
 window.CC_BOOT.register('redesign-entry', () => {
+  // The legacy sidebar is rebuilt during boot, so attach after its owner finishes.
   const download = document.createElement('a');
   download.href = './app/pet-download.html';
-  download.className = 'cc-help-btn';
-  download.textContent = '척척펫 내려받기';
-  document.querySelector('.cc-home-tools')?.append(download);
+  download.className = 'cc-pet-sidebar';
+  download.textContent = '↓ 척척펫 다운로드';
+  document.querySelector('.cc212-sub-nav')?.append(download);
   // An exact navigation command, not an authorization or a general search keyword.
   window.CC_RUNTIME.registerSearch(
     'development',
@@ -25,7 +26,11 @@ window.CC_BOOT.register('redesign-entry', () => {
       note.className = 'page-card';
       note.setAttribute('role', 'status');
       note.textContent = text;
-      document.querySelector('main')?.prepend(note);
+      const container =
+        document.querySelector(
+          '#view-context.active #contextResult, #view-search.active #searchResult',
+        ) || document.querySelector('.view.active');
+      container?.prepend(note);
     };
     if (pet.error) {
       window.showView('projects');
@@ -53,8 +58,15 @@ window.CC_BOOT.register('redesign-entry', () => {
     window.dispatchEvent(new window.StorageEvent('storage', { key: 'cc_active_project_v1' }));
     const task = document.getElementById('task');
     const phase = document.getElementById('phase');
+    if (!pet.taskTitle) {
+      // Opening the web before choosing a task is a valid, shallower handoff.
+      task.value = '';
+      task.dispatchEvent(new window.Event('change', { bubbles: true }));
+      window.showView('home');
+      tell('프로젝트를 불러왔어요. 궁금한 업무를 선택해 주세요.');
+      return;
+    }
     if (
-      !pet.taskTitle ||
       !Array.from(task.options).some((option) => option.value === pet.taskTitle) ||
       !Array.from(phase.options).some((option) => option.value === result.phase)
     ) {
