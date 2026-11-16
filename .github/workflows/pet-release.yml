@@ -24,7 +24,7 @@ jobs:
       - name: Restore reviewed source snapshot
         run: |
           cat desktop-pet/source/*.part > /tmp/pet-source.zip
-          echo '8cc0bd7d8153123553b0fe78d6112fc3ed58cba6a83c4669cba7b8d076348f85  /tmp/pet-source.zip' | sha256sum -c -
+          echo 'af37ea6c6fdfadea6233d81bde9b6c626a5eb3f2f28c5b347aa68e9d351975dd  /tmp/pet-source.zip' | sha256sum -c -
           unzip -q /tmp/pet-source.zip -d /tmp/pet-build
       - name: Check release pages and prepare browser testing
         run: |
@@ -54,4 +54,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          gh release create pet-v${PET_VERSION} /tmp/CheokcheokPet-${PET_VERSION}-windows-x64.zip /tmp/cheokcheokpet-${PET_VERSION}-source.zip /tmp/SHA256SUMS.txt --target "$GITHUB_SHA" --prerelease --title "척척펫 ${PET_VERSION} Windows 시안" --notes 'Windows x64 시안입니다. ZIP 전체를 풀고 CheokcheokPet.exe를 실행하세요. 55개 자동 검사와 실제 HTML·Canvas 브라우저 검사 통과. 파일 가져오기 중 화면 이동 시 오래된 단계가 남는 문제와 웹 연결을 수정했습니다. 실제 Windows 실행, 전자서명 및 백신 검사는 미수행입니다. 회사 보안 정책을 따르세요. 자동 업데이트는 없습니다. 프로젝트 내보내기 안내는 ZIP 안의 export-projects.html에 있습니다.'
+          gh release create pet-v${PET_VERSION} /tmp/CheokcheokPet-${PET_VERSION}-windows-x64.zip /tmp/cheokcheokpet-${PET_VERSION}-source.zip /tmp/SHA256SUMS.txt --target "$GITHUB_SHA" --prerelease --title "척척펫 ${PET_VERSION} Windows 시안" --notes 'Windows x64 시안입니다. ZIP 전체를 풀고 CheokcheokPet.exe를 실행하세요. 55개 자동 검사와 실제 HTML·Canvas 브라우저 검사 통과. 파일 가져오기 중 화면 이동 시 오래된 단계가 남는 문제, 웹 연결 및 프로젝트 JSON 내보내기를 수정했습니다. 실제 Windows 실행, 전자서명 및 백신 검사는 미수행입니다. 회사 보안 정책을 따르세요. 자동 업데이트는 없습니다. 프로젝트 내보내기 안내는 ZIP 안의 export-projects.html에 있습니다.'

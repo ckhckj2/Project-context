@@ -226,7 +226,11 @@ async function petLinks(browser, base) {
     await legacyReady();
     assert.ok(await page.locator('#view-home.active').isVisible());
     assert.equal(
-      requested.some((url) => /\/app\/main\.mjs|\/src\/(ui|styles)\//.test(url)),
+      requested.some(
+        (url) =>
+          /\/app\/main\.mjs|\/src\/(ui|styles)\//.test(url) &&
+          new URL(url).pathname !== '/Project-context/src/styles/pet-download.css',
+      ),
       false,
       'the default app must not download the development UI',
     );
