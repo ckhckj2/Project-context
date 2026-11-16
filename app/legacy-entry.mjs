@@ -38,6 +38,7 @@ window.CC_BOOT.register('redesign-entry', () => {
       return;
     }
     if (!pet.projectId || pet.phase === 'general') {
+      window.showView('search');
       window.CC_RUNTIME.search(pet.taskTitle || pet.general || '업무 순서');
       tell('프로젝트 조건을 적용하지 않은 일반 도움입니다.');
       return;

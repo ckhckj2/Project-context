@@ -24,7 +24,7 @@ jobs:
       - name: Restore reviewed source snapshot
         run: |
           cat desktop-pet/source/*.part > /tmp/pet-source.zip
-          echo 'af37ea6c6fdfadea6233d81bde9b6c626a5eb3f2f28c5b347aa68e9d351975dd  /tmp/pet-source.zip' | sha256sum -c -
+          echo 'e27d87663b1ce7c3446cb76a02605ee3b47ebd810abe280ca94052bfd23d6788  /tmp/pet-source.zip' | sha256sum -c -
           unzip -q /tmp/pet-source.zip -d /tmp/pet-build
       - name: Check release pages and prepare browser testing
         run: |

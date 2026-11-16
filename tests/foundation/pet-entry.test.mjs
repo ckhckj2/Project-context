@@ -76,6 +76,7 @@ test('entry opens selected context, reports missing project and isolates general
   const general = run({ ...p, projectId: '', phase: 'general' });
   assert.ok(!general.calls.some((c) => c[0] === 'project'));
   assert.ok(general.calls.some((c) => c[0] === 'search'));
+  assert.ok(general.calls.some((c) => c[0] === 'view' && c[1] === 'search'));
   const withoutTask = run({ ...p, taskId: '' });
   assert.ok(withoutTask.calls.some((c) => c[0] === 'view' && c[1] === 'home'));
   assert.ok(!withoutTask.calls.some((c) => c[0] === 'context'));
